@@ -2,6 +2,7 @@ package business.controller;
 
 import business.bean.HrmResource;
 import business.common.api.vo.Result;
+import business.jwt.LoginRequired;
 import business.service.IHrmResourceService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class TestController {
         return "123";
     }
 
+    @LoginRequired
     @RequestMapping("/hrmlist")
     public Result<?> queryPageList(
                                    @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,

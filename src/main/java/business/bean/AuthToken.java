@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 权限token
@@ -33,10 +34,10 @@ public class AuthToken extends Model<AuthToken> {
     /**
      * 过期时间
      */
-    private LocalDateTime expireTime;
+    private Date expireTime;
 
     /**
-     * 创建人
+     * token所属人
      */
     private Long userId;
 

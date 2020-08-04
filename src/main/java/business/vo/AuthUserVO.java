@@ -1,4 +1,4 @@
-package business.jwt;
+package business.vo;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -26,6 +26,13 @@ public class AuthUserVO {
      */
     private String lastname;
 
+    /**
+     * 密码
+     */
+    private String password;
+
 
     private String token;
+
+    private Long roleId;
 }

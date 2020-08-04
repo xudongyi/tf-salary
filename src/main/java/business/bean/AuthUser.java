@@ -26,19 +26,20 @@ public class AuthUser extends Model<AuthUser> {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    private Long hrmId;
+    private Long hrmid;
+
+    private String loginid;
+
+    private String password;
 
     private String workcode;
+
+    private String lastname;
 
     /**
      * 角色主键 1 普通用户 2 admin
      */
-    private Long roleId;
-
-    /**
-     * 薪资密码（加密）
-     */
-    private String salaryPassword;
+    private Long roleid;
 
     /**
      * 邮箱

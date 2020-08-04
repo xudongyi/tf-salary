@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
-    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object){
+    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) {
         // 从 http 请求头中取出 token
         String token = httpServletRequest.getHeader(Constants.AUTHENTICATION);
 
@@ -67,13 +67,13 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest httpServletRequest,
                            HttpServletResponse httpServletResponse,
-                           Object o, ModelAndView modelAndView){
+                           Object o, ModelAndView modelAndView) {
 
     }
 
     @Override
     public void afterCompletion(HttpServletRequest httpServletRequest,
                                 HttpServletResponse httpServletResponse,
-                                Object o, Exception e){
+                                Object o, Exception e) {
     }
 }
