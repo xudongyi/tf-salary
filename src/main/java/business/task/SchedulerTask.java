@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @Author:xudy
@@ -24,6 +25,6 @@ public class SchedulerTask {
     @Scheduled(cron = "0 0/1 * * * ?")
     private void scanToken() {
         log.debug(" {} 扫描过期Token", LocalDateTime.now());
-        authTokenMapper.delete(new LambdaQueryWrapper<AuthToken>().le(AuthToken::getExpireTime, LocalDateTime.now()));
+        authTokenMapper.delete(new LambdaQueryWrapper<AuthToken>().le(AuthToken::getExpireTime, new Date()));
     }
 }
