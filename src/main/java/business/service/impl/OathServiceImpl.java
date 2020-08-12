@@ -18,11 +18,8 @@ import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.ZoneOffset;
 import java.util.Date;
 
-import static cn.hutool.crypto.SecureUtil.*;
 
 @Service
 @Slf4j
@@ -54,12 +51,16 @@ public class OathServiceImpl implements IOauthService {
             authToken = new AuthToken();
             authToken.setUserId(authUser.getId())
                     .setToken(token);
+        }else{
+            authTokenDao.deleteById(authToken.getId());
         }
-        authToken.setExpireTime(new Date(Constants.EXPIRE_TIME + System.currentTimeMillis()));
+        Date expireDate = new Date(Constants.EXPIRE_TIME + System.currentTimeMillis());
+        authToken.setExpireTime(expireDate);
         authTokenDao.insert(new AuthToken()
                 .setUserId(authUser.getId())
                 .setToken(token)
-                .setExpireTime(new Date(Constants.EXPIRE_TIME + System.currentTimeMillis())));
+                .setExpireTime(expireDate));
+        authUserVO.setExpireTime(expireDate.getTime());
         return Result.ok(authUserVO);
     }
 }

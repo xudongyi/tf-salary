@@ -33,7 +33,7 @@ public class Result<T> implements Serializable {
 	/**
 	 * 返回数据对象 data
 	 */
-	private T model;
+	private T data;
 	
 	/**
 	 * 时间戳
@@ -72,7 +72,7 @@ public class Result<T> implements Serializable {
 		Result<Object> r = new Result<Object>();
 		r.setSuccess(true);
 		r.setCode(200);
-		r.setModel(data);
+		r.setData(data);
 		return r;
 	}
 	

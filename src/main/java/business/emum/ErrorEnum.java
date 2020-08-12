@@ -27,6 +27,7 @@ public enum ErrorEnum {
     FILE_TYPE_ERROR("00015", "文件类型错误", ""),
     IMPORT_FILE_ERROR("00016", "文件导入失败", ""),
     DATABASE_SQL_PARSE_ERROR("00017", "数据库解析异常", ""),
+    EXPIRED_TOKEN("00018", "token已过期", ""),
     ;
 
     private final static Map<String, ErrorEnum> errorEnumMap = new HashMap<>();

@@ -3,6 +3,7 @@ package business.vo;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+
 @Data
 @Accessors(chain = true)
 public class AuthUserVO {
@@ -35,4 +36,10 @@ public class AuthUserVO {
     private String token;
 
     private Long roleId;
+
+    /**
+     * 过期时间
+     */
+    private long expireTime;
+
 }

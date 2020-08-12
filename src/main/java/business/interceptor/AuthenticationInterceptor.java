@@ -1,12 +1,16 @@
 package business.interceptor;
 
+import business.bean.AuthToken;
 import business.constant.Constants;
 import business.emum.ErrorEnum;
 import business.emum.RoleEnum;
 import business.jwt.LoginRequired;
+import business.mapper.AuthTokenMapper;
 import business.util.ExceptionUtil;
 import business.util.SessionUtil;
 import business.vo.UserSessionVO;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -22,7 +26,8 @@ import java.lang.reflect.Method;
  */
 @Configuration
 public class AuthenticationInterceptor implements HandlerInterceptor {
-
+    @Autowired
+    private AuthTokenMapper authTokenMapper;
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) {
         // 从 http 请求头中取出 token
@@ -42,8 +47,15 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         LoginRequired loginRequired = method.getAnnotation(LoginRequired.class);
         if (loginRequired.required()) {
             // 执行认证
-            if (token == null) {
+            if (token == null || token.indexOf("Bear ")==-1) {
                 ExceptionUtil.rollback(ErrorEnum.INVALID_TOKEN);
+            }else{
+                //验证token是否过期，过期了，则跳转到登录页面
+                token = token.split(" ")[1];
+                AuthToken authToken = authTokenMapper.selectOne(new LambdaQueryWrapper<AuthToken>().eq(AuthToken::getUserId,token));
+                if(authToken==null){
+                    ExceptionUtil.rollback(ErrorEnum.INVALID_TOKEN);
+                }
             }
 
             RoleEnum role = loginRequired.role();

@@ -31,7 +31,7 @@ public class Constants {
     // 默认文件路径分隔符
     public static final String PATH_SEPARATOR = "/";
     // token有效期
-    public static final long EXPIRE_TIME = 7 * 24 * 3600 * 1000;
+    public static final long EXPIRE_TIME = 2 * 60 * 60 * 1000;
     // 分页默认起始页
     public static final int DEFAULT_PAGE_INDEX = 1;
     // 分页默认每页条数
