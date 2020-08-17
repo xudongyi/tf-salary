@@ -1,6 +1,7 @@
 package business.service;
 
 import business.common.api.vo.Result;
+import business.vo.AuthUserSSO;
 import business.vo.AuthUserVO;
 
 public interface IOauthService {
@@ -10,4 +11,7 @@ public interface IOauthService {
      */
     Result<?> login(AuthUserVO authUserVO);
 
+    Result<?> sso(AuthUserSSO authUserSSO);
+
+    Result<?> checkSso(AuthUserSSO authUserSSO);
 }

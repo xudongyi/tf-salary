@@ -94,4 +94,7 @@ public class Constants {
 
     // markdown 文件后缀名
     public static final String MARKDOWN_FILE_SUFFIX = "md";
+
+    /**OA APPID**/
+    public static final String OA_APP_ID="9152f1c1f8d14199bc9921acd0b9da04";
 }

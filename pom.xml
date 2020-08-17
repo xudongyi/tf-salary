@@ -103,7 +103,13 @@
             <artifactId>java-jwt</artifactId>
             <version>3.4.0</version>
         </dependency>
-
+        <!--添加热部署-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+            <scope>true</scope>
+        </dependency>
     </dependencies>
     <!--多模块打包：只需在启动类所在模块的POM文件：指定打包插件 -->
     <build>
@@ -112,6 +118,14 @@
                 <!--该插件主要用途：构建可执行的JAR -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                    <addResources>true</addResources>
+                </configuration>
             </plugin>
         </plugins>
         <resources>

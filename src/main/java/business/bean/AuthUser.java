@@ -28,6 +28,8 @@ public class AuthUser extends Model<AuthUser> {
 
     private Long hrmid;
 
+    private String mobile;
+
     private String loginid;
 
     private String password;
@@ -45,6 +47,9 @@ public class AuthUser extends Model<AuthUser> {
      * 邮箱
      */
     private String email;
+
+    /**0-第一次 1-不是第一次**/
+    private int first_login;
 
 
     @Override

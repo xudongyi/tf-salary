@@ -19,6 +19,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -77,6 +78,56 @@ public class SessionUtil {
         UserSessionVO userSessionVO = new UserSessionVO();
         userSessionVO.setLastname(user.getLastname()).setRoleId(user.getRoleid()).setId(user.getId());
         return userSessionVO;
+    }
+    /**
+     * 保存验证码信息
+     * @param session
+     * @param mobile  手机号码
+     * @param code  验证码
+     * @param expire 有效时间，单位(秒)
+     */
+    public static void save(
+            HttpSession session,
+            String mobile,
+            String code,
+            int expire){
+        session.setAttribute("sms_mobile_"+mobile, mobile);
+        session.setAttribute("sms_code_"+mobile, code);
+        session.setAttribute("sms_createTime_"+mobile, System.currentTimeMillis());
+        session.setAttribute("sms_expire_"+mobile, expire);
+    }
+    /**
+     * 校验验证码
+     * @param session
+     * @param mobile  手机号码
+     * @param code  验证码
+     */
+    public static String validate(
+            HttpSession session,
+            String mobile,
+            String code){
+        String sessionMobile = blank(session.getAttribute("sms_mobile_"+mobile));
+        String sessionCode = blank(session.getAttribute("sms_code_"+mobile));
+        String createTime = blank(session.getAttribute("sms_createTime_"+mobile));
+        String expire = blank(session.getAttribute("sms_expire_"+mobile));
+        if(sessionMobile.equals(""))
+            return "未生成验证码";
+        if(!sessionMobile.equals(mobile)){
+            return "手机号错误";
+        }
+        if(!sessionCode.equals(code)){
+            return "验证码错误";
+        }
+        if((System.currentTimeMillis() - Long.parseLong(createTime)) > 1000 * Integer.parseInt(expire)){
+            return "验证码已过期";
+        }
+        save(session, "", "", 0);
+        return "";
+    }
+    private static String blank(Object s){
+        if(s == null)
+            return "";
+        return s.toString();
     }
 
 }
