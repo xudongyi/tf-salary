@@ -66,6 +66,8 @@ public class OathServiceImpl implements IOauthService {
                 .setToken(token)
                 .setExpireTime(expireDate));
         authUserVO.setExpireTime(expireDate.getTime());
+        authUserVO.setLastname(authUser.getLastname());
+        authUserVO.setFirst_login(authUser.getFirstLogin());
         return Result.ok(authUserVO);
     }
 
@@ -92,8 +94,8 @@ public class OathServiceImpl implements IOauthService {
             authUser.setLoginid(authUserSSO.getLoginid());
             authUser.setRoleid(1L);
             authUser.setWorkcode(authUser.getWorkcode());
-            authUser.setFirst_login(0);
-            authUser.setLastname(hrmresource.get("lastname").toString());
+            authUser.setFirstLogin(1);
+            authUser.setLastname(hrmresource.get("LASTNAME").toString());
             authUserDao.insert(authUser);
         }
         String token = JwtUtil.getSSOToken(authUserSSO);
@@ -140,6 +142,7 @@ public class OathServiceImpl implements IOauthService {
         authUserSSO.setWorkcode(authUser.getWorkcode());
         authUserSSO.setLastname(hrmresource.get("LASTNAME").toString());
         authUserSSO.setExpireTime(authToken.getExpireTime().getTime());
+        authUserSSO.setFirst_login(authUser.getFirstLogin());
         return  Result.ok(authUserSSO);
     }
 

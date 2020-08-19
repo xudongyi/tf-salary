@@ -42,4 +42,6 @@ public class AuthUserSSO {
      */
     private long expireTime;
 
+    private int first_login;
+
 }

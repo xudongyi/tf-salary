@@ -42,4 +42,6 @@ public class AuthUserVO {
      */
     private long expireTime;
 
+    private int first_login;
+
 }

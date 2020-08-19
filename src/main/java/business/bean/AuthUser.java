@@ -49,7 +49,7 @@ public class AuthUser extends Model<AuthUser> {
     private String email;
 
     /**0-第一次 1-不是第一次**/
-    private int first_login;
+    private int firstLogin;
 
 
     @Override
