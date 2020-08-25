@@ -11,9 +11,16 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor())
                 .addPathPatterns("/**");    // 拦截所有请求，通过判断是否有 @LoginRequired 注解 决定是否需要登录
+        registry.addInterceptor(crosInterceptorConfig())
+                .addPathPatterns("/**");    // 跨域
     }
     @Bean(name = "MyAuthenticationInterceptor")
     public AuthenticationInterceptor authenticationInterceptor() {
         return new AuthenticationInterceptor();
+    }
+
+    @Bean(name = "CrosInterceptorConfig")
+    public CrosInterceptor crosInterceptorConfig() {
+        return new CrosInterceptor();
     }
 }

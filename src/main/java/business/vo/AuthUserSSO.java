@@ -14,7 +14,6 @@ public class AuthUserSSO {
      */
     private Long id;
 
-
     private String appid;
 
     private String appname;

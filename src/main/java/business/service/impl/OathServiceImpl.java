@@ -11,7 +11,10 @@ import business.mapper.AuthTokenMapper;
 import business.mapper.AuthUserMapper;
 import business.mapper.HrmResourceMapper;
 import business.service.IOauthService;
+import business.util.CaptchaUtil;
 import business.util.ExceptionUtil;
+import business.util.SessionUtil;
+import business.vo.AuthUserModify;
 import business.vo.AuthUserSSO;
 import business.vo.AuthUserVO;
 import cn.hutool.crypto.SecureUtil;
@@ -20,7 +23,11 @@ import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 
@@ -94,7 +101,7 @@ public class OathServiceImpl implements IOauthService {
             authUser.setLoginid(authUserSSO.getLoginid());
             authUser.setRoleid(1L);
             authUser.setWorkcode(authUser.getWorkcode());
-            authUser.setFirstLogin(1);
+            authUser.setFirstLogin(0);
             authUser.setLastname(hrmresource.get("LASTNAME").toString());
             authUserDao.insert(authUser);
         }
@@ -144,6 +151,54 @@ public class OathServiceImpl implements IOauthService {
         authUserSSO.setExpireTime(authToken.getExpireTime().getTime());
         authUserSSO.setFirst_login(authUser.getFirstLogin());
         return  Result.ok(authUserSSO);
+    }
+
+    @Override
+    public Result<?> sendMobile(HttpServletRequest httpRequest, AuthUserModify authUserModify) {
+        if(authUserModify==null || StringUtils.isBlank(authUserModify.getLoginid())|| StringUtils.isBlank(authUserModify.getMobile())){
+            return Result.error(500,"参数错误！");
+        }
+        Map<String,Object> hrm = hrmResourceMapper.getHrmResource(authUserModify.getLoginid());
+        if(hrm==null){
+            return Result.error(500,"该登录名在OA中未查询到！");
+        }
+        if(!authUserModify.getMobile().equals(hrm.get("MOBILE"))){
+            return Result.error(500,"手机号不匹配，OA中的手机号为："+hrm.get("MOBILE")+"！");
+        }
+        //TODO 发送短信
+        String code = "888888";
+        CaptchaUtil.save(authUserModify.getMobile(),code,180);
+        return Result.ok("发送成功");
+    }
+
+
+    @Override
+    public Result<?> modifyPassword(HttpServletRequest httpRequest,AuthUserModify authUserModify) {
+        if(authUserModify==null || StringUtils.isBlank(authUserModify.getCaptcha())
+                ||StringUtils.isBlank( authUserModify.getLoginid()) || authUserModify.getCheckPass()==null
+                || authUserModify.getPassword()==null){
+            return Result.error(500,"参数错误！");
+        }
+        //1.验证手机号和验证码是否匹配
+        String result = CaptchaUtil.validate(authUserModify.getMobile(),authUserModify.getCaptcha());
+        if(!result.equals("")){
+            return Result.error(500,result);
+        }
+        //2.修改密码
+        if(!authUserModify.getPassword().equals(authUserModify.getCheckPass())){
+            return Result.error(500,"两次密码不一致！");
+        }
+        //3.
+        AuthUser authUser = authUserDao.selectOne(new LambdaQueryWrapper<AuthUser>()
+                .eq(AuthUser::getLoginid, authUserModify.getLoginid()));
+        if(authUser==null){
+            return Result.error(500,"用户不存在！");
+        }
+        String psw = SecureUtil.md5(authUserModify.getPassword());
+        authUser.setPassword(psw);
+        authUser.setFirstLogin(1);
+        authUserDao.update(authUser,new LambdaQueryWrapper<AuthUser>().eq(AuthUser::getId,authUser.getId()));
+        return Result.ok("修改成功");
     }
 
 
