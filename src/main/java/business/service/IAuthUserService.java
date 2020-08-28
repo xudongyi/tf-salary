@@ -20,4 +20,6 @@ public interface IAuthUserService extends IService<AuthUser> {
      * @return
      */
     Result<?> getUserInfo(AuthUserVO authUserVO);
+
+    AuthUser getUserByToken(String token);
 }

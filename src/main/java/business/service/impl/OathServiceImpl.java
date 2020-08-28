@@ -2,18 +2,21 @@ package business.service.impl;
 
 import business.bean.AuthToken;
 import business.bean.AuthUser;
+import business.bean.OperateLog;
 import business.common.api.vo.Result;
 import business.constant.Constants;
 import business.emum.ErrorEnum;
+import business.emum.OperLogType;
 import business.emum.RoleEnum;
 import business.jwt.JwtUtil;
 import business.mapper.AuthTokenMapper;
 import business.mapper.AuthUserMapper;
 import business.mapper.HrmResourceMapper;
 import business.service.IOauthService;
+import business.service.IOperateLogService;
 import business.util.CaptchaUtil;
 import business.util.ExceptionUtil;
-import business.util.SessionUtil;
+import business.util.IpAddressUtil;
 import business.vo.AuthUserModify;
 import business.vo.AuthUserSSO;
 import business.vo.AuthUserVO;
@@ -24,24 +27,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 
 @Service
 @Slf4j
 public class OathServiceImpl implements IOauthService {
-    @Autowired
-    private AuthUserMapper authUserDao;
+    @Resource
+    private AuthUserMapper authUserMapper;
 
-    @Autowired
-    private AuthTokenMapper authTokenDao;
+    @Resource
+    private AuthTokenMapper authTokenMapper;
 
-    @Autowired
+    @Resource
     private HrmResourceMapper hrmResourceMapper;
+
+    @Resource
+    private IOperateLogService iOperateLogService;
     @Override
     public Result<?> login(AuthUserVO authUserVO) {
         log.debug("login {}", authUserVO);
@@ -49,7 +54,7 @@ public class OathServiceImpl implements IOauthService {
             ExceptionUtil.rollback(ErrorEnum.PARAM_ERROR);
         }
         String psw = SecureUtil.md5(authUserVO.getPassword());
-        AuthUser authUser = authUserDao.selectOne(new LambdaQueryWrapper<AuthUser>()
+        AuthUser authUser = authUserMapper.selectOne(new LambdaQueryWrapper<AuthUser>()
                 .eq(AuthUser::getPassword, psw)
                 .eq(AuthUser::getLoginid, authUserVO.getLoginid()));
         if(authUser==null){
@@ -58,23 +63,34 @@ public class OathServiceImpl implements IOauthService {
         authUserVO.setRoleId(authUser.getRoleid());
         String token = JwtUtil.getToken(new AuthUserVO().setPassword(authUser.getPassword()).setLastname(authUser.getLastname()).setId(authUser.getId()));
         authUserVO.setToken(token);
-        AuthToken authToken = authTokenDao.selectOne(new LambdaQueryWrapper<AuthToken>().eq(AuthToken::getUserId,authUser.getId()));
+        AuthToken authToken = authTokenMapper.selectOne(new LambdaQueryWrapper<AuthToken>().eq(AuthToken::getUserId,authUser.getId()));
         if(authToken==null){
             authToken = new AuthToken();
             authToken.setUserId(authUser.getId())
                     .setToken(token);
         }else{
-            authTokenDao.deleteById(authToken.getId());
+            authTokenMapper.deleteById(authToken.getId());
         }
         Date expireDate = new Date(Constants.EXPIRE_TIME + System.currentTimeMillis());
         authToken.setExpireTime(expireDate);
-        authTokenDao.insert(new AuthToken()
+        authTokenMapper.insert(new AuthToken()
                 .setUserId(authUser.getId())
                 .setToken(token)
                 .setExpireTime(expireDate));
         authUserVO.setExpireTime(expireDate.getTime());
         authUserVO.setLastname(authUser.getLastname());
         authUserVO.setFirst_login(authUser.getFirstLogin());
+        //插入日志
+        OperateLog operateLog = new OperateLog();
+        operateLog.setOperateType(OperLogType.LOGIN.TYPE());
+        operateLog.setUserId(authUser.getLoginid());
+        operateLog.setIp(IpAddressUtil.getIp());
+        operateLog.setOperateTime(new Date());
+        operateLog.setOperateName(OperLogType.LOGIN.NAME());
+        operateLog.setContent("后台登录进入系统");
+        log.debug("loginLog===="+ operateLog);
+        boolean save = iOperateLogService.save(operateLog);
+        log.debug("保存日志------"+save);
         return Result.ok(authUserVO);
     }
 
@@ -88,7 +104,7 @@ public class OathServiceImpl implements IOauthService {
         if(!authUserSSO.getAppid().equals(Constants.OA_APP_ID)){
             ExceptionUtil.rollback(ErrorEnum.PARAM_INCORRECT);
         }
-        AuthUser authUser = authUserDao.selectOne(new LambdaQueryWrapper<AuthUser>()
+        AuthUser authUser = authUserMapper.selectOne(new LambdaQueryWrapper<AuthUser>()
                 .eq(AuthUser::getRoleid, RoleEnum.ADMIN.getRoleId())
                 .eq(AuthUser::getLoginid, authUserSSO.getLoginid()));
         if(authUser==null){
@@ -103,21 +119,21 @@ public class OathServiceImpl implements IOauthService {
             authUser.setWorkcode(authUser.getWorkcode());
             authUser.setFirstLogin(0);
             authUser.setLastname(hrmresource.get("LASTNAME").toString());
-            authUserDao.insert(authUser);
+            authUserMapper.insert(authUser);
         }
         String token = JwtUtil.getSSOToken(authUserSSO);
 
-        AuthToken authToken = authTokenDao.selectOne(new LambdaQueryWrapper<AuthToken>().eq(AuthToken::getUserId,authUser.getId()));
+        AuthToken authToken = authTokenMapper.selectOne(new LambdaQueryWrapper<AuthToken>().eq(AuthToken::getUserId,authUser.getId()));
         if(authToken==null){
             authToken = new AuthToken();
             authToken.setUserId(authUser.getId())
                     .setToken(token);
         }else{
-            authTokenDao.deleteById(authToken.getId());
+            authTokenMapper.deleteById(authToken.getId());
         }
         Date expireDate = new Date(Constants.EXPIRE_TIME + System.currentTimeMillis());
         authToken.setExpireTime(expireDate);
-        authTokenDao.insert(new AuthToken()
+        authTokenMapper.insert(new AuthToken()
                 .setUserId(authUser.getId())
                 .setToken(token)
                 .setExpireTime(expireDate));
@@ -136,12 +152,12 @@ public class OathServiceImpl implements IOauthService {
         if(hrmresource==null){
             return Result.error(500,"OA中不存在该用户！");
         }
-        AuthUser authUser = authUserDao.selectOne(new LambdaQueryWrapper<AuthUser>()
+        AuthUser authUser = authUserMapper.selectOne(new LambdaQueryWrapper<AuthUser>()
                 .eq(AuthUser::getLoginid, authUserSSO.getLoginid()));
         if(authUser==null){
             return Result.error(500,"用户未在系统中注册，请检查用户！");
         }
-        AuthToken authToken = authTokenDao.selectOne(new LambdaQueryWrapper<AuthToken>().eq(AuthToken::getUserId,authUser.getId()).eq(AuthToken::getToken,authUserSSO.getToken()));
+        AuthToken authToken = authTokenMapper.selectOne(new LambdaQueryWrapper<AuthToken>().eq(AuthToken::getUserId,authUser.getId()).eq(AuthToken::getToken,authUserSSO.getToken()));
         if(authToken==null){
             return Result.error(500,"验证失败，请重新获取token！");
         }
@@ -189,7 +205,7 @@ public class OathServiceImpl implements IOauthService {
             return Result.error(500,"两次密码不一致！");
         }
         //3.
-        AuthUser authUser = authUserDao.selectOne(new LambdaQueryWrapper<AuthUser>()
+        AuthUser authUser = authUserMapper.selectOne(new LambdaQueryWrapper<AuthUser>()
                 .eq(AuthUser::getLoginid, authUserModify.getLoginid()));
         if(authUser==null){
             return Result.error(500,"用户不存在！");
@@ -197,7 +213,7 @@ public class OathServiceImpl implements IOauthService {
         String psw = SecureUtil.md5(authUserModify.getPassword());
         authUser.setPassword(psw);
         authUser.setFirstLogin(1);
-        authUserDao.update(authUser,new LambdaQueryWrapper<AuthUser>().eq(AuthUser::getId,authUser.getId()));
+        authUserMapper.update(authUser,new LambdaQueryWrapper<AuthUser>().eq(AuthUser::getId,authUser.getId()));
         return Result.ok("修改成功");
     }
 

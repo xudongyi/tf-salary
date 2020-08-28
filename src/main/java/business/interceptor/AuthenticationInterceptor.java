@@ -52,7 +52,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             }else{
                 //验证token是否过期，过期了，则跳转到登录页面
                 token = token.split(" ")[1];
-                AuthToken authToken = authTokenMapper.selectOne(new LambdaQueryWrapper<AuthToken>().eq(AuthToken::getUserId,token));
+                AuthToken authToken = authTokenMapper.selectOne(new LambdaQueryWrapper<AuthToken>().eq(AuthToken::getToken,token));
                 if(authToken==null){
                     ExceptionUtil.rollback(ErrorEnum.INVALID_TOKEN);
                 }

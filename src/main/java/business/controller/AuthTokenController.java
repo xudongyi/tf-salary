@@ -1,6 +1,8 @@
 package business.controller;
 
+import business.annotation.Log;
 import business.common.api.vo.Result;
+import business.emum.OperLogType;
 import business.service.IOauthService;
 import business.vo.AuthUserModify;
 import business.vo.AuthUserSSO;
@@ -45,6 +47,7 @@ public class AuthTokenController {
      * @param authUserModify
      * @return
      */
+    @Log(type= OperLogType.SEND_MOBILE,value = "发送短信验证码")
     @RequestMapping("/user/sendMobile")
     public Result<?> sendMobile(HttpServletRequest httpServletRequest, @RequestBody AuthUserModify authUserModify){
         return iOauthService.sendMobile(httpServletRequest,authUserModify);
