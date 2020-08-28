@@ -13,6 +13,8 @@ import business.service.IAuthUserService;
 import business.service.IOperateLogService;
 import business.util.IpAddressUtil;
 import business.vo.AuthUserVO;
+import business.vo.OperateLogVO;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -59,7 +61,7 @@ public class OperateLogServiceImpl extends ServiceImpl<OperateLogMapper, Operate
     }
 
     @Override
-    public IPage<OperateLog> queryLog(IPage<OperateLog> page) {
-        return operateLogMapper.queryLog(page);
+    public IPage<OperateLog> queryLog(IPage<OperateLogVO> page,  Wrapper<OperateLogVO> queryWrapper) {
+        return operateLogMapper.queryLog(page,queryWrapper);
     }
 }
