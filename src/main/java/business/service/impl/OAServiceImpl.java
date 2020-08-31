@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 @Service
@@ -33,9 +34,12 @@ public class OAServiceImpl implements IOAService {
     @Override
     public Result<?> getHrmResource(String lastname) {
         List<Map<String,Object>> hrmResource = oaMapper.getHrmResource(lastname);
-        List<String> serachList = new ArrayList<>();
+        List<Map<String,Object>> serachList = new ArrayList<>();
         for(Map<String,Object> m :hrmResource){
-            serachList.add(m.get("LASTNAME")+"("+m.get("DEPARTMENTNAME")+")");
+            Map map = new HashMap();
+            map.put("ID",m.get("ID"));
+            map.put("LABEL",m.get("LASTNAME")+"("+m.get("DEPARTMENTNAME")+")");
+            serachList.add(map);
         }
         return Result.ok(serachList);
     }
