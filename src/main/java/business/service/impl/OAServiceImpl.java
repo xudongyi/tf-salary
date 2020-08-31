@@ -29,4 +29,14 @@ public class OAServiceImpl implements IOAService {
         }
         return Result.ok(treeSelectSimpleVOS);
     }
+
+    @Override
+    public Result<?> getHrmResource(String lastname) {
+        List<Map<String,Object>> hrmResource = oaMapper.getHrmResource(lastname);
+        List<String> serachList = new ArrayList<>();
+        for(Map<String,Object> m :hrmResource){
+            serachList.add(m.get("LASTNAME")+"("+m.get("DEPARTMENTNAME")+")");
+        }
+        return Result.ok(serachList);
+    }
 }

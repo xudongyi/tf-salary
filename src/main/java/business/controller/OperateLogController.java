@@ -1,6 +1,5 @@
 package business.controller;
 
-import business.bean.OperateLog;
 import business.common.api.vo.Result;
 import business.service.IOperateLogService;
 import business.vo.OperateLogVO;
@@ -28,9 +27,9 @@ public class OperateLogController {
      * @param req
      * @return
      */
-    @PostMapping(value = "/list")
+    @GetMapping(value = "/list")
     public Result<?> queryPageList(
-            @RequestBody OperateLogVO operateLogVO,
+            @ModelAttribute OperateLogVO operateLogVO,
             @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
                                    @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
                                    HttpServletRequest req) {
@@ -40,7 +39,7 @@ public class OperateLogController {
             queryWrapper.eq("t2.loginid", operateLogVO.getUserId());
         }
         if (StringUtils.isNotBlank(operateLogVO.getDept())) {
-            queryWrapper.eq("t2.departmentid", operateLogVO.getDept());
+            queryWrapper.eq("t2.departmentid", operateLogVO.getDept().split("_")[0]);
         }
         if (StringUtils.isNotBlank(operateLogVO.getContent())) {
             queryWrapper.like("t1.content", operateLogVO.getContent());

@@ -20,5 +20,8 @@ public class OAController {
     public Result<?> departMentAll(String departMentName) {
         return ioaService.departMentAll(departMentName);
     }
-
+    @RequestMapping("/getHrmResource")
+    public Result<?> getHrmResource(String lastname) {
+        return ioaService.getHrmResource(lastname);
+    }
 }
