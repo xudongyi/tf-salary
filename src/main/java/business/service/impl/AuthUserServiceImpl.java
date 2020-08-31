@@ -12,12 +12,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 @Service
 public class AuthUserServiceImpl extends ServiceImpl<AuthUserMapper, AuthUser> implements IAuthUserService {
-    @Autowired
+    @Resource
     private AuthUserMapper authUserMapper;
 
-    @Autowired
+    @Resource
     private AuthTokenMapper authTokenMapper;
 
     @Override

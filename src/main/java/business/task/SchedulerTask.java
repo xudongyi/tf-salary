@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -19,7 +20,7 @@ import java.util.Date;
 @Slf4j
 public class SchedulerTask {
 
-    @Autowired
+    @Resource
     private AuthTokenMapper authTokenMapper;
 
     @Scheduled(cron = "0 0/1 * * * ?")

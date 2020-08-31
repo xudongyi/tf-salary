@@ -16,9 +16,11 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.Date;
 
 /**
  * @Author:xudy
@@ -26,7 +28,7 @@ import java.lang.reflect.Method;
  */
 @Configuration
 public class AuthenticationInterceptor implements HandlerInterceptor {
-    @Autowired
+    @Resource
     private AuthTokenMapper authTokenMapper;
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) {
@@ -56,6 +58,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 if(authToken==null){
                     ExceptionUtil.rollback(ErrorEnum.INVALID_TOKEN);
                 }
+                //如果token存在，并且操作过了
+                /*Date expireDate = new Date(Constants.EXPIRE_TIME + System.currentTimeMillis());
+                authToken.setExpireTime(expireDate);
+                authTokenMapper.updateById(authToken);*/
             }
 
             RoleEnum role = loginRequired.role();

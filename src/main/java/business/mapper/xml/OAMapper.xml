@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="business.mapper.OAMapper">
+    <select id="departMentAll" resultType="Map">
+        select SUBCOMPANYNAME as label,id,SUPSUBCOMID as pid , CONCAT(CONCAT(id,'_'),SUPSUBCOMID) as value from hrmsubcompany
+        union all
+        select departmentname as label,id,subcompanyid1 as pid , CONCAT(CONCAT(id,'_'),subcompanyid1) as value from hrmdepartment where (canceled is null or canceled=0) and departmentname is not null and subcompanyid1 is not null
+        and supdepid=0
+        <if test="departMentName != null">
+            AND departmentname like CONCAT(CONCAT('%',#{departMentName}),'%')
+        </if>
+        union all
+        select departmentname as label,id,supdepid as pid , CONCAT(CONCAT(id,'_'),subcompanyid1) as value from hrmdepartment where (canceled is null or canceled=0) and departmentname is not null and subcompanyid1 is not null
+        and supdepid!=0
+        <if test="departMentName != null">
+            AND departmentname like CONCAT(CONCAT('%',#{departMentName}),'%')
+        </if>
+    </select>
+
+
+    <select id="subCompanyAll" resultType="Map">
+         select * from hrmsubcompany
+    </select>
+</mapper>
