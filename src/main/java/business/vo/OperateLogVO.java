@@ -9,5 +9,9 @@ public class OperateLogVO extends OperateLog {
     //部门信息
     private String dept;
 
+    private String operateTimeST;
+
+    private String operateTimeED;
+
 
 }
