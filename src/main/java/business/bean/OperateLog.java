@@ -25,7 +25,7 @@ public class OperateLog extends Model<OperateLog> {
 
     private Date operateTime;
 
-    private int operateType;
+    private int operateType=-1;
 
     private String operateName;
 
