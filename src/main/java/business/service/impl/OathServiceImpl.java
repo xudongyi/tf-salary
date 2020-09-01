@@ -79,6 +79,7 @@ public class OathServiceImpl implements IOauthService {
         authUserVO.setExpireTime(expireDate.getTime());
         authUserVO.setLastname(authUser.getLastname());
         authUserVO.setFirst_login(authUser.getFirstLogin());
+        authUserVO.setWorkcode(authUser.getWorkcode());
         //插入日志
         OperateLog operateLog = new OperateLog();
         operateLog.setOperateType(OperLogType.LOGIN.TYPE());
