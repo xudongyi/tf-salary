@@ -7,6 +7,7 @@ import business.service.IOauthService;
 import business.vo.AuthUserModify;
 import business.vo.AuthUserSSO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +27,7 @@ public class AuthTokenController {
      * @param sso
      * @return
      */
-    @RequestMapping("/user/sso")
+    @PostMapping("/user/sso")
     public Result<?> sso(@RequestBody AuthUserSSO sso){
         return iOauthService.sso(sso);
     }

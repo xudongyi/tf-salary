@@ -104,7 +104,6 @@ public class OathServiceImpl implements IOauthService {
             ExceptionUtil.rollback(ErrorEnum.PARAM_INCORRECT);
         }
         AuthUser authUser = authUserMapper.selectOne(new LambdaQueryWrapper<AuthUser>()
-                .eq(AuthUser::getRoleid, RoleEnum.ADMIN.getRoleId())
                 .eq(AuthUser::getLoginid, authUserSSO.getLoginid()));
         if(authUser==null){
             Map<String,Object> hrmresource = hrmResourceMapper.getHrmResource(authUserSSO.getLoginid());
@@ -115,7 +114,7 @@ public class OathServiceImpl implements IOauthService {
             authUser = new AuthUser();
             authUser.setLoginid(authUserSSO.getLoginid());
             authUser.setRoleid(1L);
-            authUser.setWorkcode(authUser.getWorkcode());
+            authUser.setWorkcode(hrmresource.get("WORKCODE").toString());
             authUser.setFirstLogin(0);
             authUser.setLastname(hrmresource.get("LASTNAME").toString());
             authUserMapper.insert(authUser);
@@ -138,6 +137,16 @@ public class OathServiceImpl implements IOauthService {
                 .setExpireTime(expireDate));
         authUserSSO.setToken(token);
         authUserSSO.setExpireTime(expireDate.getTime());
+        //插入日志
+        OperateLog operateLog = new OperateLog();
+        operateLog.setOperateType(OperLogType.SSO.TYPE());
+        operateLog.setUserId(authUser.getLoginid());
+        operateLog.setIp(IpAddressUtil.getIp());
+        operateLog.setOperateTime(new Date());
+        operateLog.setOperateName(OperLogType.SSO.NAME());
+        operateLog.setContent("OA进入系统");
+        log.debug("loginLog===="+ operateLog);
+        iOperateLogService.save(operateLog);
         return  Result.ok(authUserSSO);
     }
 

@@ -3,6 +3,7 @@ package business.emum;
 public enum OperLogType {
     DEFAULT(-1, "其他日志"),
     LOGIN(0, "登录"),
+    SSO(3, "SSO单点登录"),
     QUERY_SALARY(1, "查询工资"),
     SEND_MOBILE(2, "发送短信");
     // 成员变量
