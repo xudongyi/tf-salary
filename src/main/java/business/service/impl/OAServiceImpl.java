@@ -26,6 +26,7 @@ public class OAServiceImpl implements IOAService {
             vo.setTitle(m.get("LABEL").toString());
             vo.setpId(Integer.parseInt(m.get("PID").toString()));
             vo.setValue(m.get("VALUE").toString());
+            vo.setSelectable(Integer.parseInt(m.get("IS_SUB").toString())==1);
             treeSelectSimpleVOS.add(vo);
         }
         return Result.ok(treeSelectSimpleVOS);

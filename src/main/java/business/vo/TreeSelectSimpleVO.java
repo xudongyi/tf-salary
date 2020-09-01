@@ -13,6 +13,8 @@ public class TreeSelectSimpleVO {
 
     private String title;
 
+    private boolean selectable;
+
     @JsonProperty("pId")
     public void setpId(int pId) {
         this.pId = pId;
@@ -44,5 +46,13 @@ public class TreeSelectSimpleVO {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean isSelectable() {
+        return selectable;
+    }
+
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
     }
 }
