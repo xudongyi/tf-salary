@@ -2,6 +2,7 @@ package business.controller;
 
 import business.common.api.vo.Result;
 import business.service.IOperateLogService;
+import business.util.MyBatisWapperUtil;
 import business.vo.OperateLogVO;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
@@ -55,7 +56,7 @@ public class OperateLogController {
         if (StringUtils.isNotBlank(operateLogVO.getContent())) {
             queryWrapper.like("t1.content", operateLogVO.getContent());
         }
-
+        MyBatisWapperUtil.doMultiFieldsOrder(queryWrapper,req.getParameterMap(),"t1");
         return Result.ok(iOperateLogService.queryLog(page,queryWrapper));
     }
 }
