@@ -9,6 +9,8 @@ import business.util.FileUtils;
 import business.vo.OperateLogVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.exceptions.PersistenceException;
+import org.apache.ibatis.executor.BatchExecutorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,6 +58,12 @@ public class SalaryImportController {
         }
         try {
             personnelSalaryService.saveBatch(salaryList);
+        } catch(PersistenceException e){
+            if(e.getCause()!=null && "org.apache.ibatis.executor.BatchExecutorException".equals(e.getCause().getClass().getName())){
+                // 唯一约束异常
+                BatchExecutorException executorException = (BatchExecutorException)e.getCause();
+                return Result.error("第"+(executorException.getBatchUpdateException().getUpdateCounts().length+2)+"行工号当前月薪资存在重复！");
+            }
         } catch (Exception e) {
             log.error(e.getMessage());
             e.printStackTrace();
