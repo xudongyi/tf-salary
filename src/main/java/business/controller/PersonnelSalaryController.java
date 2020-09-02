@@ -42,6 +42,9 @@ public class PersonnelSalaryController {
         QueryWrapper<PersonnelSalary> sqlaryQueryWrapper = new QueryWrapper<>();
         QueryWrapper<HrmResource> hrmQueryWrapper = new QueryWrapper<>();
         sqlaryQueryWrapper.lambda().orderByDesc(PersonnelSalary::getId);
+        if (StringUtils.isNotBlank(personnelSalary.getWorkcode())) {
+            sqlaryQueryWrapper.lambda().eq(PersonnelSalary::getWorkcode,personnelSalary.getWorkcode());
+        }
         if (StringUtils.isNotBlank(personnelSalary.getUserId())) {
             hrmQueryWrapper.lambda().eq(HrmResource::getId,personnelSalary.getUserId());
             HrmResource hrm = iHrmResourceService.getBaseMapper().selectById(personnelSalary.getUserId());
