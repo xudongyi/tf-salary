@@ -4,4 +4,7 @@
     <select id="getHrmResource" resultType="Map">
         select * from hrmresource where loginid=#{loginId}
     </select>
+    <select id="getHrmResourceByWorkcode" resultType="Map">
+        select * from hrmresource where workcode = (#{workcode})
+    </select>
 </mapper>

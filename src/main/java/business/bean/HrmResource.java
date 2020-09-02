@@ -21,4 +21,8 @@ public class HrmResource extends Model<HrmResource> {
     private String loginid;
 
     private String lastname;
+
+    private String workcode;
+
+    private String departmentid;
 }
