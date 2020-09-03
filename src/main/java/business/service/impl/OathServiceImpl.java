@@ -7,10 +7,10 @@ import business.common.api.vo.Result;
 import business.constant.Constants;
 import business.emum.ErrorEnum;
 import business.emum.OperLogType;
-import business.emum.RoleEnum;
 import business.jwt.JwtUtil;
 import business.mapper.AuthTokenMapper;
 import business.mapper.AuthUserMapper;
+import business.mapper.HrMapper;
 import business.mapper.HrmResourceMapper;
 import business.service.IOauthService;
 import business.service.IOperateLogService;
@@ -46,6 +46,10 @@ public class OathServiceImpl implements IOauthService {
 
     @Resource
     private IOperateLogService iOperateLogService;
+
+    @Resource
+    private HrMapper hrMapper;
+
     @Override
     public Result<?> login(AuthUserVO authUserVO) {
         log.debug("login {}", authUserVO);
@@ -184,11 +188,16 @@ public class OathServiceImpl implements IOauthService {
             return Result.error(500,"参数错误！");
         }
         Map<String,Object> hrm = hrmResourceMapper.getHrmResource(authUserModify.getLoginid());
+
         if(hrm==null){
             return Result.error(500,"该登录名在OA中未查询到！");
         }
-        if(!authUserModify.getMobile().equals(hrm.get("MOBILE"))){
-            return Result.error(500,"手机号不匹配，OA中的手机号为："+hrm.get("MOBILE")+"！");
+        Map<String,Object> hr = hrMapper.getMobilePhone(hrm.get("WORKCODE").toString());
+        if(hr==null){
+            return Result.error(500,"工号在HR系统中未查询到，请检查！");
+        }
+        if(!authUserModify.getMobile().equals(hr.get("MOBILE_PHONE"))){
+            return Result.error(500,"手机号不匹配，HR中的手机号为："+hr.get("MOBILE_PHONE")+"！");
         }
         //TODO 发送短信
         String code = "888888";
