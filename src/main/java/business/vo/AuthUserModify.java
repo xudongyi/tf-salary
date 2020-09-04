@@ -10,6 +10,8 @@ public class AuthUserModify {
 
     private String loginid;
 
+    private String workcode;
+
     private String mobile;
 
     private String password;

@@ -10,7 +10,7 @@ public class BusinessException extends RuntimeException {
 
     private static final long serialVersionUID = -4214098630082643472L;
     // 异常编码
-    private String code;
+    private int code;
 
     public BusinessException(ErrorEnum errorEnum) {
         super(errorEnum.getMsg(errorEnum.getCode()));
@@ -25,21 +25,21 @@ public class BusinessException extends RuntimeException {
         super(message, cause);
     }
 
-    public BusinessException(String message, String code) {
+    public BusinessException(String message, int code) {
         super(message);
         this.code = code;
     }
 
-    public BusinessException(String message, String code, Throwable cause) {
+    public BusinessException(String message, int code, Throwable cause) {
         super(message, cause);
         this.code = code;
     }
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(int code) {
         this.code = code;
     }
 }

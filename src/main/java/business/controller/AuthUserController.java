@@ -3,6 +3,7 @@ package business.controller;
 import business.annotation.Log;
 import business.common.api.vo.Result;
 import business.emum.OperLogType;
+import business.jwt.LoginIgnore;
 import business.service.IOauthService;
 import business.vo.AuthUserVO;
 import business.service.IAuthUserService;
@@ -22,6 +23,7 @@ public class AuthUserController {
     @Autowired
     private IOauthService iOauthService;
 
+    @LoginIgnore
     @RequestMapping("/admin/login")
     public Result<?> login(@RequestBody AuthUserVO authUserVO) {
         return iOauthService.login(authUserVO);

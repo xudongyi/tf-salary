@@ -3,6 +3,7 @@ package business.controller;
 import business.annotation.Log;
 import business.common.api.vo.Result;
 import business.emum.OperLogType;
+import business.jwt.LoginIgnore;
 import business.service.IOauthService;
 import business.vo.AuthUserModify;
 import business.vo.AuthUserSSO;
@@ -28,6 +29,7 @@ public class AuthTokenController {
      * @return
      */
     @PostMapping("/user/sso")
+    @LoginIgnore
     public Result<?> sso(@RequestBody AuthUserSSO sso){
         return iOauthService.sso(sso);
     }

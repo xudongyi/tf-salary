@@ -20,7 +20,7 @@ public class ExceptionUtil {
     /**
      * 业务回滚，抛出特定异常：包含错误消息，错误编码
      */
-    public static void rollback(String message, String code) {
+    public static void rollback(String message, int code) {
         throw new BusinessException(message, code);
     }
 
@@ -34,7 +34,7 @@ public class ExceptionUtil {
     /**
      * 业务回滚，抛出特定异常：包含错误消息，错误编码，错误原因
      */
-    public static void rollback(String message, String code, Throwable cause) {
+    public static void rollback(String message, int code, Throwable cause) {
         throw new BusinessException(message, code, cause);
     }
 

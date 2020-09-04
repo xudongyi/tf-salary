@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 
@@ -184,15 +185,10 @@ public class OathServiceImpl implements IOauthService {
 
     @Override
     public Result<?> sendMobile(HttpServletRequest httpRequest, AuthUserModify authUserModify) {
-        if(authUserModify==null || StringUtils.isBlank(authUserModify.getLoginid())|| StringUtils.isBlank(authUserModify.getMobile())){
+        if(authUserModify==null || StringUtils.isBlank(authUserModify.getMobile())){
             return Result.error(500,"参数错误！");
         }
-        Map<String,Object> hrm = hrmResourceMapper.getHrmResource(authUserModify.getLoginid());
-
-        if(hrm==null){
-            return Result.error(500,"该登录名在OA中未查询到！");
-        }
-        Map<String,Object> hr = hrMapper.getMobilePhone(hrm.get("WORKCODE").toString());
+        Map<String,Object> hr = hrMapper.getMobilePhone(authUserModify.getWorkcode());
         if(hr==null){
             return Result.error(500,"工号在HR系统中未查询到，请检查！");
         }
@@ -209,7 +205,7 @@ public class OathServiceImpl implements IOauthService {
     @Override
     public Result<?> modifyPassword(HttpServletRequest httpRequest,AuthUserModify authUserModify) {
         if(authUserModify==null || StringUtils.isBlank(authUserModify.getCaptcha())
-                ||StringUtils.isBlank( authUserModify.getLoginid()) || authUserModify.getCheckPass()==null
+                ||StringUtils.isBlank( authUserModify.getWorkcode()) || authUserModify.getCheckPass()==null
                 || authUserModify.getPassword()==null){
             return Result.error(500,"参数错误！");
         }
@@ -224,7 +220,7 @@ public class OathServiceImpl implements IOauthService {
         }
         //3.
         AuthUser authUser = authUserMapper.selectOne(new LambdaQueryWrapper<AuthUser>()
-                .eq(AuthUser::getLoginid, authUserModify.getLoginid()));
+                .eq(AuthUser::getWorkcode, authUserModify.getWorkcode()));
         if(authUser==null){
             return Result.error(500,"用户不存在！");
         }
