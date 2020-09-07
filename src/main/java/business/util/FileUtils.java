@@ -48,6 +48,16 @@ public class FileUtils {
         }
     }
 
+    public static void exportExcel(List<?> list, Class<?> pojoClass, String fileName,  HttpServletResponse response){
+        ExportParams exportParams = new ExportParams();
+        try {
+            defaultExport(list, pojoClass, fileName, response, exportParams);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     public static void exportExcel(List<Map<String, Object>> list, String fileName, HttpServletResponse response) {
         try {
             defaultExport(list, fileName, response);

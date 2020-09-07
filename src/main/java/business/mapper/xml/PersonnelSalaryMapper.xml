@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="business.mapper.PersonnelSalaryMapper">
-
+    <select id="getPersonnelSalary" resultType="business.vo.PersonnelSalaryVO">
+        SELECT
+        t1.*,t2.lastname
+        FROM
+        personnel_salary t1
+        LEFT JOIN hrmresource t2 ON t1.workcode =t2.workcode
+        ${ew.customSqlSegment}
+    </select>
 </mapper>

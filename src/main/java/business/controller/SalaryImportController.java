@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,33 +30,15 @@ import java.util.Map;
 public class SalaryImportController {
     @Autowired
     private IPersonnelSalaryService personnelSalaryService;
-    @Autowired
-    private IHrmResourceService iHrmResourceService;
+
+//    @Autowired
+//    private IHrmResourceService iHrmResourceService;
 
     @RequestMapping(value = "/import", method = RequestMethod.POST)
     public Result<?> importExcel(@RequestParam("file") MultipartFile file,@RequestParam("uploadDate") String uploadDate) throws Exception {
-        System.out.println("OriginalFilename：" + file.getOriginalFilename());
-        System.out.println("uploadDate：" + uploadDate);
         List<PersonnelSalary> salaryList = FileUtils.importExcel(file, 0,1, PersonnelSalary.class);
-        List<HrmResource> hrmInfoList = iHrmResourceService.list();
-        Map<String,HrmResource> workcodes = new HashMap<>();
-        for(HrmResource hrm : hrmInfoList){
-            workcodes.put(hrm.getWorkcode(),hrm);
-        }
-        String errorWorkcodes = "";
         for(PersonnelSalary personnelSalary:salaryList){
-            if(workcodes.containsKey(personnelSalary.getWorkcode())){
-                personnelSalary.setName(workcodes.get(personnelSalary.getWorkcode()).getLastname());
-            }else{
-                errorWorkcodes=errorWorkcodes+personnelSalary.getWorkcode()+",";
-            }
-            personnelSalary.setSalaryYear(uploadDate.split("-")[0]);
-            personnelSalary.setSalaryMonth(uploadDate.split("-")[1]);
-            personnelSalary.setViewTimes(0);
-        }
-        if(!errorWorkcodes.equals("")){
-            errorWorkcodes = errorWorkcodes.substring(0,errorWorkcodes.length()-1);
-           return Result.error("工号:"+errorWorkcodes+" 不存在！");
+            personnelSalary.setSalaryDate(uploadDate);
         }
         try {
             personnelSalaryService.saveBatch(salaryList);
