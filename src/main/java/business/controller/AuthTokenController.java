@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthTokenController {
     @Resource
     private IOauthService iOauthService;
-
     /**
      * 获取token
      * @param sso
