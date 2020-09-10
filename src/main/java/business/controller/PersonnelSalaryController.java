@@ -2,6 +2,7 @@ package business.controller;
 
 import business.bean.AuthUser;
 import business.bean.HrmResource;
+import business.bean.PersonnelSalary;
 import business.common.api.vo.Result;
 import business.service.IAuthUserService;
 import business.service.IHrmResourceService;
@@ -10,6 +11,7 @@ import business.util.CaptchaUtil;
 import business.vo.AuthUserModify;
 import business.vo.PersonnelSalaryVO;
 import cn.hutool.crypto.SecureUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -92,5 +94,11 @@ public class PersonnelSalaryController {
             return Result.error(500,"密码输入错误！");
         }
         return Result.ok();
+    }
+
+    @RequestMapping(value = "/querySalary", method = RequestMethod.POST)
+    public Result<?> querySalary(HttpServletRequest httpServletRequest,@RequestBody PersonnelSalary personnelSalary){
+        PersonnelSalary salary = iPersonnelSalaryService.getOne(new LambdaQueryWrapper<PersonnelSalary>().eq(PersonnelSalary::getSalaryDate,personnelSalary.getSalaryDate()).eq(PersonnelSalary::getWorkcode,personnelSalary.getWorkcode()));
+        return Result.ok(salary);
     }
 }

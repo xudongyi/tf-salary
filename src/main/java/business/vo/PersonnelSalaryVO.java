@@ -15,4 +15,5 @@ public class PersonnelSalaryVO extends PersonnelSalary {
     private String salarystamonth;
 
     private String salaryendmonth;
+
 }

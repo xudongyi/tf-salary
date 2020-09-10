@@ -38,6 +38,7 @@ public class AuthTokenController {
      * @param sso
      * @return
      */
+    @LoginIgnore
     @RequestMapping("/user/checkSso")
     public Result<?> checkSso(@RequestBody AuthUserSSO sso){
         return iOauthService.checkSso(sso);
