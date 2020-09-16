@@ -3,6 +3,7 @@ package business.controller;
 import business.bean.HrmResource;
 import business.bean.PersonnelSalary;
 import business.common.api.vo.Result;
+import business.jwt.LoginIgnore;
 import business.service.IHrmResourceService;
 import business.service.IPersonnelSalaryService;
 import business.util.FileUtils;

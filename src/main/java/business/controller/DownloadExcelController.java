@@ -1,5 +1,6 @@
 package business.controller;
 
+import business.jwt.LoginIgnore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ public class DownloadExcelController {
 
     @RequestMapping(value = "/static/{fileName}.{prefix}")
     @ResponseBody
+    @LoginIgnore
     public void downloadExcel(HttpServletResponse response, HttpServletRequest request,@PathVariable String fileName,@PathVariable String prefix) throws Exception {
         try {
             File file = new File("src/main/resources/static/"+fileName+"."+prefix);

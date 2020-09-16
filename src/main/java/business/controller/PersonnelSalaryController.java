@@ -101,4 +101,12 @@ public class PersonnelSalaryController {
         PersonnelSalary salary = iPersonnelSalaryService.getOne(new LambdaQueryWrapper<PersonnelSalary>().eq(PersonnelSalary::getSalaryDate,personnelSalary.getSalaryDate()).eq(PersonnelSalary::getWorkcode,personnelSalary.getWorkcode()));
         return Result.ok(salary);
     }
+
+    /**
+     * 报表查询
+     * */
+    @RequestMapping(value = "/queryReport", method = RequestMethod.POST)
+    public Result<?> queryReport(@RequestParam(name="staDate", defaultValue="1") Integer pageNo,@RequestParam(name="endDate", defaultValue="10") Integer pageSize){
+        return Result.ok();
+    }
 }
