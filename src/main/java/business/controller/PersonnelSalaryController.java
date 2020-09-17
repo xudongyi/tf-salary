@@ -105,8 +105,16 @@ public class PersonnelSalaryController {
     /**
      * 报表查询
      * */
-    @RequestMapping(value = "/queryReport", method = RequestMethod.POST)
-    public Result<?> queryReport(@RequestParam(name="staDate", defaultValue="1") Integer pageNo,@RequestParam(name="endDate", defaultValue="10") Integer pageSize){
+    @RequestMapping(value = "/queryReportHeader", method = RequestMethod.POST)
+    public Result<?> queryReportHeader(){
+        return Result.ok(iPersonnelSalaryService.getReportHeader());
+    }
+
+    /**
+     * 报表查询(有日期)
+     * */
+    @RequestMapping(value = "/queryReportBody", method = RequestMethod.POST)
+    public Result<?> queryReportBody(@RequestParam(name="staDate") Integer staDate,@RequestParam(name="endDate") Integer endDate){
         return Result.ok();
     }
 }

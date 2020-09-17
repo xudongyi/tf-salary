@@ -4,6 +4,40 @@
 <select id="queryLog" resultType="business.vo.OperateLogVO">
      select t1.*,t2.lastname from operate_log t1 left join hrmresource t2 on t1.user_id = t2.loginid
       ${ew.customSqlSegment}
+</select>
 
+<select id="getVisitTimesByMonth" resultType="Map">
+    select count(*) VISIT_TIMES from OPERATE_LOG where OPERATE_TYPE in (0,3) AND TO_CHAR(OPERATE_TIME,'yyyy-mm') = #{month}
+</select>
+
+<select id="getNoteNumberByMonth" resultType="Map">
+    select count(*) NOTE_NUMBER from OPERATE_LOG where OPERATE_TYPE in (2) AND TO_CHAR(OPERATE_TIME,'yyyy-mm') = #{month}
+</select>
+
+
+<select id="getNoteTimesRankByDepartment" resultType="Map">
+        select u1.note_times,u2.departmentname
+    from (
+        select count(*) note_times,t3.DEPARTMENTID
+        from OPERATE_LOG t1
+        left join AUTH_USER t2 on t1.user_id = t2.loginid
+        left join HRMRESOURCE t3 on t2.workcode = t3.workcode
+        where t1.operate_type = '2'
+        group by t3.DEPARTMENTID
+        order by note_times desc) u1
+    left join HrmDepartment u2 on u1.departmentid = u2.id
+    where u2.id is not null and rownum &lt;9;
+</select>
+
+<select id="getNoteTimesBetweenMonth" resultType="Map">
+    select count(NET_SALARY) NET_SALARY,SALARY_DATE from personnel_salary where 1=1
+    <if test="endDate != null">
+        and SALARY_DATE &lt;= #{endDate}
+    </if>
+    <if test="staDate != null">
+        and SALARY_DATE &gt;= #{staDate}
+    </if>
+    group by SALARY_DATE
+    ORDER BY SALARY_DATE
 </select>
 </mapper>

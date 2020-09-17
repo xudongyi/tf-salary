@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PersonnelSalaryMapper extends BaseMapper<PersonnelSalary> {
 
@@ -18,4 +19,12 @@ public interface PersonnelSalaryMapper extends BaseMapper<PersonnelSalary> {
     IPage<PersonnelSalaryVO> getPersonnelSalary(IPage<PersonnelSalaryVO> page,@Param(Constants.WRAPPER) Wrapper<PersonnelSalaryVO> queryWrapper);
 
     List<PersonnelSalaryVO> getPersonnelSalary(@Param(Constants.WRAPPER) Wrapper<PersonnelSalaryVO> queryWrapper);
+
+    List<Map<String,Object>> getSalaryBetweenMonth(String staDate,String endDate);
+
+    Map<String,Object> getSalaryByMonth(String month);
+
+    Map<String,Object> getImportNumberByMonth(String month);
+
+    List<Map<String,Object>> getSalaryRankByDepartment();
 }

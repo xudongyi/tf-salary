@@ -10,4 +10,38 @@
         order by t1.id desc
         ${ew.customSqlSegment}
     </select>
+
+    <select id="getSalaryBetweenMonth" resultType="Map">
+        select count(NET_SALARY) NET_SALARY,SALARY_DATE from personnel_salary where 1=1
+        <if test="endDate != null">
+            and SALARY_DATE &lt;= #{endDate}
+        </if>
+        <if test="staDate != null">
+            and SALARY_DATE &gt;= #{staDate}
+        </if>
+        group by SALARY_DATE
+        ORDER BY SALARY_DATE
+    </select>
+
+    <select id="getSalaryByMonth" resultType="Map">
+        select count(NET_SALARY) NET_SALARY,SALARY_DATE from personnel_salary where SALARY_DATE = #{month}
+        group by SALARY_DATE
+    </select>
+
+    <select id="getImportNumberByMonth" resultType="Map">
+        select count(*) IMPORT_NUMBER,SALARY_DATE from personnel_salary where SALARY_DATE = #{month}
+        group by SALARY_DATE
+    </select>
+
+    <select id="getSalaryRankByDepartment" resultType="Map">
+        select u1.NET_SALARY,u2.departmentname
+        from (
+            select count(t1.NET_SALARY) NET_SALARY,t2.DEPARTMENTID
+            from PERSONNEL_SALARY t1
+            left join HRMRESOURCE t2 on t1.WORKCODE = t2.WORKCODE
+            group by t2.DEPARTMENTID
+            ORDER BY NET_SALARY desc) u1
+        left join HrmDepartment u2 on u1.departmentid = u2.id
+        where u2.id is not null and rownum &lt;9
+    </select>
 </mapper>
