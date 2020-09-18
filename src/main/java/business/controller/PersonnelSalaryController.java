@@ -114,7 +114,7 @@ public class PersonnelSalaryController {
      * 报表查询(有日期)
      * */
     @RequestMapping(value = "/queryReportBody", method = RequestMethod.POST)
-    public Result<?> queryReportBody(@RequestParam(name="staDate") Integer staDate,@RequestParam(name="endDate") Integer endDate){
-        return Result.ok();
+    public Result<?> queryReportBody(@RequestParam(name="staDate") String staDate,@RequestParam(name="endDate") String endDate){
+        return Result.ok(iPersonnelSalaryService.getReportBodyList(staDate,endDate));
     }
 }

@@ -80,8 +80,9 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
         }
         Map<String, Object> result = new HashMap<String, Object>();
         List<Map<String, Object>> salaryList = personnelSalaryMapper.getSalaryBetweenMonth(staDate,endDate);
-
+        List<Map<String, Object>> noteTimesList = operateLogMapper.getNoteTimesBetweenMonth(staDate,endDate);
         result.put("salaryList",salaryList);
+        result.put("noteTimesList",noteTimesList);
         return result;
     }
 
@@ -89,7 +90,7 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
         Date date = null;
         try {
-            date = dateStr.equals("") ? format.parse(dateStr) : new Date();
+            date = dateStr.equals("") ? new Date():format.parse(dateStr);
         } catch (ParseException e) {
             e.printStackTrace();
         }
