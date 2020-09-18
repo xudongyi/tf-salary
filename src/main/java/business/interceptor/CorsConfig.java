@@ -1,4 +1,4 @@
-package business.config;
+package business.interceptor;
 
 
 import org.springframework.context.annotation.Bean;

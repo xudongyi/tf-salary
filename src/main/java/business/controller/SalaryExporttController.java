@@ -1,6 +1,7 @@
 package business.controller;
 
 import business.bean.HrmResource;
+import business.jwt.LoginIgnore;
 import business.service.IHrmResourceService;
 import business.service.IPersonnelSalaryService;
 import business.util.FileUtils;
@@ -26,6 +27,7 @@ public class SalaryExporttController {
     @Resource
     IHrmResourceService iHrmResourceService;
 
+    @LoginIgnore
     @GetMapping(value = "/export")
     public void exportExcel(HttpServletResponse response, @ModelAttribute PersonnelSalaryVO personnelSalaryVo) throws Exception {
         QueryWrapper<PersonnelSalaryVO> sqlaryQueryWrapper = new QueryWrapper<>();

@@ -39,7 +39,7 @@ public class AuthTokenController {
      * @return
      */
     @LoginIgnore
-    @RequestMapping("/user/checkSso")
+    @PostMapping("/user/checkSso")
     public Result<?> checkSso(@RequestBody AuthUserSSO sso){
         return iOauthService.checkSso(sso);
     }
@@ -51,7 +51,7 @@ public class AuthTokenController {
      * @return
      */
     @Log(type= OperLogType.SEND_MOBILE,value = "发送短信验证码")
-    @RequestMapping("/user/sendMobile")
+    @PostMapping("/user/sendMobile")
     public Result<?> sendMobile(HttpServletRequest httpServletRequest, @RequestBody AuthUserModify authUserModify){
         return iOauthService.sendMobile(httpServletRequest,authUserModify);
     }
@@ -61,7 +61,7 @@ public class AuthTokenController {
      * @param authUserModify
      * @return
      */
-    @RequestMapping("/user/modifyPassword")
+    @PostMapping("/user/modifyPassword")
     public Result<?> modifyPassword(HttpServletRequest httpServletRequest, @RequestBody AuthUserModify authUserModify){
         return iOauthService.modifyPassword(httpServletRequest,authUserModify);
     }

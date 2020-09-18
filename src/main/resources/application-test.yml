@@ -3,7 +3,7 @@ server:
   tomcat:
     max-swallow-size: -1
   servlet:
-    context-path: /simulation
+    context-path: /salary
   compression:
     enabled: true
     min-response-size: 1024
@@ -20,32 +20,6 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-  ## quartz定时任务,采用数据库方式
-  quartz:
-    job-store-type: jdbc
-    initialize-schema: embedded
-    #设置自动启动，默认为 true
-    auto-startup: true
-    #启动时更新己存在的Job
-    overwrite-existing-jobs: true
-    properties:
-      org:
-        quartz:
-          scheduler:
-            instanceName: MyScheduler
-            instanceId: AUTO
-          jobStore:
-            class: org.quartz.impl.jdbcjobstore.JobStoreTX
-            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-            tablePrefix: QRTZ_
-            isClustered: true
-            misfireThreshold: 60000
-            clusterCheckinInterval: 10000
-          threadPool:
-            class: org.quartz.simpl.SimpleThreadPool
-            threadCount: 10
-            threadPriority: 5
-            threadsInheritContextClassLoaderOfInitializingThread: true
   #json 时间戳统一转换
   jackson:
     date-format:   yyyy-MM-dd HH:mm:ss
@@ -96,7 +70,7 @@ spring:
         # 初始化大小，最小，最大
         initial-size: 5
         min-idle: 5
-        maxActive: 20
+        maxActive: 30
         # 配置获取连接等待超时的时间
         maxWait: 60000
         # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
@@ -115,30 +89,27 @@ spring:
         # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
         connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
       datasource:
+        #        master:
+        #          url: jdbc:mysql://127.0.0.1:3306/jeecg-boot-test?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false
+        #          username: root
+        #          password: root
+        #          driver-class-name: com.mysql.jdbc.Driver
         master:
-          url: jdbc:mysql://127.0.0.1:3306/jeecg-boot-test?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false
-          username: root
-          password: root
-          driver-class-name: com.mysql.jdbc.Driver
-          # 多数据源配置
-          #multi-datasource1:
-          #url: jdbc:mysql://localhost:3306/jeecg-boot2?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true
-          #username: root
-          #password: root
-          #driver-class-name: com.mysql.jdbc.Driver
-  #redis 配置
-  redis:
-    database: 0
-    host: 127.0.0.1
-    lettuce:
-      pool:
-        max-active: 8   #最大连接数据库连接数,设 0 为没有限制
-        max-idle: 8     #最大等待连接中的数量,设 0 为没有限制
-        max-wait: -1ms  #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
-        min-idle: 0     #最小等待连接中的数量,设 0 为没有限制
-      shutdown-timeout: 100ms
-    password: ''
-    port: 6379
+          url: jdbc:oracle:thin:@172.16.20.6:1521:RPTDB
+          username: oaprod_new
+          password: oaprod
+          driver-class-name: oracle.jdbc.OracleDriver
+        G3:
+          url: jdbc:oracle:thin:@172.16.7.60:1521/HR
+          username: HRAD
+          password: HRad060
+          driver-class-name: oracle.jdbc.OracleDriver
+        hr:
+          url: jdbc:oracle:thin:@172.16.20.6:1521:RPTDB
+          username: oaprod
+          password: oaprod
+          driver-class-name: oracle.jdbc.OracleDriver
+
 #mybatis plus 设置
 mybatis-plus:
   mapper-locations: classpath*:business/**/xml/*Mapper.xml
@@ -155,15 +126,3 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     # 返回类型为Map,显示null对应的字段
     call-setters-on-nulls: true
-hj:
-  send:
-    address: 127.0.0.1 #数据发送的ip
-    port: 61234 #数据发送的端口号
-  useDb : true #使用数据库进行模拟发送
-  waterMN:
-  airMN:
-  airqMN: AQ130133000015,AQ130133000016
-  surfwaterMN:
-  noiseMN:
-  vocMN:
-  ipPort: 127.0.0.1:6000
