@@ -1,13 +1,19 @@
 package business.service.impl;
 
+import business.bean.HrmResource;
 import business.bean.PersonnelSalary;
+import business.mapper.HrmResourceMapper;
 import business.mapper.OperateLogMapper;
 import business.mapper.PersonnelSalaryMapper;
 import business.service.IPersonnelSalaryService;
 import business.vo.PersonnelSalaryVO;
+import business.vo.PersonnelWelfareVO;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,16 +31,41 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
     private PersonnelSalaryMapper personnelSalaryMapper;
     @Resource
     private OperateLogMapper operateLogMapper;
+    @Resource
+    private HrmResourceMapper hrmResourceMapper;
+
+    @Override
+    public IPage<PersonnelSalaryVO> getPersonnelSalaryList(PersonnelSalaryVO personnelSalaryVo, Integer pageNo,Integer pageSize) {
+        IPage<PersonnelSalaryVO> page = new Page<PersonnelSalaryVO>(pageNo, pageSize);
+        QueryWrapper<PersonnelSalaryVO> sqlaryQueryWrapper = new QueryWrapper<>();
+        QueryWrapper<HrmResource> hrmQueryWrapper = new QueryWrapper<>();
+        //sqlaryQueryWrapper.lambda().orderByDesc(PersonnelSalary::getId);
+        if (StringUtils.isNotBlank(personnelSalaryVo.getWorkcode())) {
+            sqlaryQueryWrapper.eq("t1.workcode", personnelSalaryVo.getWorkcode());
+        }
+        if(StringUtils.isNotBlank(personnelSalaryVo.getDept())){
+            hrmQueryWrapper.lambda().eq(HrmResource::getDepartmentid,personnelSalaryVo.getDept().split("_")[0]);
+            List<HrmResource> hrmList = hrmResourceMapper.selectList(hrmQueryWrapper);
+            String[] hrmDepartmentIdArr = new String[hrmList.size()];
+            for(int i = 0; i < hrmList.size();i++){
+                hrmDepartmentIdArr[i] = hrmList.get(i).getDepartmentid();
+            }
+            sqlaryQueryWrapper.in("t2.departmentid",hrmDepartmentIdArr);
+        }
+        if(StringUtils.isNotBlank(personnelSalaryVo.getSalarystamonth())){
+            sqlaryQueryWrapper.ge("t1.salary_date", personnelSalaryVo.getSalarystamonth());
+        }
+        if(StringUtils.isNotBlank(personnelSalaryVo.getSalaryendmonth())){
+            sqlaryQueryWrapper.le("t1.salary_date", personnelSalaryVo.getSalaryendmonth());
+        }
+        return personnelSalaryMapper.getPersonnelSalary(page, sqlaryQueryWrapper);
+    }
 
     @Override
     public List<PersonnelSalaryVO> getPersonnelSalaryList(Wrapper<PersonnelSalaryVO> queryWrapper) {
         return personnelSalaryMapper.getPersonnelSalary(queryWrapper);
     }
 
-    @Override
-    public IPage<PersonnelSalaryVO> getPersonnelSalaryList(IPage<PersonnelSalaryVO> page, Wrapper<PersonnelSalaryVO> queryWrapper) {
-        return personnelSalaryMapper.getPersonnelSalary(page, queryWrapper);
-    }
 
     @Override
     public Map<String, Object> getReportHeader() {
@@ -86,7 +117,7 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
         return result;
     }
 
-    public String getMonth(String dateStr, Integer lastTime) {
+    private String getMonth(String dateStr, Integer lastTime) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
         Date date = null;
         try {

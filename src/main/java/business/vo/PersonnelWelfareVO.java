@@ -1,11 +1,12 @@
 package business.vo;
 
 import business.bean.PersonnelSalary;
+import business.bean.PersonnelWelfare;
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import lombok.Data;
 
 @Data
-public class PersonnelSalaryVO extends PersonnelSalary {
+public class PersonnelWelfareVO extends PersonnelWelfare {
 
     //部门信息
     private String dept;
@@ -16,9 +17,4 @@ public class PersonnelSalaryVO extends PersonnelSalary {
 
     private String salaryendmonth;
 
-    private String welfareAmountSalaries;
-
-    private String welfareAmountBonus;
-
-    private String welfareAmountWeal;
 }

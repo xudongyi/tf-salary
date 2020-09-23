@@ -1,0 +1,30 @@
+package business.service.impl;
+
+import business.bean.PersonnelWelfare;
+import business.mapper.PersonnelWelfareMapper;
+import business.service.IPersonnelWelfareService;
+import business.vo.PersonnelWelfareVO;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+
+
+@Service
+@Slf4j
+public class PersonnelWelfareServiceImpl extends ServiceImpl<PersonnelWelfareMapper, PersonnelWelfare> implements IPersonnelWelfareService {
+
+    @Resource
+    private PersonnelWelfareMapper personnelWelfareMapper;
+
+    @Override
+    public IPage<PersonnelWelfareVO> getPersonnelWelfareList(PersonnelWelfareVO personnelWelfareVO, Integer pageNo, Integer pageSize) {
+        IPage<PersonnelWelfareVO> page = new Page<PersonnelWelfareVO>(pageNo, pageSize);
+        QueryWrapper<PersonnelWelfareVO> welfareQueryWrapper = new QueryWrapper<>();
+        return personnelWelfareMapper.getPersonnelWelfare(page,welfareQueryWrapper);
+    }
+}

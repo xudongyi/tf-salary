@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("salaryExport")
 @Slf4j
-public class SalaryExporttController {
+public class ExcelExporttController {
     @Resource
     IPersonnelSalaryService iPersonnelSalaryService;
     @Resource
