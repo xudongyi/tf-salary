@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("oa")
+@RequestMapping("hr")
 @Slf4j
-public class OAController {
+public class HRController {
 
     @Resource
-    IHRService ioaService;
+    IHRService ihrService;
 
     @GetMapping("/departMentAll")
     public Result<?> departMentAll(String departMentName) {
-        return ioaService.departMentAll(departMentName);
+        return ihrService.departMentAll(departMentName);
     }
     @GetMapping("/getHrmResource")
-    public Result<?> getHrmResource(@RequestParam(name="lastname", defaultValue="10") String lastname) {
-        return ioaService.getHrmResource(lastname);
+    public Result<?> getHrmResource(@RequestParam(name="lastname") String lastname) {
+        return ihrService.getHrmResource(lastname);
     }
 }

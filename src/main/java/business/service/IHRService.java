@@ -2,7 +2,7 @@ package business.service;
 
 import business.common.api.vo.Result;
 
-public interface IOAService {
+public interface IHRService {
 
     Result<?> departMentAll(String departMentName);
 

@@ -1,8 +1,8 @@
 package business.service.impl;
 
 import business.common.api.vo.Result;
-import business.mapper.OAMapper;
-import business.service.IOAService;
+import business.mapper.HrMapper;
+import business.service.IHRService;
 import business.vo.TreeSelectSimpleVO;
 import org.springframework.stereotype.Service;
 
@@ -12,21 +12,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 @Service
-public class OAServiceImpl implements IOAService {
+public class HRServiceImpl implements IHRService {
     @Resource
-    private OAMapper oaMapper;
+    private HrMapper hrMapper;
 
     @Override
     public Result<?> departMentAll(String departMentName) {
-        List<Map<String,Object>> departMentAll = oaMapper.departMentAll(departMentName);
+        List<Map<String,Object>> departMentAll = hrMapper.departMentAll(departMentName);
         List<TreeSelectSimpleVO> treeSelectSimpleVOS = new ArrayList<>();
         for(Map<String,Object> m : departMentAll){
             TreeSelectSimpleVO vo = new TreeSelectSimpleVO();
-            vo.setId(Integer.parseInt(m.get("ID").toString()));
+            vo.setId(m.get("DEPART_CODE").toString());
             vo.setTitle(m.get("LABEL").toString());
-            vo.setpId(Integer.parseInt(m.get("PID").toString()));
+            if(m.containsKey("PID")&&m.get("PID")!=null){
+                vo.setpId(m.get("PID").toString());
+                vo.setSelectable(true);
+            }
             vo.setValue(m.get("VALUE").toString());
-            vo.setSelectable(Integer.parseInt(m.get("IS_SUB").toString())==1);
             treeSelectSimpleVOS.add(vo);
         }
         return Result.ok(treeSelectSimpleVOS);
@@ -34,12 +36,12 @@ public class OAServiceImpl implements IOAService {
 
     @Override
     public Result<?> getHrmResource(String lastname) {
-        List<Map<String,Object>> hrmResource = oaMapper.getHrmResource(lastname);
+        List<Map<String,Object>> hrmResource = hrMapper.getHrmResource(lastname);
         List<Map<String,Object>> serachList = new ArrayList<>();
         for(Map<String,Object> m :hrmResource){
             Map map = new HashMap();
             map.put("ID",m.get("ID"));
-            map.put("LABEL",m.get("LASTNAME")+"("+m.get("DEPARTMENTNAME")+")");
+            map.put("LABEL",m.get("HR_NAME")+"("+m.get("DEPART_NAME")+")");
             serachList.add(map);
         }
         return Result.ok(serachList);

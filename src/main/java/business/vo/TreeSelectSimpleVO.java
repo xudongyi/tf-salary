@@ -5,31 +5,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TreeSelectSimpleVO {
 
-    private int id;
+    private String id;
 
-    private int pId;
+    private String pId;
 
     private String value;
 
     private String title;
 
-    private boolean selectable;
+    private boolean selectable = false;
 
-    @JsonProperty("pId")
-    public void setpId(int pId) {
-        this.pId = pId;
-    }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
-
-    public int getpId() {
+    @JsonProperty("pId")
+    public String getpId() {
         return pId;
+    }
+
+    public void setpId(String pId) {
+        this.pId = pId;
     }
 
     public String getValue() {

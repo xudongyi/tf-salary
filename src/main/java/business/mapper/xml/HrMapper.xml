@@ -2,7 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="business.mapper.HrMapper">
     <select id="getMobilePhone" resultType="Map">
-         select * from HR_USER where hr_no=#{workcode}
+         select * from HRP_FST.AD_EMPLOYEE_V@HR_TEST where HR_NO=#{workcode}
+    </select>
+    <select id="departMentAll" resultType="Map">
+        select DEPART_CODE,DEPART_NAME as label,DEPARTID,PARENTCODE as pid , CONCAT(CONCAT(DEPART_CODE,'_'),PARENTCODE) as value  from
+        HRP_FST.AD_DEPART_V@HR_TEST where status='N' and DEPART_NAME is not null
+        <if test="departMentName != null">
+            AND DEPART_NAME like CONCAT(CONCAT('%',#{departMentName}),'%')
+        </if>
+    </select>
+
+    <select id="getHrmResource" resultType="Map">
+        SELECT t1.* FROM HRP_FST.AD_EMPLOYEE_V@HR_TEST t1
+        where 1=1
+        <if test="lastname != null">
+            AND t1.HR_NAME like CONCAT(CONCAT('%',#{lastname}),'%')
+        </if>
     </select>
 
 </mapper>

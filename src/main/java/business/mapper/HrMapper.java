@@ -1,10 +1,12 @@
 package business.mapper;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
-
+import java.util.List;
 import java.util.Map;
 
-@DS("hr")
 public interface HrMapper {
     Map<String,Object> getMobilePhone(String workcode);
+
+    List<Map<String,Object>> departMentAll(String departMentName);
+
+    List<Map<String,Object>> getHrmResource(String lastname);
 }
