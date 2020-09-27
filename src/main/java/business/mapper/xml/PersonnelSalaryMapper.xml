@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="business.mapper.PersonnelSalaryMapper">
     <select id="getPersonnelSalary" resultType="business.vo.PersonnelSalaryVO">
-        select t1.*,t2.lastname,v1.welfare_amount_salaries,v1.welfare_amount_bonus,v1.welfare_amount_weal
+        select t1.*,t2.hr_name,v1.welfare_amount_salaries,v1.welfare_amount_bonus,v1.welfare_amount_weal
         from personnel_salary t1
-        left join hrmresource t2 on t1.workcode =t2.workcode
+        left join hrp_fst.ad_employee_v@hr_test t2 on t1.workcode =t2.hr_no
         left join (select workcode,welfare_date,sum(welfare_amount_salaries) welfare_amount_salaries,sum(welfare_amount_bonus) welfare_amount_bonus,sum(welfare_amount_weal) welfare_amount_weal from personnel_welfare group by workcode,welfare_date) v1
         on t1.salary_date = v1.welfare_date and t1.workcode = v1.workcode
         ${ew.customSqlSegment}
@@ -42,5 +42,23 @@
             ORDER BY totalnumber desc) u1
         left join HrmDepartment u2 on u1.departmentid = u2.id
         where u2.id is not null and rownum &lt;9
+    </select>
+
+    <select id="getMonthlyLaborCost" resultType="Map">
+        select count(workcode) hrm_number,
+            sum(gross_pay) gross_pay,
+            sum(unemploy_insurance) unemploy_insurance,
+            sum(housepovident_fund) housepovident_fund
+        from personnel_salary
+        where salary_date = #{month}
+    </select>
+
+    <select id="getYearlyLaborCost" resultType="Map">
+        select count(workcode) hrm_number,
+            sum(gross_pay) gross_pay,
+            sum(unemploy_insurance) unemploy_insurance,
+            sum(housepovident_fund) housepovident_fund
+        from personnel_salary
+        where salary_date like concat(#{year},'-%')
     </select>
 </mapper>

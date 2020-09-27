@@ -3,10 +3,26 @@
 <mapper namespace="business.mapper.PersonnelWelfareMapper">
     <select id="getPersonnelWelfare" resultType="business.vo.PersonnelWelfareVO">
         SELECT
-        t1.*,t2.lastname
+        t1.*,t2.hr_name
         FROM
         personnel_welfare t1
-        LEFT JOIN hrmresource t2 ON t1.workcode =t2.workcode
+        LEFT JOIN hrp_fst.ad_employee_v@hr_test t2 ON t1.workcode =t2.hr_no
         ${ew.customSqlSegment}
+    </select>
+
+    <select id="getMonthlyLaborCost" resultType="Map">
+        select sum(welfare_amount_salaries) welfare_amount_salaries,
+        sum(welfare_amount_bonus) welfare_amount_bonus,
+        sum(welfare_amount_weal) welfare_amount_weal
+        from personnel_welfare
+        where welfare_date = #{month}
+    </select>
+
+    <select id="getYearlyLaborCost" resultType="Map">
+        select sum(welfare_amount_salaries) welfare_amount_salaries,
+        sum(welfare_amount_bonus) welfare_amount_bonus,
+        sum(welfare_amount_weal) welfare_amount_weal
+        from personnel_welfare
+        where welfare_date like concat(#{year},'-%')
     </select>
 </mapper>

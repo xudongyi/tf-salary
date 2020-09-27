@@ -27,4 +27,9 @@ public interface PersonnelSalaryMapper extends BaseMapper<PersonnelSalary> {
     Map<String,Object> getImportNumberByMonth(String month);
 
     List<Map<String,Object>> getSalaryRankByDepartment();
+
+    Map<String, Object> getMonthlyLaborCost(String month);
+
+    Map<String, Object> getYearlyLaborCost(String year);
+
 }

@@ -8,11 +8,17 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Map;
+
 public interface PersonnelWelfareMapper extends BaseMapper<PersonnelWelfare> {
 
     /**
      * 薪资查询关联人员姓名
      */
     IPage<PersonnelWelfareVO> getPersonnelWelfare(IPage<PersonnelWelfareVO> page, @Param(Constants.WRAPPER) Wrapper<PersonnelWelfareVO> queryWrapper);
+
+    Map<String, Object> getMonthlyLaborCost(String month);
+
+    Map<String, Object> getYearlyLaborCost(String year);
 
 }
