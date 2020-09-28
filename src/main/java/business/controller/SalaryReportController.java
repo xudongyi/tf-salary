@@ -24,12 +24,12 @@ public class SalaryReportController {
     IAuthUserService iAuthUserService;
     /**
      * 统计报表
-     * @param salaryYear
+     * @param year
      * @return
      */
     @RequestMapping(value = "/getMonthlyLaborCost", method = RequestMethod.POST)
-    public Result<?> getMonthlyLaborCost(@RequestParam("salaryYear") String salaryYear,@RequestParam("rate") Float rate) {
+    public Result<?> getMonthlyLaborCost(@RequestParam("year") String year,@RequestParam("rate") Float rate) {
 
-        return Result.ok(iPersonnelSalaryService.getMonthlyLaborCost(salaryYear,rate));
+        return Result.ok(iPersonnelSalaryService.getMonthlyLaborCost(year,rate));
     }
 }

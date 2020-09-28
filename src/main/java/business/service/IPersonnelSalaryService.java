@@ -21,5 +21,5 @@ public interface IPersonnelSalaryService extends IService<PersonnelSalary> {
 
     Map<String, Object> getReportBodyList(String staDate,String endDate);
 
-    List<Map<String, Object>> getMonthlyLaborCost(String salaryYear,Float rate);
+    List<Map<String, Object>> getMonthlyLaborCost(String year,Float rate);
 }

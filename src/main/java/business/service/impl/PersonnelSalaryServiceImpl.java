@@ -115,13 +115,14 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
     }
 
     @Override
-    public List<Map<String, Object>> getMonthlyLaborCost(String salaryYear, Float rate) {
+    public List<Map<String, Object>> getMonthlyLaborCost(String year, Float rate) {
         List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
         for(int i=1;i<=12;i++){
-            String month = salaryYear+"-"+(String.valueOf(i).length()==1?"0"+String.valueOf(i):String.valueOf(i));
+                String month = year+"-"+(String.valueOf(i).length()==1?"0"+String.valueOf(i):String.valueOf(i));
             Map<String,Object> salaryMonthDataMap = personnelSalaryMapper.getMonthlyLaborCost(month);
             Map<String,Object> welfareMonthDateMap = personnelWelfareMapper.getMonthlyLaborCost(month);
             Map<String,Object> monthResultMap = new HashMap<String,Object>();
+            monthResultMap.put("REMARK",i+"月");
             BigDecimal eachMonthTotal = new BigDecimal("0");
             if(salaryMonthDataMap!=null&&Integer.parseInt(salaryMonthDataMap.get("HRM_NUMBER").toString())!=0){
                 monthResultMap.put("HN",salaryMonthDataMap.get("HRM_NUMBER"));
@@ -147,10 +148,41 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
                 monthResultMap.put("WAB",0);
                 monthResultMap.put("WAW",0);
             }
-            monthResultMap.put("MONTHTOTAL",eachMonthTotal);
+            monthResultMap.put("TOTAL",eachMonthTotal);
             resultList.add(monthResultMap);
         }
 
+        Map<String,Object> salaryYearDataMap = personnelSalaryMapper.getYearlyLaborCost(year);
+        Map<String,Object> welfareYearDateMap = personnelWelfareMapper.getYearlyLaborCost(year);
+        BigDecimal eachYearTotal = new BigDecimal("0");
+        Map<String,Object> yearResultMap = new HashMap<String,Object>();
+        yearResultMap.put("REMARK","合计");
+        if(salaryYearDataMap!=null&&Integer.parseInt(salaryYearDataMap.get("HRM_NUMBER").toString())!=0){
+            yearResultMap.put("HN",salaryYearDataMap.get("HRM_NUMBER"));
+            yearResultMap.put("GP",salaryYearDataMap.get("GROSS_PAY"));  //应发工资
+            eachYearTotal = eachYearTotal.add(new BigDecimal(yearResultMap.get("GP").toString()));
+            yearResultMap.put("IAF",new BigDecimal(salaryYearDataMap.get("UNEMPLOY_INSURANCE").toString()).multiply(new BigDecimal(rate)).add(new BigDecimal(salaryYearDataMap.get("HOUSEPOVIDENT_FUND").toString())).setScale(2,BigDecimal.ROUND_DOWN));  //失保
+            eachYearTotal = eachYearTotal.add(new BigDecimal(yearResultMap.get("IAF").toString()));
+        }else{
+            yearResultMap.put("HN",0);
+            yearResultMap.put("GP",0);
+            yearResultMap.put("IAF",0);
+        }
+
+        if(welfareYearDateMap!=null){
+            yearResultMap.put("WAS",welfareYearDateMap.get("WELFARE_AMOUNT_SALARIES"));
+            eachYearTotal = eachYearTotal.add(new BigDecimal(yearResultMap.get("WAS").toString()));
+            yearResultMap.put("WAB",welfareYearDateMap.get("WELFARE_AMOUNT_BONUS"));
+            eachYearTotal = eachYearTotal.add(new BigDecimal(yearResultMap.get("WAB").toString()));
+            yearResultMap.put("WAW",welfareYearDateMap.get("WELFARE_AMOUNT_WEAL"));
+            eachYearTotal = eachYearTotal.add(new BigDecimal(yearResultMap.get("WAW").toString()));
+        }else{
+            yearResultMap.put("WAS",0);
+            yearResultMap.put("WAB",0);
+            yearResultMap.put("WAW",0);
+        }
+        yearResultMap.put("TOTAL",eachYearTotal);
+        resultList.add(yearResultMap);
 
         return resultList;
     }
