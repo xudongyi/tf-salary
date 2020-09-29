@@ -118,7 +118,7 @@ public class OathServiceImpl implements IOauthService {
             }
             //插入数据
             authUser = new AuthUser();
-            authUser.setLoginid(authUserSSO.getLoginid());
+            authUser.setLoginid(authUserSSO.getWorkcode());
             authUser.setRoleid(1L);
             authUser.setWorkcode(hrmresource.get("WORKCODE").toString());
             authUser.setFirstLogin(0);

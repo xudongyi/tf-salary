@@ -42,7 +42,7 @@ public class OperateLogServiceImpl extends ServiceImpl<OperateLogMapper, Operate
         }
         AuthUser customerInfo = iAuthUserService.getUserByToken(token);
         if (customerInfo!=null){
-            operateLog.setUserId(customerInfo.getLoginid());
+            operateLog.setUserId(customerInfo.getWorkcode());
         }
         operateLog.setOperateTime(new Date());
         operateLog.setIp(IpAddressUtil.getIp());

@@ -121,7 +121,7 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
                 String month = year+"-"+(String.valueOf(i).length()==1?"0"+String.valueOf(i):String.valueOf(i));
             Map<String,Object> salaryMonthDataMap = personnelSalaryMapper.getMonthlyLaborCost(month);
             Map<String,Object> welfareMonthDateMap = personnelWelfareMapper.getMonthlyLaborCost(month);
-            Map<String,Object> monthResultMap = new HashMap<String,Object>();
+            Map<String,Object> monthResultMap = new LinkedHashMap<String,Object>();
             monthResultMap.put("REMARK",i+"月");
             BigDecimal eachMonthTotal = new BigDecimal("0");
             if(salaryMonthDataMap!=null&&Integer.parseInt(salaryMonthDataMap.get("HRM_NUMBER").toString())!=0){
@@ -155,7 +155,7 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
         Map<String,Object> salaryYearDataMap = personnelSalaryMapper.getYearlyLaborCost(year);
         Map<String,Object> welfareYearDateMap = personnelWelfareMapper.getYearlyLaborCost(year);
         BigDecimal eachYearTotal = new BigDecimal("0");
-        Map<String,Object> yearResultMap = new HashMap<String,Object>();
+        Map<String,Object> yearResultMap = new LinkedHashMap<>();
         yearResultMap.put("REMARK","合计");
         if(salaryYearDataMap!=null&&Integer.parseInt(salaryYearDataMap.get("HRM_NUMBER").toString())!=0){
             yearResultMap.put("HN",salaryYearDataMap.get("HRM_NUMBER"));
