@@ -6,21 +6,23 @@ import business.service.IAuthUserService;
 import business.service.IPersonnelSalaryService;
 import business.service.IPersonnelWelfareService;
 import business.util.FileUtils;
-import cn.afterturn.easypoi.entity.vo.MapExcelConstants;
+import business.vo.PersonnelSalaryVO;
+import business.vo.excel.DepartMonthVO;
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -134,5 +136,41 @@ public class SalaryReportController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    /**
+     * 直接导出(无需模板)
+     * 注:此方式存在一些不足之处，在对性能、excel要求比较严格时不推荐使用
+     * @author JustryDeng
+     * @date 2018/12/5 11:44
+     */
+    @LoginIgnore
+    @GetMapping(value = "/departExportExcel")
+    public void departExportExcel(HttpServletResponse response, @RequestParam("year") String year, @RequestParam("rate") Float rate) {
+        //与简单导出一致
+        List<DepartMonthVO> listTemplates = new ArrayList<>();
+        for(int i = 0;i<10;i++){
+            DepartMonthVO departMonthVO = new DepartMonthVO();
+            departMonthVO.setDepartMentName("部门"+i);
+            departMonthVO.setBx1(new BigDecimal(i));
+            departMonthVO.setOther1(new BigDecimal(i));
+            departMonthVO.setFl1(new BigDecimal(i));
+            departMonthVO.setPeople1(new BigDecimal(i));
+            departMonthVO.setSalary1(new BigDecimal(i));
+            departMonthVO.setTotal1(new BigDecimal(i));
+            departMonthVO.setYear1(new BigDecimal(i));
+
+            departMonthVO.setBx2(new BigDecimal(i));
+            departMonthVO.setOther2(new BigDecimal(i));
+            departMonthVO.setFl2(new BigDecimal(i));
+            departMonthVO.setPeople2(new BigDecimal(i));
+            departMonthVO.setSalary2(new BigDecimal(i));
+            departMonthVO.setTotal2(new BigDecimal(i));
+            departMonthVO.setYear2(new BigDecimal(i));
+            listTemplates.add(departMonthVO);
+        }
+        //导出
+        FileUtils.exportExcel(listTemplates,DepartMonthVO.class,"薪资.xls",response);
     }
 }
