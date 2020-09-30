@@ -8,6 +8,7 @@ import business.service.IPersonnelWelfareService;
 import business.util.FileUtils;
 import business.vo.PersonnelSalaryVO;
 import business.vo.excel.DepartMonthVO;
+import business.vo.excel.ExcelExportStyle;
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
@@ -171,6 +172,19 @@ public class SalaryReportController {
             listTemplates.add(departMonthVO);
         }
         //导出
-        FileUtils.exportExcel(listTemplates,DepartMonthVO.class,"薪资.xls",response);
+        // excel总体设置
+        ExportParams exportParams = new ExportParams();
+        exportParams.setSheetName("sheet1");
+        exportParams.setStyle(ExcelExportStyle.class);
+        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, DepartMonthVO.class, listTemplates);
+        try {
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("部门每月人工成本.xls", "UTF-8"));
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
