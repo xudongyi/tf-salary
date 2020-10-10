@@ -46,6 +46,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
         // 执行认证
         if (token == null || token.indexOf("Bearer ")==-1) {
+            httpServletResponse.setStatus(ErrorEnum.INVALID_TOKEN.getCode());
             ExceptionUtil.rollback(ErrorEnum.INVALID_TOKEN);
         }else{
             //验证token是否过期，过期了，则跳转到登录页面

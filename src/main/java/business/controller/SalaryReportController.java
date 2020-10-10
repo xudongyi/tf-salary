@@ -6,12 +6,9 @@ import business.service.IAuthUserService;
 import business.service.IPersonnelSalaryService;
 import business.service.IPersonnelWelfareService;
 import business.util.FileUtils;
-import business.vo.PersonnelSalaryVO;
-import business.vo.excel.DepartMonthVO;
-import business.vo.excel.ExcelExportStyle;
+import business.vo.excel.*;
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
-import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -19,10 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -187,4 +181,55 @@ public class SalaryReportController {
         }
 
     }
+
+
+    /**
+     * 直接导出(无需模板)
+     * 注:此方式存在一些不足之处，在对性能、excel要求比较严格时不推荐使用
+     * @author JustryDeng
+     * @date 2018/12/5 11:44
+     */
+    @LoginIgnore
+    @GetMapping(value = "/productDepartExportExcel")
+    public void productDepartExportExcel(HttpServletResponse response) {
+        // excel总体设置
+        List<ExcelDepartMonthVo> list = new ArrayList<>();
+
+        ExcelDepartMonthVo vo = new ExcelDepartMonthVo();
+        vo.setMonth("1月");
+        List<ExcelDepartMonthDept> depts = new ArrayList<>();
+        ExcelDepartMonthDept dept = new ExcelDepartMonthDept();
+        dept.setDeptName("A1");
+        List<ExcelDepartMonthDeptDetail> details = new ArrayList<>();
+        ExcelDepartMonthDeptDetail detail = new ExcelDepartMonthDeptDetail();
+        detail.setDepartName("组装一期");
+        detail.setGjj(new BigDecimal(12));
+        detail.setUserCount(12);
+        detail.setSalary(new BigDecimal(12));
+        detail.setFlf(new BigDecimal(12));
+        detail.setOtherSalary(new BigDecimal(12));
+        detail.setTotal(new BigDecimal(12));
+        detail.setYearTotal(new BigDecimal(12));
+        details.add(detail);
+        details.add(detail);
+        details.add(detail);
+        dept.setExcelDepartMonthDeptDetails(details);
+        depts.add(dept);
+        vo.setExcelDepartMonthDepts(depts);
+
+        list.add(vo);
+        ExportParams exportParams = new ExportParams();
+        exportParams.setSheetName("sheet1");
+        exportParams.setStyle(ExcelExportStyle.class);
+        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, ExcelDepartMonthVo.class, list);
+        try {
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("制造部门.xls", "UTF-8"));
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
