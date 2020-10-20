@@ -126,3 +126,23 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     # 返回类型为Map,显示null对应的字段
     call-setters-on-nulls: true
+
+#制造部门codes
+manufacturing-dept:
+  #组装一期
+  dept-a1-assembly-codes: B012000000
+  #测试一期
+  dept-a1-testing-codes: B293000000
+  #组装二期
+  dept-d2-assembly-codes: B204000000
+  #测试二期
+  dept-d2-testing-codes: B206000000
+  #组装三期
+  dept-a3-assembly-codes: B281000000
+  #测试三期
+  dept-a3-testing-codes: B285000000
+  #圆片级封装部
+  packaging-codes: B018000000
+  #表面处理中心
+  surface-codes: B310000000
+

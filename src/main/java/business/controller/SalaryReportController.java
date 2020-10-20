@@ -1,5 +1,6 @@
 package business.controller;
 
+import business.bean.ManufacturingDeptConfig;
 import business.common.api.vo.Result;
 import business.jwt.LoginIgnore;
 import business.service.IAuthUserService;
@@ -7,11 +8,14 @@ import business.service.IPersonnelSalaryService;
 import business.service.IPersonnelWelfareService;
 import business.util.FileUtils;
 import business.vo.excel.*;
+import business.vo.excel.ExcelExportStyle;
+import business.vo.excel.MonthlyLaborCostByDeptVo;
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -34,19 +38,88 @@ public class SalaryReportController {
     IPersonnelWelfareService iPersonnelWelfareService;
     @Resource
     IAuthUserService iAuthUserService;
-
+    @Resource
+    private ManufacturingDeptConfig manufacturingDeptConfig;
     /**
      * 统计报表
-     *
      * @param year
      * @return
      */
     @RequestMapping(value = "/getMonthlyLaborCost", method = RequestMethod.POST)
-    public Result<?> getMonthlyLaborCost(@RequestParam("year") String year, @RequestParam("rate") Float rate) {
-
-        return Result.ok(iPersonnelSalaryService.getMonthlyLaborCost(year, rate));
+    public Result<?> getMonthlyLaborCost(@RequestParam("year") String year,@RequestParam("rate") Float rate) {
+        return Result.ok(iPersonnelSalaryService.getMonthlyLaborCost(year,rate));
     }
 
+    /**
+     * 各部门每月人工成本
+     * @param year
+     * @return
+     */
+    @RequestMapping(value = "/getMonthlyLaborCostByDept", method = RequestMethod.POST)
+    public Result<?> getMonthlyLaborCostByDept(@RequestParam("year") String year,@RequestParam("rate") Float rate, @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                               @RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
+        return Result.ok(iPersonnelSalaryService.getMonthlyLaborCostByDept(year,rate,pageNo,pageSize));
+    }
+
+    /**
+     * 制造部门每月人工成本
+     * @return
+     */
+    @RequestMapping(value = "/getMonthlyLaborCostByManufacturingDept", method = RequestMethod.POST)
+    public Result<?> getMonthlyLaborCostByManufacturingDept(@RequestParam("year") String year,@RequestParam("rate") Float rate) {
+//        @RequestParam("year") String year,@RequestParam("rate") Float rate, @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+//        @RequestParam(name="pageSize", defaultValue="10") Integer pageSize
+        return Result.ok(iPersonnelSalaryService.getMonthlyLaborCostByManufacturingDept(year,rate));
+    }
+
+
+    /**
+     * 直接导出(无需模板)
+     * 注:此方式存在一些不足之处，在对性能、excel要求比较严格时不推荐使用
+     * @author JustryDeng
+     * @date 2018/12/5 11:44
+     */
+    @LoginIgnore
+    @GetMapping(value = "/monthlyLaborCostByDeptExportExcel")
+    public void monthlyLaborCostByDeptExportExcel(HttpServletResponse response, @RequestParam("year") String year, @RequestParam("rate") Float rate) {
+        //与简单导出一致
+        List<MonthlyLaborCostByDeptVo> monthlyLaborCostByDeptVoList = iPersonnelSalaryService.getMonthlyLaborCostByDept(year,rate);
+        //导出
+        // excel总体设置
+        ExportParams exportParams = new ExportParams();
+        exportParams.setSheetName("sheet1");
+        exportParams.setStyle(ExcelExportStyle.class);
+        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, MonthlyLaborCostByDeptVo.class, monthlyLaborCostByDeptVoList);
+        try {
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("部门每月人工成本.xls", "UTF-8"));
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 制造部门每月人力成本导出
+     */
+    @LoginIgnore
+    @GetMapping(value = "/monthlyLaborCostByManufacturingDeptExportExcel")
+    public void monthlyLaborCostByManufacturingDeptExportExcel(HttpServletResponse response, @RequestParam("year") String year, @RequestParam("rate") Float rate) {
+        List<ExcelDepartMonthVo> list = iPersonnelSalaryService.getMonthlyLaborCostByManufacturingDept(year,rate);
+        ExportParams exportParams = new ExportParams();
+        exportParams.setSheetName("sheet1");
+        exportParams.setStyle(ExcelExportStyle.class);
+        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, ExcelDepartMonthVo.class, list);
+        try {
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("制造部门每月人工成本.xls", "UTF-8"));
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @LoginIgnore
     @GetMapping(value = "/exportMonthlyLaborCost")
@@ -63,7 +136,6 @@ public class SalaryReportController {
     /**
      * 直接导出(无需模板)
      * 注:此方式存在一些不足之处，在对性能、excel要求比较严格时不推荐使用
-     *
      * @author JustryDeng
      * @date 2018/12/5 11:44
      */

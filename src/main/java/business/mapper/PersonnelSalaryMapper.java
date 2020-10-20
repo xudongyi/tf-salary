@@ -2,6 +2,8 @@ package business.mapper;
 
 import business.bean.PersonnelSalary;
 import business.vo.PersonnelSalaryVO;
+import business.vo.excel.ExcelDepartMonthDeptDetail;
+import business.vo.excel.MonthlyLaborCostByDeptVo;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -32,4 +34,9 @@ public interface PersonnelSalaryMapper extends BaseMapper<PersonnelSalary> {
 
     Map<String, Object> getYearlyLaborCost(String year);
 
+    IPage<MonthlyLaborCostByDeptVo> getMonthlyLaborCostByDept(IPage page, String year, Float rate);
+
+    List<MonthlyLaborCostByDeptVo> getMonthlyLaborCostByDept(String year, Float rate);
+
+    List<ExcelDepartMonthDeptDetail> getMonthlyLaborCostByDeptCode(String year, Float rate,String code1,String code2,String code3,String code4,String code5,String code6,String code7,String code8);
 }

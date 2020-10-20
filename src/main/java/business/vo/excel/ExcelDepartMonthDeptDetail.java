@@ -12,6 +12,8 @@ import java.util.List;
 @Data
 public class ExcelDepartMonthDeptDetail implements Serializable {
     private static final long serialVersionUID = 6178454340122797296L;
+    private String salaryDate;
+    private String departCode;
 
     @Excel(name = "部门",width = 20,needMerge = true)
     private String departName;
@@ -36,15 +38,4 @@ public class ExcelDepartMonthDeptDetail implements Serializable {
 
     @Excel(name = "小计",width = 20,needMerge = true)
     private BigDecimal total;
-
-
-
-
-
-
-
-
-
-
-
 }
