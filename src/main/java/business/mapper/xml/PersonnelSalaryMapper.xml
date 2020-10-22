@@ -54,7 +54,7 @@
     </select>
 
     <select id="getMonthlyLaborCostByDeptCode" resultType="business.vo.excel.ExcelDepartMonthDeptDetail">
-        select m.imonth salary_date,top_code depart_code,depart_name,
+        select m.imonth salary_date,top_code depart_code,depart_name,par_depart_name,
         nvl(sum(user_count), 0) user_count,
         nvl(sum(gross_pay), 0) salary,
         nvl(sum(welfare_amount_salaries), 0) other_salary,
@@ -73,32 +73,32 @@
         start with depart_code = #{code2}
         connect by prior depart_code=parentcode
         union all
-        select depart_code,#{code3} top_code,'组装二期' depart_name,'A1' par_depart_name,'3' depart_sort
+        select depart_code,#{code3} top_code,'组装二期' depart_name,'D2' par_depart_name,'3' depart_sort
         from HRP_FST.AD_DEPART_V@HR_TEST
         start with depart_code = #{code3}
         connect by prior depart_code=parentcode
         union all
-        select depart_code,#{code4} top_code,'测试二期' depart_name,'4' depart_sort
+        select depart_code,#{code4} top_code,'测试二期' depart_name,'D2' par_depart_name,'4' depart_sort
         from HRP_FST.AD_DEPART_V@HR_TEST
         start with depart_code = #{code4}
         connect by prior depart_code=parentcode
         union all
-        select depart_code,#{code5} top_code,'组装三期' depart_name,'5' depart_sort
+        select depart_code,#{code5} top_code,'组装三期' depart_name,'C3' par_depart_name,'5' depart_sort
         from HRP_FST.AD_DEPART_V@HR_TEST
         start with depart_code = #{code5}
         connect by prior depart_code=parentcode
         union all
-        select depart_code,#{code6} top_code,'测试三期' depart_name,'6' depart_sort
+        select depart_code,#{code6} top_code,'测试三期' depart_name,'C3' par_depart_name,'6' depart_sort
         from HRP_FST.AD_DEPART_V@HR_TEST
         start with depart_code = #{code6}
         connect by prior depart_code=parentcode
         union all
-        select depart_code,#{code7} top_code,'圆片级封装部' depart_name,'7' depart_sort
+        select depart_code,#{code7} top_code,'圆片级封装部' depart_name,'圆片级封装部' par_depart_name,'7' depart_sort
         from HRP_FST.AD_DEPART_V@HR_TEST
         start with depart_code = #{code7}
         connect by prior depart_code=parentcode
         union all
-        select depart_code,#{code8} top_code,'表面处理中心' depart_name,'8' depart_sort
+        select depart_code,#{code8} top_code,'表面处理中心' depart_name,'表面处理中心' par_depart_name,'8' depart_sort
         from HRP_FST.AD_DEPART_V@HR_TEST
         start with depart_code = #{code8}
         connect by prior depart_code=parentcode
@@ -130,7 +130,7 @@
         on t1.salary_date = v1.welfare_date and t1.workcode = v1.workcode
         ) group by depart_code,salary_date
         ) t on t.salary_date = m.imonth and t.depart_code = d.depart_code
-        group by imonth,top_code,depart_name,depart_sort order by imonth,depart_sort
+        group by imonth,top_code,depart_name,depart_sort,par_depart_name order by imonth,depart_sort
     </select>
 
     <select id="getYearlyLaborCost" resultType="Map">

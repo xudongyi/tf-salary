@@ -67,9 +67,16 @@ public class SalaryReportController {
      */
     @RequestMapping(value = "/getMonthlyLaborCostByManufacturingDept", method = RequestMethod.POST)
     public Result<?> getMonthlyLaborCostByManufacturingDept(@RequestParam("year") String year,@RequestParam("rate") Float rate) {
-//        @RequestParam("year") String year,@RequestParam("rate") Float rate, @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-//        @RequestParam(name="pageSize", defaultValue="10") Integer pageSize
-        return Result.ok(iPersonnelSalaryService.getMonthlyLaborCostByManufacturingDept(year,rate));
+        List<ExcelDepartMonthVo> excelDepartMonthVoList = iPersonnelSalaryService.getMonthlyLaborCostByManufacturingDept(year,rate);
+        List<ExcelDepartMonthDeptDetail> excelDepartMonthDeptDetailList = new ArrayList<ExcelDepartMonthDeptDetail>();
+        for(ExcelDepartMonthVo excelDepartMonthVo:excelDepartMonthVoList){
+            for(ExcelDepartMonthDept excelDepartMonthDept:excelDepartMonthVo.getExcelDepartMonthDepts()){
+                for(ExcelDepartMonthDeptDetail excelDepartMonthDeptDetail:excelDepartMonthDept.getExcelDepartMonthDeptDetails()){
+                    excelDepartMonthDeptDetailList.add(excelDepartMonthDeptDetail);
+                }
+            }
+        }
+        return Result.ok(excelDepartMonthDeptDetailList);
     }
 
 

@@ -246,36 +246,47 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
         excelDepartMonthDeptDetailA1AssemblyHalfYear.setSalaryDate("1-6月");
         excelDepartMonthDeptDetailA1AssemblyHalfYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailA1AssemblyHalfYear.setDepartName("组装一期");
+        excelDepartMonthDeptDetailA1AssemblyHalfYear.setParDepartName("A1");
         excelDepartMonthDeptDetailA1testingHalfYear.setSalaryDate("1-6月");
         excelDepartMonthDeptDetailA1testingHalfYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailA1testingHalfYear.setDepartName("测试一期");
+        excelDepartMonthDeptDetailA1testingHalfYear.setParDepartName("A1");
         excelDepartMonthDeptDetailA1TotalHalfYear.setSalaryDate("1-6月");
         excelDepartMonthDeptDetailA1TotalHalfYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailA1TotalHalfYear.setDepartName("合计");
+        excelDepartMonthDeptDetailA1TotalHalfYear.setParDepartName("A1");
         excelDepartMonthDeptDetailD2AssemblyHalfYear.setSalaryDate("1-6月");
         excelDepartMonthDeptDetailD2AssemblyHalfYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailD2AssemblyHalfYear.setDepartName("组装一期");
+        excelDepartMonthDeptDetailD2AssemblyHalfYear.setParDepartName("D2");
         excelDepartMonthDeptDetailD2testingHalfYear.setSalaryDate("1-6月");
         excelDepartMonthDeptDetailD2testingHalfYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailD2testingHalfYear.setDepartName("测试二期");
+        excelDepartMonthDeptDetailD2testingHalfYear.setParDepartName("D2");
         excelDepartMonthDeptDetailD2TotalHalfYear.setSalaryDate("1-6月");
         excelDepartMonthDeptDetailD2TotalHalfYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailD2TotalHalfYear.setDepartName("合计");
+        excelDepartMonthDeptDetailD2TotalHalfYear.setParDepartName("D2");
         excelDepartMonthDeptDetailA3AssemblyHalfYear.setSalaryDate("1-6月");
         excelDepartMonthDeptDetailA3AssemblyHalfYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailA3AssemblyHalfYear.setDepartName("组装三期");
+        excelDepartMonthDeptDetailA3AssemblyHalfYear.setParDepartName("C3");
         excelDepartMonthDeptDetailA3TestingHalfYear.setSalaryDate("1-6月");
         excelDepartMonthDeptDetailA3TestingHalfYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailA3TestingHalfYear.setDepartName("测试三期");
+        excelDepartMonthDeptDetailA3TestingHalfYear.setParDepartName("C3");
         excelDepartMonthDeptDetailA3TotalHalfYear.setSalaryDate("1-6月");
         excelDepartMonthDeptDetailA3TotalHalfYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailA3TotalHalfYear.setDepartName("合计");
+        excelDepartMonthDeptDetailA3TotalHalfYear.setParDepartName("C3");
         excelDepartMonthDeptDetailPackingHalfYear.setSalaryDate("1-6月");
         excelDepartMonthDeptDetailPackingHalfYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailPackingHalfYear.setDepartName("圆片级封装部");
+        excelDepartMonthDeptDetailPackingHalfYear.setParDepartName("圆片级封装部");
         excelDepartMonthDeptDetailSurfaceHalfYear.setSalaryDate("1-6月");
         excelDepartMonthDeptDetailSurfaceHalfYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailSurfaceHalfYear.setDepartName("表面处理中心");
+        excelDepartMonthDeptDetailSurfaceHalfYear.setParDepartName("表面处理中心");
 
         ExcelDepartMonthVo excelDepartMonthVoWholeYear = new ExcelDepartMonthVo(); //1-12月数据汇总
         List<ExcelDepartMonthDept> excelDepartMonthDeptsWholeYear = new ArrayList<ExcelDepartMonthDept>();
@@ -308,36 +319,53 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
         excelDepartMonthDeptDetailA1AssemblyWholeYear.setSalaryDate("1-12月");
         excelDepartMonthDeptDetailA1AssemblyWholeYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailA1AssemblyWholeYear.setDepartName("组装一期");
+        excelDepartMonthDeptDetailA1AssemblyWholeYear.setParDepartName("A1");
         excelDepartMonthDeptDetailA1testingWholeYear.setSalaryDate("1-12月");
         excelDepartMonthDeptDetailA1testingWholeYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailA1testingWholeYear.setDepartName("测试一期");
+        excelDepartMonthDeptDetailA1testingWholeYear.setParDepartName("A1");
         excelDepartMonthDeptDetailA1TotalWholeYear.setSalaryDate("1-12月");
         excelDepartMonthDeptDetailA1TotalWholeYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailA1TotalWholeYear.setDepartName("合计");
+        excelDepartMonthDeptDetailA1TotalWholeYear.setParDepartName("A1");
         excelDepartMonthDeptDetailD2AssemblyWholeYear.setSalaryDate("1-12月");
         excelDepartMonthDeptDetailD2AssemblyWholeYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailD2AssemblyWholeYear.setDepartName("组装二期");
+        excelDepartMonthDeptDetailD2AssemblyWholeYear.setParDepartName("D2");
         excelDepartMonthDeptDetailD2testingWholeYear.setSalaryDate("1-12月");
         excelDepartMonthDeptDetailD2testingWholeYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailD2testingWholeYear.setDepartName("测试二期");
+        excelDepartMonthDeptDetailD2testingWholeYear.setParDepartName("D2");
         excelDepartMonthDeptDetailD2TotalWholeYear.setSalaryDate("1-12月");
         excelDepartMonthDeptDetailD2TotalWholeYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailD2TotalWholeYear.setDepartName("合计");
+        excelDepartMonthDeptDetailD2TotalWholeYear.setParDepartName("D2");
+
         excelDepartMonthDeptDetailA3AssemblyWholeYear.setSalaryDate("1-12月");
         excelDepartMonthDeptDetailA3AssemblyWholeYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailA3AssemblyWholeYear.setDepartName("组装三期");
+        excelDepartMonthDeptDetailA3AssemblyWholeYear.setParDepartName("A3");
+
         excelDepartMonthDeptDetailA3TestingWholeYear.setSalaryDate("1-12月");
         excelDepartMonthDeptDetailA3TestingWholeYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailA3TestingWholeYear.setDepartName("测试三期");
+        excelDepartMonthDeptDetailA3TestingWholeYear.setParDepartName("A3");
+
         excelDepartMonthDeptDetailA3TotalWholeYear.setSalaryDate("1-12月");
         excelDepartMonthDeptDetailA3TotalWholeYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailA3TotalWholeYear.setDepartName("合计");
+        excelDepartMonthDeptDetailA3TotalWholeYear.setParDepartName("A3");
+
         excelDepartMonthDeptDetailPackingWholeYear.setSalaryDate("1-12月");
         excelDepartMonthDeptDetailPackingWholeYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailPackingWholeYear.setDepartName("圆片级封装部");
+        excelDepartMonthDeptDetailPackingWholeYear.setParDepartName("圆片级封装部");
+
         excelDepartMonthDeptDetailSurfaceWholeYear.setSalaryDate("1-12月");
         excelDepartMonthDeptDetailSurfaceWholeYear.setDepartCode(manufacturingDeptConfig.getDeptA1AssemblyCodes());
         excelDepartMonthDeptDetailSurfaceWholeYear.setDepartName("表面处理中心");
+        excelDepartMonthDeptDetailSurfaceWholeYear.setParDepartName("表面处理中心");
+
 
         excelDepartMonthVoHalfYear.setMonth("1-6月");
         excelDepartMonthVoWholeYear.setMonth("1-12月");
@@ -367,6 +395,9 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
             excelDepartMonthDeptDetailA1Total.setSalaryDate(month);
             excelDepartMonthDeptDetailD2Total.setSalaryDate(month);
             excelDepartMonthDeptDetailA3Total.setSalaryDate(month);
+            excelDepartMonthDeptDetailA1Total.setParDepartName("A1");
+            excelDepartMonthDeptDetailD2Total.setParDepartName("D2");
+            excelDepartMonthDeptDetailA3Total.setParDepartName("A3");
             excelDepartMonthDeptDetailA1Total.setDepartName("合计");
             excelDepartMonthDeptDetailD2Total.setDepartName("合计");
             excelDepartMonthDeptDetailA3Total.setDepartName("合计");
