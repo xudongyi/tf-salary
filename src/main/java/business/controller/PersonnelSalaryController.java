@@ -6,12 +6,14 @@ import business.common.api.vo.Result;
 import business.service.IAuthUserService;
 import business.service.IPersonnelSalaryService;
 import business.service.IPersonnelWelfareService;
+import business.util.CaptchaUtil;
 import business.vo.AuthUserModify;
 import business.vo.PersonnelSalaryVO;
 import business.vo.PersonnelWelfareVO;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,6 +54,23 @@ public class PersonnelSalaryController {
             @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
             HttpServletRequest req) {
         return Result.ok(iPersonnelWelfareService.getPersonnelWelfareList(personnelWelfareVO,pageNo,pageSize));
+    }
+
+    /**
+     * 校验手机号验证码
+     * */
+    @RequestMapping(value = "/checMobileCaptcha", method = RequestMethod.POST)
+    public Result<?> checMobileCaptcha(HttpServletRequest httpServletRequest,@RequestBody AuthUserModify authUserModify) throws Exception {
+        if(authUserModify==null || StringUtils.isBlank(authUserModify.getCaptcha())
+                || StringUtils.isBlank( authUserModify.getWorkcode()) || authUserModify.getMobile()==null|| authUserModify.getCaptcha()==null){
+            return Result.error(500,"参数错误！");
+        }
+        //1.验证手机号和验证码是否匹配
+        String result = CaptchaUtil.validate(authUserModify.getMobile(),authUserModify.getCaptcha());
+        if(!result.equals("")){
+            return Result.error(500,result);
+        }
+        return Result.ok();
     }
 
     /**

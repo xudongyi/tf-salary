@@ -15,5 +15,4 @@ public class OperateLogVO extends OperateLog {
 
     private String lastname;
 
-
 }

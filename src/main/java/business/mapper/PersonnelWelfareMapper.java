@@ -19,6 +19,10 @@ public interface PersonnelWelfareMapper extends BaseMapper<PersonnelWelfare> {
 
     Map<String, Object> getMonthlyLaborCost(String month);
 
+    Map<String, Object> getMonthlyWelfareSingle(String month);
+
     Map<String, Object> getYearlyLaborCost(String year);
+
+
 
 }

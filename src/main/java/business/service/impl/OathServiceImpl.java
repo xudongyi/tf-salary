@@ -20,6 +20,7 @@ import business.util.IpAddressUtil;
 import business.vo.AuthUserModify;
 import business.vo.AuthUserSSO;
 import business.vo.AuthUserVO;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.micrometer.core.instrument.util.StringUtils;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -185,20 +187,34 @@ public class OathServiceImpl implements IOauthService {
 
     @Override
     public Result<?> sendMobile(HttpServletRequest httpRequest, AuthUserModify authUserModify) {
-        if(authUserModify==null || StringUtils.isBlank(authUserModify.getMobile())){
+        if(authUserModify==null || StringUtils.isBlank(authUserModify.getPassword()) || StringUtils.isBlank(authUserModify.getMobile())){
             return Result.error(500,"参数错误！");
+        }
+        String psw = SecureUtil.md5(authUserModify.getPassword());
+        AuthUser authUser = authUserMapper.selectOne(new LambdaQueryWrapper<AuthUser>()
+                .eq(AuthUser::getPassword, psw)
+                .eq(AuthUser::getWorkcode, authUserModify.getWorkcode()));
+        if(authUser==null){
+            return Result.error(500,"密码错误！");
         }
         Map<String,Object> hr = hrMapper.getMobilePhone(authUserModify.getWorkcode());
         if(hr==null){
             return Result.error(500,"工号在HR系统中未查询到，请检查！");
         }
-        if(!authUserModify.getMobile().equals(hr.get("MOBILE_PHONE"))){
-            return Result.error(500,"手机号不匹配，HR中的手机号为："+hr.get("MOBILE_PHONE")+"！");
+        if(!authUserModify.getMobile().equals(hr.get("MOBILEPHONE"))){
+            return Result.error(500,"手机号不匹配，HR中的手机号为："+hr.get("MOBILEPHONE")+"！");
         }
+        //TODO 查询本月该用户的已发送次数,没有超过发送次数则发送短信，否则提示用户本月无法查询
+        List<OperateLog> list = iOperateLogService.list(new LambdaQueryWrapper<OperateLog>()
+                .eq(OperateLog::getUserId, authUserModify.getWorkcode())
+                .ge(OperateLog::getOperateTime, DateUtil.beginOfDay(new Date()))
+                .le(OperateLog::getOperateTime, new Date())
+                .eq(OperateLog::getOperateType, 2));
+
         //TODO 发送短信
         String code = "888888";
         CaptchaUtil.save(authUserModify.getMobile(),code,180);
-        return Result.ok("发送成功");
+        return Result.ok("发送成功,本月已发送："+list.size()+"次");
     }
 
 

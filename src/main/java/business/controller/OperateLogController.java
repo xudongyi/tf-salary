@@ -48,7 +48,7 @@ public class OperateLogController {
             queryWrapper.le("t1.operate_time",DateUtil.parse(operateLogVO.getOperateTimeED(), DatePattern.NORM_DATE_PATTERN));
         }
         if (StringUtils.isNotBlank(operateLogVO.getUserId())) {
-            queryWrapper.eq("t2.id", operateLogVO.getUserId());
+            queryWrapper.eq("t2.hrids", operateLogVO.getUserId());
         }
         if (StringUtils.isNotBlank(operateLogVO.getDept())) {
             queryWrapper.eq("t2.depart_code", operateLogVO.getDept().split("_")[0]);

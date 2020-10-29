@@ -40,7 +40,7 @@ public class HRServiceImpl implements IHRService {
         List<Map<String,Object>> serachList = new ArrayList<>();
         for(Map<String,Object> m :hrmResource){
             Map map = new HashMap();
-            map.put("ID",m.get("ID"));
+            map.put("ID",m.get("HRIDS"));
             map.put("LABEL",m.get("HR_NAME")+"("+m.get("DEPART_NAME")+")");
             serachList.add(map);
         }

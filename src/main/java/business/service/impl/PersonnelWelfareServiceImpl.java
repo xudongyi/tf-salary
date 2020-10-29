@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 
 @Service
@@ -40,5 +41,10 @@ public class PersonnelWelfareServiceImpl extends ServiceImpl<PersonnelWelfareMap
             welfareQueryWrapper.le("t1.welfare_date", personnelWelfareVO.getWelfareendmonth());
         }
         return personnelWelfareMapper.getPersonnelWelfare(page,welfareQueryWrapper);
+    }
+
+    @Override
+    public List<PersonnelWelfare> getPersonelWelflare(PersonnelWelfareVO personnelWelfareVO) {
+        return null;
     }
 }
