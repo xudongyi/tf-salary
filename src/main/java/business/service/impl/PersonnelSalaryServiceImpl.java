@@ -1,15 +1,12 @@
 package business.service.impl;
 
-import business.bean.HrmResource;
 import business.bean.ManufacturingDeptConfig;
 import business.bean.PersonnelSalary;
-import business.mapper.HrmResourceMapper;
 import business.mapper.OperateLogMapper;
 import business.mapper.PersonnelSalaryMapper;
 import business.mapper.PersonnelWelfareMapper;
 import business.service.IPersonnelSalaryService;
 import business.vo.PersonnelSalaryVO;
-import business.vo.PersonnelWelfareVO;
 import business.vo.excel.ExcelDepartMonthDept;
 import business.vo.excel.ExcelDepartMonthDeptDetail;
 import business.vo.excel.ExcelDepartMonthVo;
@@ -76,14 +73,14 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         String currentMonth = sdf.format(currentDate);
         String lastMonthStr = getMonth("",-1);
-        String currentMonthSalary = personnelSalaryMapper.getSalaryByMonth(currentMonth).get("NET_SALARY").toString();
-        String lastMonthSalary = personnelSalaryMapper.getSalaryByMonth(lastMonthStr).get("NET_SALARY").toString();
-        String currentMonthImportNumber = personnelSalaryMapper.getImportNumberByMonth(currentMonth).get("IMPORT_NUMBER").toString();
-        String lastMonthImportNumber = personnelSalaryMapper.getImportNumberByMonth(lastMonthStr).get("IMPORT_NUMBER").toString();
-        String currentMonthVisitTimes = operateLogMapper.getVisitTimesByMonth(currentMonth).get("VISIT_TIMES").toString();
-        String lastMonthVisitTimes = operateLogMapper.getVisitTimesByMonth(lastMonthStr).get("VISIT_TIMES").toString();
-        String currentMonthNoteNumber = operateLogMapper.getNoteNumberByMonth(currentMonth).get("NOTE_NUMBER").toString();
-        String lastMonthNoteNumber = operateLogMapper.getNoteNumberByMonth(lastMonthStr).get("NOTE_NUMBER").toString();
+        String currentMonthSalary = personnelSalaryMapper.getSalaryByMonth(currentMonth).size()==0?"0":personnelSalaryMapper.getSalaryByMonth(currentMonth).get(0).get("NET_SALARY").toString();
+        String lastMonthSalary = personnelSalaryMapper.getSalaryByMonth(lastMonthStr).size()==0?"0":personnelSalaryMapper.getSalaryByMonth(lastMonthStr).get(0).get("NET_SALARY").toString();
+        String currentMonthImportNumber = personnelSalaryMapper.getImportNumberByMonth(currentMonth).size()==0?"0":personnelSalaryMapper.getImportNumberByMonth(currentMonth).get(0).get("IMPORT_NUMBER").toString();
+        String lastMonthImportNumber = personnelSalaryMapper.getImportNumberByMonth(lastMonthStr).size()==0?"0":personnelSalaryMapper.getImportNumberByMonth(lastMonthStr).get(0).get("IMPORT_NUMBER").toString();
+        String currentMonthVisitTimes = operateLogMapper.getVisitTimesByMonth(currentMonth).size()==0?"0":operateLogMapper.getVisitTimesByMonth(currentMonth).get(0).get("VISIT_TIMES").toString();
+        String lastMonthVisitTimes = operateLogMapper.getVisitTimesByMonth(lastMonthStr).size()==0?"0":operateLogMapper.getVisitTimesByMonth(lastMonthStr).get(0).get("VISIT_TIMES").toString();
+        String currentMonthNoteNumber = operateLogMapper.getNoteNumberByMonth(currentMonth).size()==0?"0":operateLogMapper.getNoteNumberByMonth(currentMonth).get(0).get("NOTE_NUMBER").toString();
+        String lastMonthNoteNumber = operateLogMapper.getNoteNumberByMonth(lastMonthStr).size()==0?"0":operateLogMapper.getNoteNumberByMonth(currentMonth).get(0).get("NOTE_NUMBER").toString();
         List<Map<String, Object>> salaryDepartmentRankList = personnelSalaryMapper.getSalaryRankByDepartment();
         List<Map<String, Object>> noteTimesDepartmentRankList = operateLogMapper.getNoteTimesRankByDepartment();
         Map<String, Object> result = new HashMap<String, Object>();

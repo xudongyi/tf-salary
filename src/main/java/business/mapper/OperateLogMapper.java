@@ -21,9 +21,9 @@ public interface OperateLogMapper extends BaseMapper<OperateLog> {
      */
     IPage<OperateLog> queryLog(IPage<OperateLogVO> page ,@Param(Constants.WRAPPER) Wrapper<OperateLogVO> queryWrapper);
 
-    Map<String,Object> getVisitTimesByMonth(String month);
+    List<Map<String,Object>> getVisitTimesByMonth(String month);
 
-    Map<String,Object> getNoteNumberByMonth(String month);
+    List<Map<String,Object>> getNoteNumberByMonth(String month);
 
     List<Map<String,Object>> getNoteTimesRankByDepartment();
 
