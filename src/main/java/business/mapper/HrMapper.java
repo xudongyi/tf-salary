@@ -9,4 +9,6 @@ public interface HrMapper {
     List<Map<String,Object>> departMentAll(String departMentName);
 
     List<Map<String,Object>> getHrmResource(String lastname);
+
+    List<Map<String,Object>> getAllHrmResource();
 }

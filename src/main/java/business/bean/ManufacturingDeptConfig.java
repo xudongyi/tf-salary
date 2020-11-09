@@ -20,6 +20,7 @@ public class ManufacturingDeptConfig{
     private String deptA3TestingCodes;
     private String packagingCodes;
     private String surfaceCodes;
+    private String departNames;
 
     public String getDeptA1AssemblyCodes() {
         return deptA1AssemblyCodes;
@@ -83,5 +84,13 @@ public class ManufacturingDeptConfig{
 
     public void setSurfaceCodes(String surfaceCodes) {
         this.surfaceCodes = surfaceCodes;
+    }
+
+    public String getDepartNames() {
+        return departNames;
+    }
+
+    public void setDepartNames(String departNames) {
+        this.departNames = departNames;
     }
 }

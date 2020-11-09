@@ -20,4 +20,8 @@
     </if>
 </select>
 
+<select id="getAllHrmResource" resultType="Map">
+    SELECT DISTINCT(HR_NO),DEPART_CODE FROM HRP_FST.AD_EMPLOYEE_V@HR_TEST
+</select>
+
 </mapper>

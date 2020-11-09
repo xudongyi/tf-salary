@@ -24,10 +24,8 @@ public interface IPersonnelSalaryService extends IService<PersonnelSalary> {
 
     List<Map<String, Object>> getMonthlyLaborCost(String year,Float rate);
 
-    IPage<MonthlyLaborCostByDeptVo> getMonthlyLaborCostByDept(String year, Float rate, Integer pageNo, Integer pageSize);
+    List<MonthlyLaborCostByDeptVo> getMonthlyLaborCostByDept(String year, Float rate,String site,String tabId);
 
-    List<MonthlyLaborCostByDeptVo> getMonthlyLaborCostByDept(String year, Float rate);
-
-    List<ExcelDepartMonthVo> getMonthlyLaborCostByManufacturingDept(String year, Float rate);
+    List<ExcelDepartMonthVo> getMonthlyLaborCostByManufacturingDept(String year, Float rate,String site,String tabId);
 
 }

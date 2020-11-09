@@ -17,297 +17,299 @@ public class MonthlyLaborCostByDeptVo {
     private String departName;
 
     @Excel(name = "人数",groupName = "1月",  orderNum = "1")
-    private BigDecimal janHrmNumber;
+    private Integer janHrmNumber=0;
 
     @Excel(name = "金额",groupName = "1月",orderNum = "2")
-    private BigDecimal janGrossPay;
+    private BigDecimal janGrossPay=new BigDecimal(0);
 
     @Excel(name = "福利费",groupName = "1月",orderNum = "3")
-    private BigDecimal janWelfareAmountWeal;
+    private BigDecimal janWelfareAmountWeal=new BigDecimal(0);
 
     @Excel(name = "保险公积金",groupName = "1月",orderNum = "4")
-    private BigDecimal janIaf;
+    private BigDecimal janIaf=new BigDecimal(0);
 
     @Excel(name = "13、14月工资",groupName = "1月",orderNum = "5")
-    private BigDecimal janWelfareAmountSalaries;
+    private BigDecimal janWelfareAmountSalaries=new BigDecimal(0);
 
     @Excel(name = "年终奖",groupName = "1月",orderNum = "6")
-    private BigDecimal janWelfareAmountBonus;
+    private BigDecimal janWelfareAmountBonus=new BigDecimal(0);
 
     @Excel(name = "小计",groupName = "1月",orderNum = "7")
-    private BigDecimal janSubtotal;
+    private BigDecimal janSubtotal=new BigDecimal(0);
 
     @Excel(name = "人数",groupName = "2月",  orderNum = "8")
-    private BigDecimal febHrmNumber;
+    private Integer febHrmNumber=0;
 
     @Excel(name = "金额",groupName = "2月",orderNum = "9")
-    private BigDecimal febGrossPay;
+    private BigDecimal febGrossPay=new BigDecimal(0);
 
     @Excel(name = "福利费",groupName = "2月",orderNum = "10")
-    private BigDecimal febWelfareAmountWeal;
+    private BigDecimal febWelfareAmountWeal=new BigDecimal(0);
 
     @Excel(name = "保险公积金",groupName = "2月",orderNum = "11")
-    private BigDecimal febIaf;
+    private BigDecimal febIaf=new BigDecimal(0);
 
     @Excel(name = "13、14月工资",groupName = "2月",orderNum = "12")
-    private BigDecimal febWelfareAmountSalaries;
+    private BigDecimal febWelfareAmountSalaries=new BigDecimal(0);
 
     @Excel(name = "年终奖",groupName = "2月",orderNum = "13")
-    private BigDecimal febWelfareAmountBonus;
+    private BigDecimal febWelfareAmountBonus=new BigDecimal(0);
 
     @Excel(name = "小计",groupName = "2月",orderNum = "14")
-    private BigDecimal febSubtotal;
+    private BigDecimal febSubtotal=new BigDecimal(0);
 
     @Excel(name = "人数",groupName = "3月",  orderNum = "15")
-    private BigDecimal marHrmNumber;
+    private Integer marHrmNumber=0;
 
     @Excel(name = "金额",groupName = "3月",orderNum = "16")
-    private BigDecimal marGrossPay;
+    private BigDecimal marGrossPay=new BigDecimal(0);
 
     @Excel(name = "福利费",groupName = "3月",orderNum = "17")
-    private BigDecimal marWelfareAmountWeal;
+    private BigDecimal marWelfareAmountWeal=new BigDecimal(0);
 
     @Excel(name = "保险公积金",groupName = "3月",orderNum = "18")
-    private BigDecimal marIaf;
+    private BigDecimal marIaf=new BigDecimal(0);
 
     @Excel(name = "13、14月工资",groupName = "3月",orderNum = "19")
-    private BigDecimal marWelfareAmountSalaries;
+    private BigDecimal marWelfareAmountSalaries=new BigDecimal(0);
 
     @Excel(name = "年终奖",groupName = "3月",orderNum = "20")
-    private BigDecimal marWelfareAmountBonus;
+    private BigDecimal marWelfareAmountBonus=new BigDecimal(0);
 
     @Excel(name = "小计",groupName = "3月",orderNum = "21")
-    private BigDecimal marSubtotal;
+    private BigDecimal marSubtotal=new BigDecimal(0);
 
     @Excel(name = "人数",groupName = "4月",  orderNum = "22")
-    private BigDecimal aprHrmNumber;
+    private Integer aprHrmNumber=0;
 
     @Excel(name = "金额",groupName = "4月",orderNum = "23")
-    private BigDecimal aprGrossPay;
+    private BigDecimal aprGrossPay=new BigDecimal(0);
 
     @Excel(name = "福利费",groupName = "4月",orderNum = "24")
-    private BigDecimal aprWelfareAmountWeal;
+    private BigDecimal aprWelfareAmountWeal=new BigDecimal(0);
 
     @Excel(name = "保险公积金",groupName = "4月",orderNum = "25")
-    private BigDecimal aprIaf;
+    private BigDecimal aprIaf=new BigDecimal(0);
 
     @Excel(name = "13、14月工资",groupName = "4月",orderNum = "26")
-    private BigDecimal aprWelfareAmountSalaries;
+    private BigDecimal aprWelfareAmountSalaries=new BigDecimal(0);
 
     @Excel(name = "年终奖",groupName = "4月",orderNum = "27")
-    private BigDecimal aprWelfareAmountBonus;
+    private BigDecimal aprWelfareAmountBonus=new BigDecimal(0);
 
     @Excel(name = "小计",groupName = "4月",orderNum = "28")
-    private BigDecimal aprSubtotal;
+    private BigDecimal aprSubtotal=new BigDecimal(0);
 
     @Excel(name = "人数",groupName = "5月",  orderNum = "29")
-    private BigDecimal mayHrmNumber;
+    private Integer mayHrmNumber=0;
 
     @Excel(name = "金额",groupName = "5月",orderNum = "30")
-    private BigDecimal mayGrossPay;
+    private BigDecimal mayGrossPay=new BigDecimal(0);
 
     @Excel(name = "福利费",groupName = "5月",orderNum = "31")
-    private BigDecimal mayWelfareAmountWeal;
+    private BigDecimal mayWelfareAmountWeal=new BigDecimal(0);
 
     @Excel(name = "保险公积金",groupName = "5月",orderNum = "32")
-    private BigDecimal mayIaf;
+    private BigDecimal mayIaf=new BigDecimal(0);
 
     @Excel(name = "13、14月工资",groupName = "5月",orderNum = "33")
-    private BigDecimal mayWelfareAmountSalaries;
+    private BigDecimal mayWelfareAmountSalaries=new BigDecimal(0);
 
     @Excel(name = "年终奖",groupName = "5月",orderNum = "34")
-    private BigDecimal mayWelfareAmountBonus;
+    private BigDecimal mayWelfareAmountBonus=new BigDecimal(0);
 
     @Excel(name = "小计",groupName = "5月",orderNum = "35")
-    private BigDecimal maySubtotal;
+    private BigDecimal maySubtotal=new BigDecimal(0);
 
     @Excel(name = "人数",groupName = "6月",  orderNum = "36")
-    private BigDecimal junHrmNumber;
+    private Integer junHrmNumber=0;
 
     @Excel(name = "金额",groupName = "6月",orderNum = "37")
-    private BigDecimal junGrossPay;
+    private BigDecimal junGrossPay=new BigDecimal(0);
 
     @Excel(name = "福利费",groupName = "6月",orderNum = "38")
-    private BigDecimal junWelfareAmountWeal;
+    private BigDecimal junWelfareAmountWeal=new BigDecimal(0);
 
     @Excel(name = "保险公积金",groupName = "6月",orderNum = "39")
-    private BigDecimal junIaf;
+    private BigDecimal junIaf=new BigDecimal(0);
 
     @Excel(name = "13、14月工资",groupName = "6月",orderNum = "40")
-    private BigDecimal junWelfareAmountSalaries;
+    private BigDecimal junWelfareAmountSalaries=new BigDecimal(0);
 
     @Excel(name = "年终奖",groupName = "6月",orderNum = "41")
-    private BigDecimal junWelfareAmountBonus;
+    private BigDecimal junWelfareAmountBonus=new BigDecimal(0);
 
     @Excel(name = "小计",groupName = "6月",orderNum = "42")
-    private BigDecimal junSubtotal;
+    private BigDecimal junSubtotal=new BigDecimal(0);
 
     @Excel(name = "人数",groupName = "1-6月",  orderNum = "43")
-    private BigDecimal halfHrmNumber;
+    private Integer halfHrmNumber=0;
 
     @Excel(name = "金额",groupName = "1-6月",orderNum = "44")
-    private BigDecimal halfGrossPay;
+    private BigDecimal halfGrossPay=new BigDecimal(0);
 
     @Excel(name = "福利费",groupName = "1-6月",orderNum = "45")
-    private BigDecimal halfWelfareAmountWeal;
+    private BigDecimal halfWelfareAmountWeal=new BigDecimal(0);
 
     @Excel(name = "保险公积金",groupName = "1-6月",orderNum = "46")
-    private BigDecimal halfIaf;
+    private BigDecimal halfIaf=new BigDecimal(0);
 
     @Excel(name = "13、14月工资",groupName = "1-6月",orderNum = "47")
-    private BigDecimal halfWelfareAmountSalaries;
+    private BigDecimal halfWelfareAmountSalaries=new BigDecimal(0);
 
     @Excel(name = "年终奖",groupName = "1-6月",orderNum = "48")
-    private BigDecimal halfWelfareAmountBonus;
+    private BigDecimal halfWelfareAmountBonus=new BigDecimal(0);
 
     @Excel(name = "小计",groupName = "1-6月",orderNum = "49")
-    private BigDecimal halfSubtotal;
+    private BigDecimal halfSubtotal=new BigDecimal(0);
 
     @Excel(name = "人数",groupName = "7月",  orderNum = "50")
-    private BigDecimal julHrmNumber;
+    private Integer julHrmNumber=0;
 
     @Excel(name = "金额",groupName = "7月",orderNum = "51")
-    private BigDecimal julGrossPay;
+    private BigDecimal julGrossPay=new BigDecimal(0);
 
     @Excel(name = "福利费",groupName = "7月",orderNum = "52")
-    private BigDecimal julWelfareAmountWeal;
+    private BigDecimal julWelfareAmountWeal=new BigDecimal(0);
 
     @Excel(name = "保险公积金",groupName = "7月",orderNum = "53")
-    private BigDecimal julIaf;
+    private BigDecimal julIaf=new BigDecimal(0);
 
     @Excel(name = "13、14月工资",groupName = "7月",orderNum = "54")
-    private BigDecimal julWelfareAmountSalaries;
+    private BigDecimal julWelfareAmountSalaries=new BigDecimal(0);
 
     @Excel(name = "年终奖",groupName = "7月",orderNum = "55")
-    private BigDecimal julWelfareAmountBonus;
+    private BigDecimal julWelfareAmountBonus=new BigDecimal(0);
 
     @Excel(name = "小计",groupName = "7月",orderNum = "56")
-    private BigDecimal julSubtotal;
+    private BigDecimal julSubtotal=new BigDecimal(0);
 
     @Excel(name = "人数",groupName = "8月",  orderNum = "57")
-    private BigDecimal augHrmNumber;
+    private Integer augHrmNumber=0;
 
     @Excel(name = "金额",groupName = "8月",orderNum = "58")
-    private BigDecimal augGrossPay;
+    private BigDecimal augGrossPay=new BigDecimal(0);
 
     @Excel(name = "福利费",groupName = "8月",orderNum = "59")
-    private BigDecimal augWelfareAmountWeal;
+    private BigDecimal augWelfareAmountWeal=new BigDecimal(0);
 
     @Excel(name = "保险公积金",groupName = "8月",orderNum = "60")
-    private BigDecimal augIaf;
+    private BigDecimal augIaf=new BigDecimal(0);
 
     @Excel(name = "13、14月工资",groupName = "8月",orderNum = "61")
-    private BigDecimal augWelfareAmountSalaries;
+    private BigDecimal augWelfareAmountSalaries=new BigDecimal(0);
 
     @Excel(name = "年终奖",groupName = "8月",orderNum = "62")
-    private BigDecimal augWelfareAmountBonus;
+    private BigDecimal augWelfareAmountBonus=new BigDecimal(0);
 
     @Excel(name = "小计",groupName = "8月",orderNum = "63")
-    private BigDecimal augSubtotal;
+    private BigDecimal augSubtotal=new BigDecimal(0);
 
     @Excel(name = "人数",groupName = "9月",  orderNum = "63")
-    private BigDecimal sepHrmNumber;
+    private Integer sepHrmNumber=0;
 
     @Excel(name = "金额",groupName = "9月",orderNum = "65")
-    private BigDecimal sepGrossPay;
+    private BigDecimal sepGrossPay=new BigDecimal(0);
 
     @Excel(name = "福利费",groupName = "9月",orderNum = "66")
-    private BigDecimal sepWelfareAmountWeal;
+    private BigDecimal sepWelfareAmountWeal=new BigDecimal(0);
 
     @Excel(name = "保险公积金",groupName = "9月",orderNum = "67")
-    private BigDecimal sepIaf;
+    private BigDecimal sepIaf=new BigDecimal(0);
 
     @Excel(name = "13、14月工资",groupName = "9月",orderNum = "68")
-    private BigDecimal sepWelfareAmountSalaries;
+    private BigDecimal sepWelfareAmountSalaries=new BigDecimal(0);
 
     @Excel(name = "年终奖",groupName = "9月",orderNum = "69")
-    private BigDecimal sepWelfareAmountBonus;
+    private BigDecimal sepWelfareAmountBonus=new BigDecimal(0);
 
     @Excel(name = "小计",groupName = "9月",orderNum = "70")
-    private BigDecimal sepSubtotal;
+    private BigDecimal sepSubtotal=new BigDecimal(0);
 
     @Excel(name = "人数",groupName = "10月",  orderNum = "71")
-    private BigDecimal octHrmNumber;
+    private Integer octHrmNumber=0;
 
     @Excel(name = "金额",groupName = "10月",orderNum = "72")
-    private BigDecimal octGrossPay;
+    private BigDecimal octGrossPay=new BigDecimal(0);
 
     @Excel(name = "福利费",groupName = "10月",orderNum = "73")
-    private BigDecimal octWelfareAmountWeal;
+    private BigDecimal octWelfareAmountWeal=new BigDecimal(0);
 
     @Excel(name = "保险公积金",groupName = "10月",orderNum = "74")
-    private BigDecimal octIaf;
+    private BigDecimal octIaf=new BigDecimal(0);
 
     @Excel(name = "13、14月工资",groupName = "10月",orderNum = "75")
-    private BigDecimal octWelfareAmountSalaries;
+    private BigDecimal octWelfareAmountSalaries=new BigDecimal(0);
 
     @Excel(name = "年终奖",groupName = "10月",orderNum = "76")
-    private BigDecimal octWelfareAmountBonus;
+    private BigDecimal octWelfareAmountBonus=new BigDecimal(0);
 
     @Excel(name = "小计",groupName = "10月",orderNum = "77")
-    private BigDecimal octSubtotal;
+    private BigDecimal octSubtotal=new BigDecimal(0);
 
     @Excel(name = "人数",groupName = "11月",  orderNum = "78")
-    private BigDecimal novHrmNumber;
+    private Integer novHrmNumber=0;
 
     @Excel(name = "金额",groupName = "11月",orderNum = "79")
-    private BigDecimal novGrossPay;
+    private BigDecimal novGrossPay=new BigDecimal(0);
 
     @Excel(name = "福利费",groupName = "11月",orderNum = "80")
-    private BigDecimal novWelfareAmountWeal;
+    private BigDecimal novWelfareAmountWeal=new BigDecimal(0);
 
     @Excel(name = "保险公积金",groupName = "11月",orderNum = "81")
-    private BigDecimal novIaf;
+    private BigDecimal novIaf=new BigDecimal(0);
 
     @Excel(name = "13、14月工资",groupName = "11月",orderNum = "82")
-    private BigDecimal novWelfareAmountSalaries;
+    private BigDecimal novWelfareAmountSalaries=new BigDecimal(0);
 
     @Excel(name = "年终奖",groupName = "11月",orderNum = "83")
-    private BigDecimal novWelfareAmountBonus;
+    private BigDecimal novWelfareAmountBonus=new BigDecimal(0);
 
     @Excel(name = "小计",groupName = "11月",orderNum = "84")
-    private BigDecimal novSubtotal;
+    private BigDecimal novSubtotal=new BigDecimal(0);
 
     @Excel(name = "人数",groupName = "12月",  orderNum = "85")
-    private BigDecimal decHrmNumber;
+    private Integer decHrmNumber=0;
 
     @Excel(name = "金额",groupName = "12月",orderNum = "86")
-    private BigDecimal decGrossPay;
+    private BigDecimal decGrossPay=new BigDecimal(0);
 
     @Excel(name = "福利费",groupName = "12月",orderNum = "87")
-    private BigDecimal decWelfareAmountWeal;
+    private BigDecimal decWelfareAmountWeal=new BigDecimal(0);
 
     @Excel(name = "保险公积金",groupName = "12月",orderNum = "88")
-    private BigDecimal decIaf;
+    private BigDecimal decIaf=new BigDecimal(0);
 
     @Excel(name = "13、14月工资",groupName = "12月",orderNum = "89")
-    private BigDecimal decWelfareAmountSalaries;
+    private BigDecimal decWelfareAmountSalaries=new BigDecimal(0);
 
     @Excel(name = "年终奖",groupName = "12月",orderNum = "90")
-    private BigDecimal decWelfareAmountBonus;
+    private BigDecimal decWelfareAmountBonus=new BigDecimal(0);
 
     @Excel(name = "小计",groupName = "12月",orderNum = "91")
-    private BigDecimal decSubtotal;
+    private BigDecimal decSubtotal=new BigDecimal(0);
 
     @Excel(name = "人数",groupName = "1-12月",  orderNum = "92")
-    private BigDecimal wholeHrmNumber;
+    private Integer wholeHrmNumber=0;
 
     @Excel(name = "金额",groupName = "1-12月",orderNum = "93")
-    private BigDecimal wholeGrossPay;
+    private BigDecimal wholeGrossPay=new BigDecimal(0);
 
     @Excel(name = "福利费",groupName = "1-12月",orderNum = "94")
-    private BigDecimal wholeWelfareAmountWeal;
+    private BigDecimal wholeWelfareAmountWeal=new BigDecimal(0);
 
     @Excel(name = "保险公积金",groupName = "1-12月",orderNum = "95")
-    private BigDecimal wholeIaf;
+    private BigDecimal wholeIaf=new BigDecimal(0);
 
     @Excel(name = "13、14月工资",groupName = "1-12月",orderNum = "96")
-    private BigDecimal wholeWelfareAmountSalaries;
+    private BigDecimal wholeWelfareAmountSalaries=new BigDecimal(0);
 
     @Excel(name = "年终奖",groupName = "1-12月",orderNum = "97")
-    private BigDecimal wholeWelfareAmountBonus;
+    private BigDecimal wholeWelfareAmountBonus=new BigDecimal(0);
 
     @Excel(name = "小计",groupName = "1-12月",orderNum = "98")
-    private BigDecimal wholeSubtotal;
+    private BigDecimal wholeSubtotal=new BigDecimal(0);
+
+
 
 }
