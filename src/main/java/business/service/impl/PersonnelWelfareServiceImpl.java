@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -44,7 +45,7 @@ public class PersonnelWelfareServiceImpl extends ServiceImpl<PersonnelWelfareMap
     }
 
     @Override
-    public List<PersonnelWelfare> getPersonelWelflare(PersonnelWelfareVO personnelWelfareVO) {
-        return null;
+    public PersonnelWelfare getMonthlyWelfareSingle(PersonnelWelfareVO personnelWelfareVO) {
+        return personnelWelfareMapper.getMonthlyWelfareSingle(personnelWelfareVO.getWelfareDate(),personnelWelfareVO.getWorkcode());
     }
 }

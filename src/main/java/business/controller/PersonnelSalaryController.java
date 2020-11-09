@@ -56,6 +56,13 @@ public class PersonnelSalaryController {
         return Result.ok(iPersonnelWelfareService.getPersonnelWelfareList(personnelWelfareVO,pageNo,pageSize));
     }
 
+
+    @RequestMapping(value = "/queryWelfareSingle", method = RequestMethod.POST)
+    public Result<?> queryWelfareSingleList(
+            @RequestBody  PersonnelWelfareVO personnelWelfareVO) {
+        return Result.ok(iPersonnelWelfareService.getMonthlyWelfareSingle(personnelWelfareVO));
+    }
+
     /**
      * 校验手机号验证码
      * */

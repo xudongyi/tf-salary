@@ -1,10 +1,8 @@
 package business.controller;
 
-import business.bean.AdDeptTest;
 import business.bean.PersonnelSalary;
 import business.bean.PersonnelWelfare;
 import business.common.api.vo.Result;
-import business.service.IAdDeptTestService;
 import business.service.IPersonnelSalaryService;
 import business.service.IPersonnelWelfareService;
 import business.util.FileUtils;
@@ -30,9 +28,6 @@ public class ExcelImportController {
 
     @Resource
     private IPersonnelWelfareService personnelWelfareService;
-
-    @Resource
-    private IAdDeptTestService iAdDeptTestService;
 
     @RequestMapping(value = "/salaryImport", method = RequestMethod.POST)
     public Result<?> salaryImportExcel(@RequestParam("file") MultipartFile file,@RequestParam("uploadDate") String uploadDate) throws Exception {
@@ -148,30 +143,6 @@ public class ExcelImportController {
                 importList.add(welfareList.get(i));
             }
             personnelWelfareService.saveBatch(importList);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
-            return Result.error("上传失败！");
-        }
-        return Result.ok();
-    }
-
-    @RequestMapping(value = "/testImport", method = RequestMethod.POST)
-    public Result<?> testImport(@RequestParam("file") MultipartFile file) throws Exception {
-        List<AdDeptTest> deptList = FileUtils.importExcel(file, 0,1, AdDeptTest.class);
-        List<AdDeptTest> importList = new ArrayList<AdDeptTest>();
-        try {
-            for(int i=0;i<deptList.size();i++){
-                System.out.println(i);
-                if((deptList.get(i).getYgbh()==null||deptList.get(i).getYgbh().equals(""))&&
-                (deptList.get(i).getYgxm()==null||deptList.get(i).getYgxm().equals(""))&&
-                (deptList.get(i).getRylbdh()==null||deptList.get(i).getRylbdh().equals(""))&&
-                (deptList.get(i).getRylbsm()==null||deptList.get(i).getRylbsm().equals(""))){
-                    break;
-                }
-                importList.add(deptList.get(i));
-            }
-            iAdDeptTestService.saveBatch(importList);
         } catch (Exception e) {
             log.error(e.getMessage());
             e.printStackTrace();

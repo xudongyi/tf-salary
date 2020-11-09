@@ -41,4 +41,19 @@
     </if>
     GROUP BY TO_CHAR(OPERATE_TIME,'yyyy-mm')
 </select>
+
+
+    <select id="loginInfo" parameterType="business.vo.OperateLogVO" resultType="business.bean.OperateLog">
+        select * from (
+        select * from OPERATE_LOG where 1=1
+        <if test="userId != null">
+            and user_id= #{userId}
+        </if>
+        <if test="operateType != null">
+            and operate_type= #{operateType}
+        </if>
+        order by OPERATE_TIME desc)
+        where rownum &lt;= 2
+
+    </select>
 </mapper>

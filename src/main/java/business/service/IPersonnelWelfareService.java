@@ -6,10 +6,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IPersonnelWelfareService extends IService<PersonnelWelfare> {
 
     IPage<PersonnelWelfareVO> getPersonnelWelfareList(PersonnelWelfareVO personnelWelfareVO, Integer pageNo, Integer pageSize);
 
-    List<PersonnelWelfare> getPersonelWelflare(PersonnelWelfareVO personnelWelfareVO);
+    PersonnelWelfare getMonthlyWelfareSingle(PersonnelWelfareVO personnelWelfareVO);
+
 }

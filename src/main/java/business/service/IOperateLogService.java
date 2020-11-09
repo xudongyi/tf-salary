@@ -1,12 +1,13 @@
 package business.service;
 
-import business.bean.AuthUser;
 import business.bean.OperateLog;
 import business.emum.OperLogType;
 import business.vo.OperateLogVO;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 public interface IOperateLogService  extends IService<OperateLog> {
 
@@ -18,4 +19,6 @@ public interface IOperateLogService  extends IService<OperateLog> {
      * @return
      */
     IPage<OperateLog> queryLog(IPage<OperateLogVO> page, Wrapper<OperateLogVO> queryWrapper);
+
+    List<OperateLog> loginInfo(OperateLogVO operateLogVO);
 }

@@ -59,4 +59,16 @@ public class OperateLogController {
         MyBatisWapperUtil.doMultiFieldsOrder(queryWrapper,req.getParameterMap(),"t1");
         return Result.ok(iOperateLogService.queryLog(page,queryWrapper));
     }
+    @GetMapping(value = "/loginInfo")
+    public Result<?> loginInfo(
+            @ModelAttribute OperateLogVO operateLogVO) {
+        return Result.ok(iOperateLogService.loginInfo(operateLogVO));
+    }
+
+
+
+
+
+
+
 }

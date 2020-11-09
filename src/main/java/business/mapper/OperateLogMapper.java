@@ -29,5 +29,7 @@ public interface OperateLogMapper extends BaseMapper<OperateLog> {
 
     List<Map<String,Object>> getNoteTimesBetweenMonth(String staDate,String endDate);
 
+    List<OperateLog> loginInfo(OperateLogVO operateLogVO);
+
 
 }

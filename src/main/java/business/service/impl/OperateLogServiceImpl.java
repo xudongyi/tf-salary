@@ -19,6 +19,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class OperateLogServiceImpl extends ServiceImpl<OperateLogMapper, OperateLog> implements IOperateLogService {
@@ -56,4 +57,10 @@ public class OperateLogServiceImpl extends ServiceImpl<OperateLogMapper, Operate
     public IPage<OperateLog> queryLog(IPage<OperateLogVO> page,  Wrapper<OperateLogVO> queryWrapper) {
         return operateLogMapper.queryLog(page,queryWrapper);
     }
+
+    @Override
+    public List<OperateLog> loginInfo(OperateLogVO operateLogVO) {
+        return operateLogMapper.loginInfo(operateLogVO);
+    }
+
 }
