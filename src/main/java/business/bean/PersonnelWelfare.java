@@ -40,6 +40,7 @@ public class PersonnelWelfare extends Model<PersonnelWelfare> {
     private Float welfareAmountSalaries;
     private Float welfareAmountBonus;
     private Float welfareAmountWeal;
+    private String departCode;
 
 
 

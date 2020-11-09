@@ -26,6 +26,16 @@
         from personnel_welfare
         where welfare_date like concat(#{year},'-%')
     </select>
+
+    <select id="getMonthlyWelfareInfoByYear" resultType="Map">
+        SELECT WELFARE_DATE,COUNT(DISTINCT(WORKCODE)) RS,
+        NVL(SUM(WELFARE_AMOUNT_SALARIES), 0)/10000 SSX,
+        NVL(SUM(WELFARE_AMOUNT_BONUS), 0)/10000 JJ,
+        NVL(SUM(WELFARE_AMOUNT_WEAL), 0)/10000 FL
+        FROM PERSONNEL_WELFARE
+        WHERE WELFARE_DATE LIKE CONCAT(#{year},'-%')
+        GROUP BY WELFARE_DATE
+    </select>
     <select id="getMonthlyWelfareSingle" resultType="Map">
             select workcode,welfare_date,sum(welfare_amount_salaries) welfare_amount_salaries,sum(welfare_amount_bonus) welfare_amount_bonus,sum(welfare_amount_weal) welfare_amount_weal from personnel_welfare
             group by workcode,welfare_date

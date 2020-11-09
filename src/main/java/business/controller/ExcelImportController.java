@@ -5,6 +5,7 @@ import business.bean.PersonnelSalary;
 import business.bean.PersonnelWelfare;
 import business.common.api.vo.Result;
 import business.service.IAdDeptTestService;
+import business.service.IHRService;
 import business.service.IPersonnelSalaryService;
 import business.service.IPersonnelWelfareService;
 import business.util.FileUtils;
@@ -19,7 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("import")
@@ -34,10 +37,15 @@ public class ExcelImportController {
     @Resource
     private IAdDeptTestService iAdDeptTestService;
 
+    @Resource
+    private IHRService iHRService;
+
     @RequestMapping(value = "/salaryImport", method = RequestMethod.POST)
     public Result<?> salaryImportExcel(@RequestParam("file") MultipartFile file,@RequestParam("uploadDate") String uploadDate) throws Exception {
         List<PersonnelSalary> salaryList = FileUtils.importExcel(file, 0,1, PersonnelSalary.class);
         List<PersonnelSalary> importList = new ArrayList<PersonnelSalary>();
+        Map deartCodeMap = iHRService.getAllHrmResource();
+
         for(int i=0;i<salaryList.size();i++){
             if((salaryList.get(i).getWorkcode()==null||salaryList.get(i).getWorkcode().equals(""))
                     &&(salaryList.get(i).getBasePay()==null||salaryList.get(i).getBasePay().equals(""))
@@ -85,6 +93,7 @@ public class ExcelImportController {
                     (salaryList.get(i).getNetSalary()==null||salaryList.get(i).getNetSalary().equals(""))){
                 return Result.error("第"+i+"薪资数据不能为空！");
             }
+            salaryList.get(i).setDepartCode(deartCodeMap.get(salaryList.get(i).getWorkcode()).toString());
             importList.add(salaryList.get(i));
         }
         try {
@@ -107,6 +116,8 @@ public class ExcelImportController {
     public Result<?> welfareImportExcel(@RequestParam("file") MultipartFile file) throws Exception {
         List<PersonnelWelfare> welfareList = FileUtils.importExcel(file, 0,1, PersonnelWelfare.class);
         List<PersonnelWelfare> importList = new ArrayList<PersonnelWelfare>();
+        Map deartCodeMap = iHRService.getAllHrmResource();
+
         try {
             for(int i=0;i<welfareList.size();i++){
                 if((welfareList.get(i).getWorkcode()==null||welfareList.get(i).getWorkcode().equals(""))
@@ -145,6 +156,7 @@ public class ExcelImportController {
                     welfareList.get(i).setWelfareAmountBonus(0f);
                     welfareList.get(i).setWelfareAmountWeal(welfareList.get(i).getWelfareAmount());
                 }
+                welfareList.get(i).setDepartCode(deartCodeMap.get(welfareList.get(i).getWorkcode()).toString());
                 importList.add(welfareList.get(i));
             }
             personnelWelfareService.saveBatch(importList);

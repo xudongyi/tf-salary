@@ -56,9 +56,8 @@ public class SalaryReportController {
      * @return
      */
     @RequestMapping(value = "/getMonthlyLaborCostByDept", method = RequestMethod.POST)
-    public Result<?> getMonthlyLaborCostByDept(@RequestParam("year") String year,@RequestParam("rate") Float rate, @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-                                               @RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
-        return Result.ok(iPersonnelSalaryService.getMonthlyLaborCostByDept(year,rate,pageNo,pageSize));
+    public Result<?> getMonthlyLaborCostByDept(@RequestParam("year") String year,@RequestParam("rate") Float rate,@RequestParam("site") String site,@RequestParam("tabId") String tabId) {
+        return Result.ok(iPersonnelSalaryService.getMonthlyLaborCostByDept(year,rate,site,tabId));
     }
 
     /**
@@ -66,17 +65,17 @@ public class SalaryReportController {
      * @return
      */
     @RequestMapping(value = "/getMonthlyLaborCostByManufacturingDept", method = RequestMethod.POST)
-    public Result<?> getMonthlyLaborCostByManufacturingDept(@RequestParam("year") String year,@RequestParam("rate") Float rate) {
-        List<ExcelDepartMonthVo> excelDepartMonthVoList = iPersonnelSalaryService.getMonthlyLaborCostByManufacturingDept(year,rate);
+    public Result<?> getMonthlyLaborCostByManufacturingDept(@RequestParam("year") String year,@RequestParam("rate") Float rate,@RequestParam("site") String site,@RequestParam("tabId") String tabId) {
+        List<ExcelDepartMonthVo> excelDepartMonthVoList = iPersonnelSalaryService.getMonthlyLaborCostByManufacturingDept(year,rate,site,tabId);
         List<ExcelDepartMonthDeptDetail> excelDepartMonthDeptDetailList = new ArrayList<ExcelDepartMonthDeptDetail>();
-        for(ExcelDepartMonthVo excelDepartMonthVo:excelDepartMonthVoList){
-            for(ExcelDepartMonthDept excelDepartMonthDept:excelDepartMonthVo.getExcelDepartMonthDepts()){
-                for(ExcelDepartMonthDeptDetail excelDepartMonthDeptDetail:excelDepartMonthDept.getExcelDepartMonthDeptDetails()){
-                    excelDepartMonthDeptDetailList.add(excelDepartMonthDeptDetail);
-                }
-            }
-        }
-        return Result.ok(excelDepartMonthDeptDetailList);
+//        for(ExcelDepartMonthVo excelDepartMonthVo:excelDepartMonthVoList){
+//            for(ExcelDepartMonthDept excelDepartMonthDept:excelDepartMonthVo.getExcelDepartMonthDepts()){
+//                for(ExcelDepartMonthDeptDetail excelDepartMonthDeptDetail:excelDepartMonthDept.getExcelDepartMonthDeptDetails()){
+//                    excelDepartMonthDeptDetailList.add(excelDepartMonthDeptDetail);
+//                }
+//            }
+//        }
+        return Result.ok(excelDepartMonthVoList);
     }
 
 
@@ -88,9 +87,9 @@ public class SalaryReportController {
      */
     @LoginIgnore
     @GetMapping(value = "/monthlyLaborCostByDeptExportExcel")
-    public void monthlyLaborCostByDeptExportExcel(HttpServletResponse response, @RequestParam("year") String year, @RequestParam("rate") Float rate) {
+    public void monthlyLaborCostByDeptExportExcel(HttpServletResponse response, @RequestParam("year") String year, @RequestParam("rate") Float rate,@RequestParam("site") String site,@RequestParam("tabId") String tabId) {
         //与简单导出一致
-        List<MonthlyLaborCostByDeptVo> monthlyLaborCostByDeptVoList = iPersonnelSalaryService.getMonthlyLaborCostByDept(year,rate);
+        List<MonthlyLaborCostByDeptVo> monthlyLaborCostByDeptVoList = iPersonnelSalaryService.getMonthlyLaborCostByDept(year,rate,site,tabId);
         //导出
         // excel总体设置
         ExportParams exportParams = new ExportParams();
@@ -112,8 +111,8 @@ public class SalaryReportController {
      */
     @LoginIgnore
     @GetMapping(value = "/monthlyLaborCostByManufacturingDeptExportExcel")
-    public void monthlyLaborCostByManufacturingDeptExportExcel(HttpServletResponse response, @RequestParam("year") String year, @RequestParam("rate") Float rate) {
-        List<ExcelDepartMonthVo> list = iPersonnelSalaryService.getMonthlyLaborCostByManufacturingDept(year,rate);
+    public void monthlyLaborCostByManufacturingDeptExportExcel(HttpServletResponse response, @RequestParam("year") String year, @RequestParam("rate") Float rate,@RequestParam("site") String site,@RequestParam("tabId")String tabId) {
+        List<ExcelDepartMonthVo> list = iPersonnelSalaryService.getMonthlyLaborCostByManufacturingDept(year,rate,site,tabId);
         ExportParams exportParams = new ExportParams();
         exportParams.setSheetName("sheet1");
         exportParams.setStyle(ExcelExportStyle.class);
@@ -171,22 +170,22 @@ public class SalaryReportController {
         ExcelExportEntity colEntity = new ExcelExportEntity("月份", "REMARK");
         colEntity.setWidth(15D);
         colList.add(colEntity);
-        colEntity = new ExcelExportEntity("人数", "HN");
+        colEntity = new ExcelExportEntity("人数", "RS");
         colEntity.setWidth(15D);
         colList.add(colEntity);
-        colEntity = new ExcelExportEntity("应发工资", "GP");
+        colEntity = new ExcelExportEntity("应发工资", "YFGZ");
         colEntity.setWidth(15D);
         colList.add(colEntity);
-        colEntity = new ExcelExportEntity("福利费", "IAF");
+        colEntity = new ExcelExportEntity("福利费", "FL");
         colEntity.setWidth(15D);
         colList.add(colEntity);
-        colEntity = new ExcelExportEntity("保险公积金", "WAS");
+        colEntity = new ExcelExportEntity("保险公积金", "GJJ");
         colEntity.setWidth(15D);
         colList.add(colEntity);
-        colEntity = new ExcelExportEntity("13、14月工资", "WAB");
+        colEntity = new ExcelExportEntity("13、14月工资", "SSX");
         colEntity.setWidth(15D);
         colList.add(colEntity);
-        colEntity = new ExcelExportEntity("年终奖", "WAW");
+        colEntity = new ExcelExportEntity("年终奖", "JJ");
         colEntity.setWidth(15D);
         colList.add(colEntity);
         colEntity = new ExcelExportEntity("合计", "TOTAL");

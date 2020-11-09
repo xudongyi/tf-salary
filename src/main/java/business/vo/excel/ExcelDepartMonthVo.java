@@ -22,8 +22,8 @@ public class ExcelDepartMonthVo implements Serializable {
     //子条目集合（这里是实现一对多的关键。name=""是为了不出现表头，如果不为空表头会多一层合并的单元格）
     @ExcelCollection(name = "")
     private List<ExcelDepartMonthDept> excelDepartMonthDepts;
- 
- 
+
+
  
  
  
