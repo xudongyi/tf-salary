@@ -32,13 +32,21 @@ public interface PersonnelSalaryMapper extends BaseMapper<PersonnelSalary> {
 
     Map<String, Object> getMonthlyLaborCost(String month);
 
-    List<Map<String,Object>> getMonthlySalaryInfoByYear(String year,Float rate);
+    List<Map<String,Object>> getMonthlySalaryInfoByYear(String year,Float rate,String site);
+
+    Map<String,Object> getWholeYearSalaryInfoByYear(String year,Float rate,String site);
 
     Map<String, Object> getYearlyLaborCost(String year);
 
     List<Map<String, Object>> getMonthlyLaborCostByDept(String year, Float rate,String site,String tabId);
 
+    List<ExcelDepartMonthDeptDetail> getMonthlyLaborCostByManufacturingDept(String year, Float rate,String site,String tabId);
+
+    List<ExcelDepartMonthDeptDetail> getMonthlyLaborCostByManufacturingStage(String year, Float rate,String site,String tabId);
+
     List<ExcelDepartMonthDeptDetail> getMonthlyLaborCostByDeptCode(String year, Float rate,String code1,String code2,String code3,String code4,String code5,String code6,String code7,String code8);
+
+    List<Map<String,Object>> getMonthlyLaborCostByType(String month, Float rate,String site,String tabId);
 
 
 }
