@@ -4,4 +4,8 @@
 <select id="getSalaryReportConfig" resultType="business.bean.SalaryReportConfig">
      select * from SALARY_REPORT_CONFIG where site = #{site} and tab_id = #{tabId} order by id
 </select>
+
+<select id="getStageGroup" resultType="Map">
+     SELECT COUNT(STAGE) STAGENUMBER,STAGE FROM SALARY_REPORT_CONFIG where TAB_ID = #{tabId} AND SITE =#{site} GROUP BY STAGE
+</select>
 </mapper>

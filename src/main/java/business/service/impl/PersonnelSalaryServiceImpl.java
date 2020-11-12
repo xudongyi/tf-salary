@@ -9,10 +9,7 @@ import business.mapper.PersonnelWelfareMapper;
 import business.mapper.SalaryReportConfigMapper;
 import business.service.IPersonnelSalaryService;
 import business.vo.PersonnelSalaryVO;
-import business.vo.excel.ExcelDepartMonthDept;
-import business.vo.excel.ExcelDepartMonthDeptDetail;
-import business.vo.excel.ExcelDepartMonthVo;
-import business.vo.excel.MonthlyLaborCostByDeptVo;
+import business.vo.excel.*;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -122,19 +119,10 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
     }
 
     @Override
-    public List<Map<String, Object>> getMonthlyLaborCost(String year, Float rate) {
+    public List<Map<String, Object>> getMonthlyLaborCost(String year, Float rate, String site) {
         List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
-        List<Map<String,Object>> monthlySalaryInfoList = personnelSalaryMapper.getMonthlySalaryInfoByYear(year,rate);
-        List<Map<String,Object>> monthlyWelfareInfoList = personnelWelfareMapper.getMonthlyWelfareInfoByYear(year);
-        Map<String,Object> yearResultMap = new LinkedHashMap<String,Object>();
-        yearResultMap.put("REMARK","合计");
-        Integer salaryRsAll = 0;
-        Float yfgzAll = 0f;
-        Float gjjAll = 0f;
-        Float ssxAll = 0f;
-        Float jjAll = 0f;
-        Float flAll = 0f;
-        Float subtotalAll = 0f;
+        List<Map<String,Object>> monthlySalaryInfoList = personnelSalaryMapper.getMonthlySalaryInfoByYear(year,rate,site);
+        Map<String,Object> wholeYearSalaryInfo = personnelSalaryMapper.getWholeYearSalaryInfoByYear(year,rate,site);
         for(int i=1;i<=12;i++){
             Map<String,Object> monthResultMap = new LinkedHashMap<String,Object>();
             String month = year+"-"+(String.valueOf(i).length()==1?"0"+String.valueOf(i):String.valueOf(i));
@@ -151,25 +139,12 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
                     salaryRs = Integer.parseInt(monthlySalaryInfoList.get(j).get("RS").toString());
                     yfgz = Float.parseFloat(monthlySalaryInfoList.get(j).get("YFGZ").toString());
                     gjj = Float.parseFloat(monthlySalaryInfoList.get(j).get("GJJ").toString());
+                    ssx = Float.parseFloat(monthlySalaryInfoList.get(j).get("SSX").toString());
+                    jj = Float.parseFloat(monthlySalaryInfoList.get(j).get("JJ").toString());
+                    fl = Float.parseFloat(monthlySalaryInfoList.get(j).get("FL").toString());
+                    subtotal = Float.parseFloat(monthlySalaryInfoList.get(j).get("TOTAL").toString());
                 }
             }
-            for(int j=0;j<monthlyWelfareInfoList.size();j++){
-                if(month.equals(monthlyWelfareInfoList.get(j).get("WELFARE_DATE"))){
-                    salaryRs = Integer.parseInt(monthlyWelfareInfoList.get(j).get("RS").toString())>salaryRs?Integer.parseInt(monthlyWelfareInfoList.get(j).get("RS").toString()):salaryRs;
-                    ssx = Float.parseFloat(monthlyWelfareInfoList.get(j).get("SSX").toString());
-                    jj = Float.parseFloat(monthlyWelfareInfoList.get(j).get("JJ").toString());
-                    fl = Float.parseFloat(monthlyWelfareInfoList.get(j).get("FL").toString());
-                }
-            }
-            subtotal = Float.parseFloat(new BigDecimal(subtotal).add(new BigDecimal(yfgz)).add(new BigDecimal(gjj)).add(new BigDecimal(ssx)).add(new BigDecimal(jj)).add(new BigDecimal(fl)).toString());
-            //一年合计
-            salaryRsAll = salaryRsAll+salaryRs;
-            yfgzAll = Float.parseFloat(new BigDecimal(yfgzAll).add(new BigDecimal(yfgz)).toString());
-            gjjAll = Float.parseFloat(new BigDecimal(gjjAll).add(new BigDecimal(gjj)).toString());
-            ssxAll = Float.parseFloat(new BigDecimal(ssxAll).add(new BigDecimal(ssx)).toString());
-            jjAll = Float.parseFloat(new BigDecimal(jjAll).add(new BigDecimal(jj)).toString());
-            flAll = Float.parseFloat(new BigDecimal(flAll).add(new BigDecimal(fl)).toString());
-            subtotalAll = Float.parseFloat(new BigDecimal(subtotalAll).add(new BigDecimal(subtotal)).toString());
             monthResultMap.put("RS",salaryRs);
             monthResultMap.put("YFGZ",yfgz);
             monthResultMap.put("GJJ",gjj);
@@ -179,14 +154,7 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
             monthResultMap.put("TOTAL",subtotal);
             resultList.add(monthResultMap);
         }
-        yearResultMap.put("RS",salaryRsAll);
-        yearResultMap.put("YFGZ",yfgzAll);
-        yearResultMap.put("GJJ",gjjAll);
-        yearResultMap.put("SSX",ssxAll);
-        yearResultMap.put("JJ",jjAll);
-        yearResultMap.put("FL",flAll);
-        yearResultMap.put("TOTAL",subtotalAll);
-        resultList.add(yearResultMap);
+        resultList.add(wholeYearSalaryInfo);
         return resultList;
     }
 
@@ -460,19 +428,194 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
     }
 
     @Override
-    public List<ExcelDepartMonthVo> getMonthlyLaborCostByManufacturingDept(String year, Float rate,String site,String tabId) {
-        List<SalaryReportConfig> salaryReportConfigList=salaryReportConfigMapper.getSalaryReportConfig(site,tabId);
-        List<Map<String,Object>> salaryDataList = personnelSalaryMapper.getMonthlyLaborCostByDept(year,rate,site,tabId);
+    public List<MonthlyLaborCostByTypeVo> getMonthlyLaborCostByType(String month, Float rate, String site, String tabId) {
+        List<MonthlyLaborCostByTypeVo> monthlyLaborCostByTypeVoList = new ArrayList<MonthlyLaborCostByTypeVo>();
+        //获取部门列
+        //01 工程技术人员
+        //02 业务技术管理人员
+        //03 生产作业人员
+        //04 生产保障人员
+        //05 后勤服务人员
+        //06 质量检验人员
+        //07 未定
 
+        List<SalaryReportConfig> salaryReportConfigList = salaryReportConfigMapper.getSalaryReportConfig(site,tabId);
+        List<Map<String,Object>> salaryDataInfoList = personnelSalaryMapper.getMonthlyLaborCostByType(month,rate,site,tabId);
+        for(SalaryReportConfig salaryReportConfig:salaryReportConfigList){
+            MonthlyLaborCostByTypeVo monthlyLaborCostByTypeVo = new MonthlyLaborCostByTypeVo();
+            monthlyLaborCostByTypeVo.setDepartName(salaryReportConfig.getDepartName());
+            for(Map<String,Object> salaryDataInfo:salaryDataInfoList){
+                if(salaryDataInfo.get("TYPE_ID").toString().equals("01")&&salaryDataInfo.get("MAINID").equals(salaryReportConfig.getId())){
+                    monthlyLaborCostByTypeVo.setEtHrmNumber(Integer.parseInt(salaryDataInfo.get("WORKCODE").toString()));
+                    monthlyLaborCostByTypeVo.setEtGrossPay(new BigDecimal(salaryDataInfo.get("GROSS_PAY").toString()));
+                    monthlyLaborCostByTypeVo.setEtAcFund(new BigDecimal(salaryDataInfo.get("HOUSEPOVIDENT_FUND").toString()));
+                    monthlyLaborCostByTypeVo.setEtIaf(new BigDecimal(salaryDataInfo.get("GJJ").toString()));
+                    monthlyLaborCostByTypeVo.setEtLoi(new BigDecimal(salaryDataInfo.get("UNEMPLOY_INSURANCE").toString()));
+                    monthlyLaborCostByTypeVo.setEtWelfareAmountSalaries(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_SALARIES").toString()));
+                    monthlyLaborCostByTypeVo.setEtWelfareAmountBonus(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_BONUS").toString()));
+                    monthlyLaborCostByTypeVo.setEtWelfareAmountWeal(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_WEAL").toString()));
+                    monthlyLaborCostByTypeVo.setEtSubtotal(new BigDecimal(salaryDataInfo.get("TOTAL").toString()));
+
+                    monthlyLaborCostByTypeVo.setMtTotalHrmNumber(monthlyLaborCostByTypeVo.getMtTotalHrmNumber()+Integer.parseInt(salaryDataInfo.get("WORKCODE").toString()));
+                    monthlyLaborCostByTypeVo.setMtTotalGrossPay(monthlyLaborCostByTypeVo.getMtTotalGrossPay().add(new BigDecimal(salaryDataInfo.get("GROSS_PAY").toString())));
+                    monthlyLaborCostByTypeVo.setMtTotalAcFund(monthlyLaborCostByTypeVo.getMtTotalAcFund().add(new BigDecimal(salaryDataInfo.get("HOUSEPOVIDENT_FUND").toString())));
+                    monthlyLaborCostByTypeVo.setMtTotalIaf(monthlyLaborCostByTypeVo.getMtTotalIaf().add(new BigDecimal(salaryDataInfo.get("GJJ").toString())));
+                    monthlyLaborCostByTypeVo.setMtTotalLoi(monthlyLaborCostByTypeVo.getMtTotalLoi().add(new BigDecimal(salaryDataInfo.get("UNEMPLOY_INSURANCE").toString())));
+                    monthlyLaborCostByTypeVo.setMtTotalWelfareAmountSalaries(monthlyLaborCostByTypeVo.getMtTotalWelfareAmountSalaries().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_SALARIES").toString())));
+                    monthlyLaborCostByTypeVo.setMtTotalWelfareAmountBonus(monthlyLaborCostByTypeVo.getMtTotalWelfareAmountBonus().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_BONUS").toString())));
+                    monthlyLaborCostByTypeVo.setMtTotalWelfareAmountWeal(monthlyLaborCostByTypeVo.getMtTotalWelfareAmountWeal().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_WEAL").toString())));
+                    monthlyLaborCostByTypeVo.setMtTotalSubtotal(monthlyLaborCostByTypeVo.getMtTotalSubtotal().add(new BigDecimal(salaryDataInfo.get("TOTAL").toString())));
+
+                    monthlyLaborCostByTypeVo.setTotalHrmNumber(monthlyLaborCostByTypeVo.getTotalHrmNumber()+Integer.parseInt(salaryDataInfo.get("WORKCODE").toString()));
+                    monthlyLaborCostByTypeVo.setTotalGrossPay(monthlyLaborCostByTypeVo.getTotalGrossPay().add(new BigDecimal(salaryDataInfo.get("GROSS_PAY").toString())));
+                    monthlyLaborCostByTypeVo.setTotalAcFund(monthlyLaborCostByTypeVo.getTotalAcFund().add(new BigDecimal(salaryDataInfo.get("HOUSEPOVIDENT_FUND").toString())));
+                    monthlyLaborCostByTypeVo.setTotalIaf(monthlyLaborCostByTypeVo.getTotalIaf().add(new BigDecimal(salaryDataInfo.get("GJJ").toString())));
+                    monthlyLaborCostByTypeVo.setTotalLoi(monthlyLaborCostByTypeVo.getTotalLoi().add(new BigDecimal(salaryDataInfo.get("UNEMPLOY_INSURANCE").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountSalaries(monthlyLaborCostByTypeVo.getTotalWelfareAmountSalaries().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_SALARIES").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountBonus(monthlyLaborCostByTypeVo.getTotalWelfareAmountBonus().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_BONUS").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountWeal(monthlyLaborCostByTypeVo.getTotalWelfareAmountWeal().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_WEAL").toString())));
+                    monthlyLaborCostByTypeVo.setTotalSubtotal(monthlyLaborCostByTypeVo.getTotalSubtotal().add(new BigDecimal(salaryDataInfo.get("TOTAL").toString())));
+                }else if(salaryDataInfo.get("TYPE_ID").toString().equals("02")&&salaryDataInfo.get("MAINID").equals(salaryReportConfig.getId())){
+                    monthlyLaborCostByTypeVo.setMtHrmNumber(Integer.parseInt(salaryDataInfo.get("WORKCODE").toString()));
+                    monthlyLaborCostByTypeVo.setMtGrossPay(new BigDecimal(salaryDataInfo.get("GROSS_PAY").toString()));
+                    monthlyLaborCostByTypeVo.setMtAcFund(new BigDecimal(salaryDataInfo.get("HOUSEPOVIDENT_FUND").toString()));
+                    monthlyLaborCostByTypeVo.setMtIaf(new BigDecimal(salaryDataInfo.get("GJJ").toString()));
+                    monthlyLaborCostByTypeVo.setMtLoi(new BigDecimal(salaryDataInfo.get("UNEMPLOY_INSURANCE").toString()));
+                    monthlyLaborCostByTypeVo.setMtWelfareAmountSalaries(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_SALARIES").toString()));
+                    monthlyLaborCostByTypeVo.setMtWelfareAmountBonus(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_BONUS").toString()));
+                    monthlyLaborCostByTypeVo.setMtWelfareAmountWeal(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_WEAL").toString()));
+                    monthlyLaborCostByTypeVo.setMtSubtotal(new BigDecimal(salaryDataInfo.get("TOTAL").toString()));
+
+                    monthlyLaborCostByTypeVo.setMtTotalHrmNumber(monthlyLaborCostByTypeVo.getMtTotalHrmNumber()+Integer.parseInt(salaryDataInfo.get("WORKCODE").toString()));
+                    monthlyLaborCostByTypeVo.setMtTotalGrossPay(monthlyLaborCostByTypeVo.getMtTotalGrossPay().add(new BigDecimal(salaryDataInfo.get("GROSS_PAY").toString())));
+                    monthlyLaborCostByTypeVo.setMtTotalAcFund(monthlyLaborCostByTypeVo.getMtTotalAcFund().add(new BigDecimal(salaryDataInfo.get("HOUSEPOVIDENT_FUND").toString())));
+                    monthlyLaborCostByTypeVo.setMtTotalIaf(monthlyLaborCostByTypeVo.getMtTotalIaf().add(new BigDecimal(salaryDataInfo.get("GJJ").toString())));
+                    monthlyLaborCostByTypeVo.setMtTotalLoi(monthlyLaborCostByTypeVo.getMtTotalLoi().add(new BigDecimal(salaryDataInfo.get("UNEMPLOY_INSURANCE").toString())));
+                    monthlyLaborCostByTypeVo.setMtTotalWelfareAmountSalaries(monthlyLaborCostByTypeVo.getMtTotalWelfareAmountSalaries().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_SALARIES").toString())));
+                    monthlyLaborCostByTypeVo.setMtTotalWelfareAmountBonus(monthlyLaborCostByTypeVo.getMtTotalWelfareAmountBonus().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_BONUS").toString())));
+                    monthlyLaborCostByTypeVo.setMtTotalWelfareAmountWeal(monthlyLaborCostByTypeVo.getMtTotalWelfareAmountWeal().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_WEAL").toString())));
+                    monthlyLaborCostByTypeVo.setMtTotalSubtotal(monthlyLaborCostByTypeVo.getMtTotalSubtotal().add(new BigDecimal(salaryDataInfo.get("TOTAL").toString())));
+
+                    monthlyLaborCostByTypeVo.setTotalHrmNumber(monthlyLaborCostByTypeVo.getTotalHrmNumber()+Integer.parseInt(salaryDataInfo.get("WORKCODE").toString()));
+                    monthlyLaborCostByTypeVo.setTotalGrossPay(monthlyLaborCostByTypeVo.getTotalGrossPay().add(new BigDecimal(salaryDataInfo.get("GROSS_PAY").toString())));
+                    monthlyLaborCostByTypeVo.setTotalAcFund(monthlyLaborCostByTypeVo.getTotalAcFund().add(new BigDecimal(salaryDataInfo.get("HOUSEPOVIDENT_FUND").toString())));
+                    monthlyLaborCostByTypeVo.setTotalIaf(monthlyLaborCostByTypeVo.getTotalIaf().add(new BigDecimal(salaryDataInfo.get("GJJ").toString())));
+                    monthlyLaborCostByTypeVo.setTotalLoi(monthlyLaborCostByTypeVo.getTotalLoi().add(new BigDecimal(salaryDataInfo.get("UNEMPLOY_INSURANCE").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountSalaries(monthlyLaborCostByTypeVo.getTotalWelfareAmountSalaries().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_SALARIES").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountBonus(monthlyLaborCostByTypeVo.getTotalWelfareAmountBonus().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_BONUS").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountWeal(monthlyLaborCostByTypeVo.getTotalWelfareAmountWeal().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_WEAL").toString())));
+                    monthlyLaborCostByTypeVo.setTotalSubtotal(monthlyLaborCostByTypeVo.getTotalSubtotal().add(new BigDecimal(salaryDataInfo.get("TOTAL").toString())));
+                }else if(salaryDataInfo.get("TYPE_ID").toString().equals("03")&&salaryDataInfo.get("MAINID").equals(salaryReportConfig.getId())){
+                    monthlyLaborCostByTypeVo.setProdHrmNumber(Integer.parseInt(salaryDataInfo.get("WORKCODE").toString()));
+                    monthlyLaborCostByTypeVo.setProdGrossPay(new BigDecimal(salaryDataInfo.get("GROSS_PAY").toString()));
+                    monthlyLaborCostByTypeVo.setProdAcFund(new BigDecimal(salaryDataInfo.get("HOUSEPOVIDENT_FUND").toString()));
+                    monthlyLaborCostByTypeVo.setProdIaf(new BigDecimal(salaryDataInfo.get("GJJ").toString()));
+                    monthlyLaborCostByTypeVo.setProdLoi(new BigDecimal(salaryDataInfo.get("UNEMPLOY_INSURANCE").toString()));
+                    monthlyLaborCostByTypeVo.setProdWelfareAmountSalaries(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_SALARIES").toString()));
+                    monthlyLaborCostByTypeVo.setProdWelfareAmountBonus(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_BONUS").toString()));
+                    monthlyLaborCostByTypeVo.setProdWelfareAmountWeal(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_WEAL").toString()));
+                    monthlyLaborCostByTypeVo.setProdSubtotal(new BigDecimal(salaryDataInfo.get("TOTAL").toString()));
+
+                    monthlyLaborCostByTypeVo.setTotalHrmNumber(monthlyLaborCostByTypeVo.getTotalHrmNumber()+Integer.parseInt(salaryDataInfo.get("WORKCODE").toString()));
+                    monthlyLaborCostByTypeVo.setTotalGrossPay(monthlyLaborCostByTypeVo.getTotalGrossPay().add(new BigDecimal(salaryDataInfo.get("GROSS_PAY").toString())));
+                    monthlyLaborCostByTypeVo.setTotalAcFund(monthlyLaborCostByTypeVo.getTotalAcFund().add(new BigDecimal(salaryDataInfo.get("HOUSEPOVIDENT_FUND").toString())));
+                    monthlyLaborCostByTypeVo.setTotalIaf(monthlyLaborCostByTypeVo.getTotalIaf().add(new BigDecimal(salaryDataInfo.get("GJJ").toString())));
+                    monthlyLaborCostByTypeVo.setTotalLoi(monthlyLaborCostByTypeVo.getTotalLoi().add(new BigDecimal(salaryDataInfo.get("UNEMPLOY_INSURANCE").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountSalaries(monthlyLaborCostByTypeVo.getTotalWelfareAmountSalaries().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_SALARIES").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountBonus(monthlyLaborCostByTypeVo.getTotalWelfareAmountBonus().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_BONUS").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountWeal(monthlyLaborCostByTypeVo.getTotalWelfareAmountWeal().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_WEAL").toString())));
+                    monthlyLaborCostByTypeVo.setTotalSubtotal(monthlyLaborCostByTypeVo.getTotalSubtotal().add(new BigDecimal(salaryDataInfo.get("TOTAL").toString())));
+                }else if(salaryDataInfo.get("TYPE_ID").toString().equals("04")&&salaryDataInfo.get("MAINID").equals(salaryReportConfig.getId())){
+                    monthlyLaborCostByTypeVo.setPsHrmNumber(Integer.parseInt(salaryDataInfo.get("WORKCODE").toString()));
+                    monthlyLaborCostByTypeVo.setPsGrossPay(new BigDecimal(salaryDataInfo.get("GROSS_PAY").toString()));
+                    monthlyLaborCostByTypeVo.setPsAcFund(new BigDecimal(salaryDataInfo.get("HOUSEPOVIDENT_FUND").toString()));
+                    monthlyLaborCostByTypeVo.setPsIaf(new BigDecimal(salaryDataInfo.get("GJJ").toString()));
+                    monthlyLaborCostByTypeVo.setPsLoi(new BigDecimal(salaryDataInfo.get("UNEMPLOY_INSURANCE").toString()));
+                    monthlyLaborCostByTypeVo.setPsWelfareAmountSalaries(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_SALARIES").toString()));
+                    monthlyLaborCostByTypeVo.setPsWelfareAmountBonus(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_BONUS").toString()));
+                    monthlyLaborCostByTypeVo.setPsWelfareAmountWeal(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_WEAL").toString()));
+                    monthlyLaborCostByTypeVo.setPsSubtotal(new BigDecimal(salaryDataInfo.get("TOTAL").toString()));
+
+                    monthlyLaborCostByTypeVo.setTotalHrmNumber(monthlyLaborCostByTypeVo.getTotalHrmNumber()+Integer.parseInt(salaryDataInfo.get("WORKCODE").toString()));
+                    monthlyLaborCostByTypeVo.setTotalGrossPay(monthlyLaborCostByTypeVo.getTotalGrossPay().add(new BigDecimal(salaryDataInfo.get("GROSS_PAY").toString())));
+                    monthlyLaborCostByTypeVo.setTotalAcFund(monthlyLaborCostByTypeVo.getTotalAcFund().add(new BigDecimal(salaryDataInfo.get("HOUSEPOVIDENT_FUND").toString())));
+                    monthlyLaborCostByTypeVo.setTotalIaf(monthlyLaborCostByTypeVo.getTotalIaf().add(new BigDecimal(salaryDataInfo.get("GJJ").toString())));
+                    monthlyLaborCostByTypeVo.setTotalLoi(monthlyLaborCostByTypeVo.getTotalLoi().add(new BigDecimal(salaryDataInfo.get("UNEMPLOY_INSURANCE").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountSalaries(monthlyLaborCostByTypeVo.getTotalWelfareAmountSalaries().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_SALARIES").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountBonus(monthlyLaborCostByTypeVo.getTotalWelfareAmountBonus().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_BONUS").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountWeal(monthlyLaborCostByTypeVo.getTotalWelfareAmountWeal().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_WEAL").toString())));
+                    monthlyLaborCostByTypeVo.setTotalSubtotal(monthlyLaborCostByTypeVo.getTotalSubtotal().add(new BigDecimal(salaryDataInfo.get("TOTAL").toString())));
+                }else if(salaryDataInfo.get("TYPE_ID").toString().equals("05")&&salaryDataInfo.get("MAINID").equals(salaryReportConfig.getId())){
+                    monthlyLaborCostByTypeVo.setLogisHrmNumber(Integer.parseInt(salaryDataInfo.get("WORKCODE").toString()));
+                    monthlyLaborCostByTypeVo.setLogisGrossPay(new BigDecimal(salaryDataInfo.get("GROSS_PAY").toString()));
+                    monthlyLaborCostByTypeVo.setLogisAcFund(new BigDecimal(salaryDataInfo.get("HOUSEPOVIDENT_FUND").toString()));
+                    monthlyLaborCostByTypeVo.setLogisIaf(new BigDecimal(salaryDataInfo.get("GJJ").toString()));
+                    monthlyLaborCostByTypeVo.setLogisLoi(new BigDecimal(salaryDataInfo.get("UNEMPLOY_INSURANCE").toString()));
+                    monthlyLaborCostByTypeVo.setLogisWelfareAmountSalaries(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_SALARIES").toString()));
+                    monthlyLaborCostByTypeVo.setLogisWelfareAmountBonus(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_BONUS").toString()));
+                    monthlyLaborCostByTypeVo.setLogisWelfareAmountWeal(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_WEAL").toString()));
+                    monthlyLaborCostByTypeVo.setLogisSubtotal(new BigDecimal(salaryDataInfo.get("TOTAL").toString()));
+
+                    monthlyLaborCostByTypeVo.setTotalHrmNumber(monthlyLaborCostByTypeVo.getTotalHrmNumber()+Integer.parseInt(salaryDataInfo.get("WORKCODE").toString()));
+                    monthlyLaborCostByTypeVo.setTotalGrossPay(monthlyLaborCostByTypeVo.getTotalGrossPay().add(new BigDecimal(salaryDataInfo.get("GROSS_PAY").toString())));
+                    monthlyLaborCostByTypeVo.setTotalAcFund(monthlyLaborCostByTypeVo.getTotalAcFund().add(new BigDecimal(salaryDataInfo.get("HOUSEPOVIDENT_FUND").toString())));
+                    monthlyLaborCostByTypeVo.setTotalIaf(monthlyLaborCostByTypeVo.getTotalIaf().add(new BigDecimal(salaryDataInfo.get("GJJ").toString())));
+                    monthlyLaborCostByTypeVo.setTotalLoi(monthlyLaborCostByTypeVo.getTotalLoi().add(new BigDecimal(salaryDataInfo.get("UNEMPLOY_INSURANCE").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountSalaries(monthlyLaborCostByTypeVo.getTotalWelfareAmountSalaries().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_SALARIES").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountBonus(monthlyLaborCostByTypeVo.getTotalWelfareAmountBonus().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_BONUS").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountWeal(monthlyLaborCostByTypeVo.getTotalWelfareAmountWeal().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_WEAL").toString())));
+                    monthlyLaborCostByTypeVo.setTotalSubtotal(monthlyLaborCostByTypeVo.getTotalSubtotal().add(new BigDecimal(salaryDataInfo.get("TOTAL").toString())));
+                }else if(salaryDataInfo.get("TYPE_ID").toString().equals("06")&&salaryDataInfo.get("MAINID").equals(salaryReportConfig.getId())){
+                    monthlyLaborCostByTypeVo.setQiHrmNumber(Integer.parseInt(salaryDataInfo.get("WORKCODE").toString()));
+                    monthlyLaborCostByTypeVo.setQiGrossPay(new BigDecimal(salaryDataInfo.get("GROSS_PAY").toString()));
+                    monthlyLaborCostByTypeVo.setQiAcFund(new BigDecimal(salaryDataInfo.get("HOUSEPOVIDENT_FUND").toString()));
+                    monthlyLaborCostByTypeVo.setQiIaf(new BigDecimal(salaryDataInfo.get("GJJ").toString()));
+                    monthlyLaborCostByTypeVo.setQiLoi(new BigDecimal(salaryDataInfo.get("UNEMPLOY_INSURANCE").toString()));
+                    monthlyLaborCostByTypeVo.setQiWelfareAmountSalaries(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_SALARIES").toString()));
+                    monthlyLaborCostByTypeVo.setQiWelfareAmountBonus(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_BONUS").toString()));
+                    monthlyLaborCostByTypeVo.setQiWelfareAmountWeal(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_WEAL").toString()));
+                    monthlyLaborCostByTypeVo.setQiSubtotal(new BigDecimal(salaryDataInfo.get("TOTAL").toString()));
+
+                    monthlyLaborCostByTypeVo.setTotalHrmNumber(monthlyLaborCostByTypeVo.getTotalHrmNumber()+Integer.parseInt(salaryDataInfo.get("WORKCODE").toString()));
+                    monthlyLaborCostByTypeVo.setTotalGrossPay(monthlyLaborCostByTypeVo.getTotalGrossPay().add(new BigDecimal(salaryDataInfo.get("GROSS_PAY").toString())));
+                    monthlyLaborCostByTypeVo.setTotalAcFund(monthlyLaborCostByTypeVo.getTotalAcFund().add(new BigDecimal(salaryDataInfo.get("HOUSEPOVIDENT_FUND").toString())));
+                    monthlyLaborCostByTypeVo.setTotalIaf(monthlyLaborCostByTypeVo.getTotalIaf().add(new BigDecimal(salaryDataInfo.get("GJJ").toString())));
+                    monthlyLaborCostByTypeVo.setTotalLoi(monthlyLaborCostByTypeVo.getTotalLoi().add(new BigDecimal(salaryDataInfo.get("UNEMPLOY_INSURANCE").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountSalaries(monthlyLaborCostByTypeVo.getTotalWelfareAmountSalaries().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_SALARIES").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountBonus(monthlyLaborCostByTypeVo.getTotalWelfareAmountBonus().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_BONUS").toString())));
+                    monthlyLaborCostByTypeVo.setTotalWelfareAmountWeal(monthlyLaborCostByTypeVo.getTotalWelfareAmountWeal().add(new BigDecimal(salaryDataInfo.get("WELFARE_AMOUNT_WEAL").toString())));
+                    monthlyLaborCostByTypeVo.setTotalSubtotal(monthlyLaborCostByTypeVo.getTotalSubtotal().add(new BigDecimal(salaryDataInfo.get("TOTAL").toString())));
+                }
+            }
+            monthlyLaborCostByTypeVoList.add(monthlyLaborCostByTypeVo);
+        }
+        return monthlyLaborCostByTypeVoList;
+    }
+
+    @Override
+    public List<ExcelDepartMonthVo> getMonthlyLaborCostByManufacturingDept(String year, Float rate,String site,String tabId) {
+        List<ExcelDepartMonthDeptDetail> salaryDataList = personnelSalaryMapper.getMonthlyLaborCostByManufacturingDept(year,rate,site,tabId);
+        List<ExcelDepartMonthDeptDetail> salarySubTotalDataList = personnelSalaryMapper.getMonthlyLaborCostByManufacturingStage(year,rate,site,tabId);
+        List<SalaryReportConfig> salaryReportConfigList=salaryReportConfigMapper.getSalaryReportConfig(site,tabId);
+        List<Map<String,Object>> stageGroupList= salaryReportConfigMapper.getStageGroup(site,tabId);
         List<ExcelDepartMonthVo> excelDepartMonthVoList = new ArrayList<ExcelDepartMonthVo>();
-        for(int i=1;i<=12;i++){
-            String month = year+"-"+(String.valueOf(i).length()==1?"0"+String.valueOf(i):String.valueOf(i));
+
+        for(int i=1;i<=14;i++){
+            String month;
+            if(i<=6){
+              month = year+"-"+(String.valueOf(i).length()==1?"0"+String.valueOf(i):String.valueOf(i));
+            }else if(i==7){
+                month = "1-6月";
+            }else if(i==14){
+                month = "1-12月";
+            }else{
+                month = year+"-"+(String.valueOf(i-1).length()==1?"0"+String.valueOf(i-1):String.valueOf(i-1));
+            }
             ExcelDepartMonthVo excelDepartMonthVo = new ExcelDepartMonthVo();
             //月份
             excelDepartMonthVo.setMonth(month);
             //月份子条目（分期）
             List<ExcelDepartMonthDept> excelDepartMonthDeptList= new ArrayList<ExcelDepartMonthDept>();
-
             //分期(开始进行分期处理)
             for(SalaryReportConfig salaryReportConfig:salaryReportConfigList){
                 Boolean hasStage = false;
@@ -490,18 +633,44 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
             }
 
             //遍历分期处理部门
-            for(ExcelDepartMonthDept excelDepartMonthDept:excelDepartMonthDeptList){
+            for(ExcelDepartMonthDept excelDepartMonthDept:excelDepartMonthDeptList){  //遍历当前月的分期
                 List<ExcelDepartMonthDeptDetail> excelDepartMonthDeptDetailList = new ArrayList<ExcelDepartMonthDeptDetail>();
-                for(SalaryReportConfig salaryReportConfig:salaryReportConfigList){
+                for(SalaryReportConfig salaryReportConfig:salaryReportConfigList){  //遍历部门
                     if(excelDepartMonthDept.getDeptName().equals(salaryReportConfig.getStage())){
-                        ExcelDepartMonthDeptDetail excelDepartMonthDeptDetail = new ExcelDepartMonthDeptDetail();
-                        excelDepartMonthDeptDetail.setSalaryDate(month);
-                        excelDepartMonthDeptDetail.setDepartName(salaryReportConfig.getDepartName());
-                        excelDepartMonthDeptDetailList.add(excelDepartMonthDeptDetail);
+                        ExcelDepartMonthDeptDetail newExcelDepartMonthDeptDetail = new ExcelDepartMonthDeptDetail();
+                        newExcelDepartMonthDeptDetail.setParDepartName(salaryReportConfig.getStage());
+                        newExcelDepartMonthDeptDetail.setDepartCode(salaryReportConfig.getId().toString());
+                        newExcelDepartMonthDeptDetail.setDepartName(salaryReportConfig.getDepartName());
+                        newExcelDepartMonthDeptDetail.setSalaryDate(month);
+                        for(ExcelDepartMonthDeptDetail salaryData:salaryDataList){
+                            if(salaryData.getSalaryDate().equals(month)&&salaryData.getDepartCode().equals(salaryReportConfig.getId().toString())){
+                                newExcelDepartMonthDeptDetail = salaryData;
+                            }
+                        }
+                        excelDepartMonthDeptDetailList.add(newExcelDepartMonthDeptDetail);
                     }
                 }
-            }
 
+
+
+
+                for(Map<String,Object> stageGroup:stageGroupList){
+                    //处理合计
+                    if(excelDepartMonthDept.getDeptName().equals(stageGroup.get("STAGE").toString())&&Integer.parseInt(stageGroup.get("STAGENUMBER").toString())>1){
+                        ExcelDepartMonthDeptDetail newExcelDepartMonthDeptDetail = new ExcelDepartMonthDeptDetail();
+                        newExcelDepartMonthDeptDetail.setParDepartName(excelDepartMonthDept.getDeptName());
+                        newExcelDepartMonthDeptDetail.setDepartName("合计");
+                        newExcelDepartMonthDeptDetail.setSalaryDate(month);
+                        for(ExcelDepartMonthDeptDetail salarySubTotalData:salarySubTotalDataList){
+                            if(salarySubTotalData.getSalaryDate().equals(month)&&salarySubTotalData.getParDepartName().equals(excelDepartMonthDept.getDeptName())){
+                                newExcelDepartMonthDeptDetail = salarySubTotalData;
+                            }
+                        }
+                        excelDepartMonthDeptDetailList.add(newExcelDepartMonthDeptDetail);
+                    }
+                }
+                excelDepartMonthDept.setExcelDepartMonthDeptDetails(excelDepartMonthDeptDetailList);
+            }
             excelDepartMonthVo.setExcelDepartMonthDepts(excelDepartMonthDeptList);
             excelDepartMonthVoList.add(excelDepartMonthVo);
         }

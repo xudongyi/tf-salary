@@ -5,6 +5,7 @@ import business.vo.PersonnelSalaryVO;
 import business.vo.excel.ExcelDepartMonthDeptDetail;
 import business.vo.excel.ExcelDepartMonthVo;
 import business.vo.excel.MonthlyLaborCostByDeptVo;
+import business.vo.excel.MonthlyLaborCostByTypeVo;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -22,9 +23,11 @@ public interface IPersonnelSalaryService extends IService<PersonnelSalary> {
 
     Map<String, Object> getReportBodyList(String staDate,String endDate);
 
-    List<Map<String, Object>> getMonthlyLaborCost(String year,Float rate);
+    List<Map<String, Object>> getMonthlyLaborCost(String year, Float rate, String site);
 
     List<MonthlyLaborCostByDeptVo> getMonthlyLaborCostByDept(String year, Float rate,String site,String tabId);
+
+    List<MonthlyLaborCostByTypeVo> getMonthlyLaborCostByType(String month, Float rate, String site, String tabId);
 
     List<ExcelDepartMonthVo> getMonthlyLaborCostByManufacturingDept(String year, Float rate,String site,String tabId);
 

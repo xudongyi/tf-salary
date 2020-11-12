@@ -10,4 +10,6 @@ import java.util.Map;
 public interface SalaryReportConfigMapper extends BaseMapper<SalaryReportConfig> {
     List<SalaryReportConfig> getSalaryReportConfig(String site,String tabId);
 
+    List<Map<String,Object>> getStageGroup(String site,String tabId);
+
 }

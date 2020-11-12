@@ -46,8 +46,8 @@ public class SalaryReportController {
      * @return
      */
     @RequestMapping(value = "/getMonthlyLaborCost", method = RequestMethod.POST)
-    public Result<?> getMonthlyLaborCost(@RequestParam("year") String year,@RequestParam("rate") Float rate) {
-        return Result.ok(iPersonnelSalaryService.getMonthlyLaborCost(year,rate));
+    public Result<?> getMonthlyLaborCost(@RequestParam("year") String year,@RequestParam("rate") Float rate,@RequestParam("site") String site) {
+        return Result.ok(iPersonnelSalaryService.getMonthlyLaborCost(year,rate,site));
     }
 
     /**
@@ -68,14 +68,24 @@ public class SalaryReportController {
     public Result<?> getMonthlyLaborCostByManufacturingDept(@RequestParam("year") String year,@RequestParam("rate") Float rate,@RequestParam("site") String site,@RequestParam("tabId") String tabId) {
         List<ExcelDepartMonthVo> excelDepartMonthVoList = iPersonnelSalaryService.getMonthlyLaborCostByManufacturingDept(year,rate,site,tabId);
         List<ExcelDepartMonthDeptDetail> excelDepartMonthDeptDetailList = new ArrayList<ExcelDepartMonthDeptDetail>();
-//        for(ExcelDepartMonthVo excelDepartMonthVo:excelDepartMonthVoList){
-//            for(ExcelDepartMonthDept excelDepartMonthDept:excelDepartMonthVo.getExcelDepartMonthDepts()){
-//                for(ExcelDepartMonthDeptDetail excelDepartMonthDeptDetail:excelDepartMonthDept.getExcelDepartMonthDeptDetails()){
-//                    excelDepartMonthDeptDetailList.add(excelDepartMonthDeptDetail);
-//                }
-//            }
-//        }
-        return Result.ok(excelDepartMonthVoList);
+        for(ExcelDepartMonthVo excelDepartMonthVo:excelDepartMonthVoList){
+            for(ExcelDepartMonthDept excelDepartMonthDept:excelDepartMonthVo.getExcelDepartMonthDepts()){
+                for(ExcelDepartMonthDeptDetail excelDepartMonthDeptDetail:excelDepartMonthDept.getExcelDepartMonthDeptDetails()){
+                    excelDepartMonthDeptDetailList.add(excelDepartMonthDeptDetail);
+                }
+            }
+        }
+        return Result.ok(excelDepartMonthDeptDetailList);
+    }
+
+    /**
+     * 按人员类别每月人工成本
+     * @param month
+     * @return
+     */
+    @RequestMapping(value = "/getMonthlyLaborCostByType", method = RequestMethod.POST)
+    public Result<?> getMonthlyLaborCostByType(@RequestParam("month") String month,@RequestParam("rate") Float rate,@RequestParam("site") String site,@RequestParam("tabId") String tabId) {
+        return Result.ok(iPersonnelSalaryService.getMonthlyLaborCostByType(month,rate,site,tabId));
     }
 
 
@@ -129,8 +139,8 @@ public class SalaryReportController {
 
     @LoginIgnore
     @GetMapping(value = "/exportMonthlyLaborCost")
-    public void exportMonthlyLaborCost(HttpServletResponse response, @RequestParam("year") String year, @RequestParam("rate") Float rate) {
-        List<Map<String, Object>> result = iPersonnelSalaryService.getMonthlyLaborCost(year, rate);
+    public void exportMonthlyLaborCost(HttpServletResponse response, @RequestParam("year") String year, @RequestParam("rate") Float rate,@RequestParam("site") String site) {
+        List<Map<String, Object>> result = iPersonnelSalaryService.getMonthlyLaborCost(year, rate,site);
         List<ExcelExportEntity> entityList = new ArrayList<>();
         entityList.add(new ExcelExportEntity("用户ID", "id", 15));
         entityList.add(new ExcelExportEntity("用户名", "name", 15));
@@ -147,8 +157,8 @@ public class SalaryReportController {
      */
     @LoginIgnore
     @GetMapping(value = "/directExportExcel")
-    public void directExportExcel(HttpServletResponse response, @RequestParam("year") String year, @RequestParam("rate") Float rate) {
-        List<Map<String, Object>> resultData = iPersonnelSalaryService.getMonthlyLaborCost(year, rate);
+    public void directExportExcel(HttpServletResponse response, @RequestParam("year") String year, @RequestParam("rate") Float rate,@RequestParam("site") String site) {
+        List<Map<String, Object>> resultData = iPersonnelSalaryService.getMonthlyLaborCost(year, rate,site);
         List<Map<String, Object>> rowDataList = new ArrayList<>();
         // Map作为每一行的数据容器，List作为行的容器
         Map<String, Object> aRowMap = new HashMap<>();
