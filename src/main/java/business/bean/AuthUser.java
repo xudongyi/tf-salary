@@ -26,6 +26,8 @@ public class AuthUser extends Model<AuthUser> {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    private String site;
+
     private Long hrmid;
 
     private String mobile;

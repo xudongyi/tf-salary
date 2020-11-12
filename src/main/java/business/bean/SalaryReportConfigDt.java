@@ -14,19 +14,13 @@ import java.math.BigDecimal;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("SALARY_REPORT_CONFIG")
-public class SalaryReportConfig extends Model<SalaryReportConfig> {
+@TableName("SALARY_REPORT_CONFIG_DT")
+public class SalaryReportConfigDt extends Model<SalaryReportConfigDt> {
 
     @TableId(type = IdType.AUTO)
     private BigDecimal id;
 
-    private String site;
+    private BigDecimal mainid;
 
-    private String stage;
-
-    private String departName;
-
-    private Integer sort;
-
-    private String tabId;
+    private String subDepart;
 }

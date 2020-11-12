@@ -56,4 +56,37 @@ public class HRServiceImpl implements IHRService {
         }
         return hrmResourceMap;
     }
+
+    @Override
+    public Result<?> subDepartMentAll(String departMentName) {
+        List<Map<String,Object>> departMentAll = hrMapper.subDepartMentAll(departMentName);
+        List<TreeSelectSimpleVO> treeSelectSimpleVOS = new ArrayList<>();
+        for(Map<String,Object> m : departMentAll){
+            TreeSelectSimpleVO vo = new TreeSelectSimpleVO();
+            vo.setId(m.get("DEPART_CODE").toString());
+            vo.setTitle(m.get("LABEL").toString());
+            vo.setSelectable(true);
+            vo.setValue(m.get("VALUE").toString());
+            treeSelectSimpleVOS.add(vo);
+        }
+        return Result.ok(treeSelectSimpleVOS);
+    }
+
+    @Override
+    public Result<?> departMentAllBySub(String subid) {
+        List<Map<String,Object>> departMentAll = hrMapper.departMentAllBySub(subid);
+        List<TreeSelectSimpleVO> treeSelectSimpleVOS = new ArrayList<>();
+        for(Map<String,Object> m : departMentAll){
+            TreeSelectSimpleVO vo = new TreeSelectSimpleVO();
+            vo.setId(m.get("DEPART_CODE").toString());
+            vo.setTitle(m.get("LABEL").toString());
+            if(m.containsKey("PID")&&m.get("PID")!=null){
+                vo.setpId(m.get("PID").toString());
+                vo.setSelectable(true);
+            }
+            vo.setValue(m.get("VALUE").toString());
+            treeSelectSimpleVOS.add(vo);
+        }
+        return Result.ok(treeSelectSimpleVOS);
+    }
 }

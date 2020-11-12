@@ -11,4 +11,11 @@ public interface HrMapper {
     List<Map<String,Object>> getHrmResource(String lastname);
 
     List<Map<String,Object>> getAllHrmResource();
+
+    List<Map<String,Object>> subDepartMentAll(String departMentName);
+
+    List<Map<String,Object>> departMentAllBySub(String subid);
+
+    Map<String,Object> getSiteDepartMent(String departMentCode);
+
 }

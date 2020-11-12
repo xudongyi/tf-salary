@@ -13,6 +13,8 @@ public class AuthUserVO {
      */
     private Long id;
 
+    private String site;
+
     /**
      * 登录名
      */

@@ -22,6 +22,17 @@ public class HRController {
     public Result<?> departMentAll(String departMentName) {
         return ihrService.departMentAll(departMentName);
     }
+
+    @GetMapping("/subDepartMentAll")
+    public Result<?> subDepartMentAll(String departMentName) {
+        return ihrService.subDepartMentAll(departMentName);
+    }
+
+    @GetMapping("/departMentAllBySub")
+    public Result<?> departMentAllBySub(String subid) {
+        return ihrService.departMentAllBySub(subid);
+    }
+
     @GetMapping("/getHrmResource")
     public Result<?> getHrmResource(@RequestParam(name="lastname") String lastname) {
         return ihrService.getHrmResource(lastname);

@@ -22,6 +22,8 @@ public class OAController {
     public Result<?> departMentAll(String departMentName) {
         return ioaService.departMentAll(departMentName);
     }
+
+
     @GetMapping("/getHrmResource")
     public Result<?> getHrmResource(@RequestParam(name="lastname", defaultValue="10") String lastname) {
         return ioaService.getHrmResource(lastname);

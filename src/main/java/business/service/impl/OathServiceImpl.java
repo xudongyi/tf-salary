@@ -87,6 +87,7 @@ public class OathServiceImpl implements IOauthService {
         authUserVO.setLastname(authUser.getLastname());
         authUserVO.setFirst_login(authUser.getFirstLogin());
         authUserVO.setWorkcode(authUser.getWorkcode());
+        authUserVO.setSite(authUser.getSite());
         //插入日志
         OperateLog operateLog = new OperateLog();
         operateLog.setOperateType(OperLogType.LOGIN.TYPE());
@@ -115,8 +116,12 @@ public class OathServiceImpl implements IOauthService {
                 .eq(AuthUser::getLoginid, authUserSSO.getLoginid()));
         if(authUser==null){
             Map<String,Object> hrmresource = hrmResourceMapper.getHrmResource(authUserSSO.getLoginid());
+            Map<String,Object> hrmInfo = hrMapper.getMobilePhone(authUserSSO.getWorkcode());
             if(hrmresource==null){
                 return Result.error(500,"OA系统中未找到该登录名，请核查信息！");
+            }
+            if(hrmInfo==null){
+                return Result.error(500,"HR系统中未找到该工号，请核查信息！");
             }
             //插入数据
             authUser = new AuthUser();
@@ -125,6 +130,7 @@ public class OathServiceImpl implements IOauthService {
             authUser.setWorkcode(hrmresource.get("WORKCODE").toString());
             authUser.setFirstLogin(0);
             authUser.setLastname(hrmresource.get("LASTNAME").toString());
+            authUser.setSite(hrMapper.getSiteDepartMent(hrmInfo.get("DEPART_CODE").toString()).get("DEPART_CODE").toString());
             authUserMapper.insert(authUser);
         }
         String token = JwtUtil.getSSOToken(authUserSSO);
