@@ -188,6 +188,7 @@ public class OathServiceImpl implements IOauthService {
         authUserSSO.setLastname(hrmresource.get("LASTNAME").toString());
         authUserSSO.setExpireTime(authToken.getExpireTime().getTime());
         authUserSSO.setFirst_login(authUser.getFirstLogin());
+        authUserSSO.setSite(authUser.getSite());
         return  Result.ok(authUserSSO);
     }
 
