@@ -43,4 +43,6 @@ public class AuthUserSSO {
 
     private int first_login;
 
+    private String site;
+
 }
