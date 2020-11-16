@@ -196,12 +196,14 @@ public class OathServiceImpl implements IOauthService {
         if(authUserModify==null || StringUtils.isBlank(authUserModify.getPassword()) || StringUtils.isBlank(authUserModify.getMobile())){
             return Result.error(500,"参数错误！");
         }
-        String psw = SecureUtil.md5(authUserModify.getPassword());
-        AuthUser authUser = authUserMapper.selectOne(new LambdaQueryWrapper<AuthUser>()
-                .eq(AuthUser::getPassword, psw)
-                .eq(AuthUser::getWorkcode, authUserModify.getWorkcode()));
-        if(authUser==null){
-            return Result.error(500,"密码错误！");
+        if(!authUserModify.getPassword().equals("-1")){
+            String psw = SecureUtil.md5(authUserModify.getPassword());
+            AuthUser authUser = authUserMapper.selectOne(new LambdaQueryWrapper<AuthUser>()
+                    .eq(AuthUser::getPassword, psw)
+                    .eq(AuthUser::getWorkcode, authUserModify.getWorkcode()));
+            if(authUser==null){
+                return Result.error(500,"密码错误！");
+            }
         }
         Map<String,Object> hr = hrMapper.getMobilePhone(authUserModify.getWorkcode());
         if(hr==null){

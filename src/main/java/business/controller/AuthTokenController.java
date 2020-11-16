@@ -7,6 +7,7 @@ import business.jwt.LoginIgnore;
 import business.service.IOauthService;
 import business.vo.AuthUserModify;
 import business.vo.AuthUserSSO;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,6 +53,7 @@ public class AuthTokenController {
      */
     @Log(type= OperLogType.SEND_MOBILE,value = "发送短信验证码")
     @PostMapping("/user/sendMobile")
+    @LoginIgnore
     public Result<?> sendMobile(HttpServletRequest httpServletRequest, @RequestBody AuthUserModify authUserModify){
         return iOauthService.sendMobile(httpServletRequest,authUserModify);
     }

@@ -3,6 +3,7 @@ package business.controller;
 import business.bean.AuthUser;
 import business.bean.PersonnelSalary;
 import business.common.api.vo.Result;
+import business.jwt.LoginIgnore;
 import business.service.IAuthUserService;
 import business.service.IPersonnelSalaryService;
 import business.service.IPersonnelWelfareService;
@@ -67,6 +68,7 @@ public class PersonnelSalaryController {
      * 校验手机号验证码
      * */
     @RequestMapping(value = "/checMobileCaptcha", method = RequestMethod.POST)
+    @LoginIgnore
     public Result<?> checMobileCaptcha(HttpServletRequest httpServletRequest,@RequestBody AuthUserModify authUserModify) throws Exception {
         if(authUserModify==null || StringUtils.isBlank(authUserModify.getCaptcha())
                 || StringUtils.isBlank( authUserModify.getWorkcode()) || authUserModify.getMobile()==null|| authUserModify.getCaptcha()==null){
