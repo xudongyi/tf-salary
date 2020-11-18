@@ -16,7 +16,7 @@ public interface PersonnelWelfareMapper extends BaseMapper<PersonnelWelfare> {
     /**
      * 薪资查询关联人员姓名
      */
-    IPage<PersonnelWelfareVO> getPersonnelWelfare(IPage<PersonnelWelfareVO> page, @Param(Constants.WRAPPER) Wrapper<PersonnelWelfareVO> queryWrapper);
+    IPage<PersonnelWelfareVO> getPersonnelWelfare(IPage<PersonnelWelfareVO> page, @Param(Constants.WRAPPER) Wrapper<PersonnelWelfareVO> queryWrapper,String site);
 
     Map<String, Object> getMonthlyLaborCost(String month);
 

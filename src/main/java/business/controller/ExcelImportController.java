@@ -42,6 +42,7 @@ public class ExcelImportController {
         Map deartCodeMap = iHRService.getAllHrmResource();
 
         for(int i=0;i<salaryList.size();i++){
+            salaryList.get(i).setSalaryDate(uploadDate);
             if((salaryList.get(i).getWorkcode()==null||salaryList.get(i).getWorkcode().equals(""))
                     &&(salaryList.get(i).getBasePay()==null||salaryList.get(i).getBasePay().equals(""))
                     &&(salaryList.get(i).getAssessmentPay()==null||salaryList.get(i).getAssessmentPay().equals(""))
@@ -87,6 +88,9 @@ public class ExcelImportController {
                     (salaryList.get(i).getMedicalInsurance()==null||salaryList.get(i).getMedicalInsurance().equals(""))||
                     (salaryList.get(i).getNetSalary()==null||salaryList.get(i).getNetSalary().equals(""))){
                 return Result.error("第"+i+"薪资数据不能为空！");
+            }
+            if(deartCodeMap.get(salaryList.get(i).getWorkcode())!=null){
+                salaryList.get(i).setDepartCode(deartCodeMap.get(salaryList.get(i).getWorkcode()).toString());
             }
             importList.add(salaryList.get(i));
         }

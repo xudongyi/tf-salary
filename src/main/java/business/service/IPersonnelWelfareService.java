@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface IPersonnelWelfareService extends IService<PersonnelWelfare> {
 
-    IPage<PersonnelWelfareVO> getPersonnelWelfareList(PersonnelWelfareVO personnelWelfareVO, Integer pageNo, Integer pageSize);
+    IPage<PersonnelWelfareVO> getPersonnelWelfareList(PersonnelWelfareVO personnelWelfareVO, String site,Integer pageNo, Integer pageSize);
 
     PersonnelWelfare getMonthlyWelfareSingle(PersonnelWelfareVO personnelWelfareVO);
 

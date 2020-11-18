@@ -88,6 +88,19 @@ public class SalaryReportController {
         return Result.ok(iPersonnelSalaryService.getMonthlyLaborCostByType(month,rate,site,tabId));
     }
 
+    /**
+     * 管技人员报表每月人工成本
+     * @return
+     */
+    @RequestMapping(value = "/getTypeLaborCostByDate", method = RequestMethod.POST)
+    public Result<?> getTypeLaborCostByDate(@RequestParam("year") String year,
+                                            @RequestParam("rate") Float rate,
+                                            @RequestParam("site") String site,
+                                            @RequestParam("tabId") String tabId,
+                                            @RequestParam("typeIds") String typeIds) {
+        return Result.ok(iPersonnelSalaryService.getTypeLaborCostByDate(year,rate,site,tabId,typeIds));
+    }
+
 
     /**
      * 直接导出(无需模板)
@@ -110,6 +123,55 @@ public class SalaryReportController {
             response.setCharacterEncoding("UTF-8");
             response.setHeader("content-Type", "application/vnd.ms-excel");
             response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("部门每月人工成本.xls", "UTF-8"));
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 按人员类别统计
+     */
+    @LoginIgnore
+    @GetMapping(value = "/monthlyLaborCostByTypeExportExcel")
+    public void monthlyLaborCostByTypeExportExcel(HttpServletResponse response, @RequestParam("month") String month,@RequestParam("rate") Float rate,@RequestParam("site") String site,@RequestParam("tabId") String tabId) {
+        List<MonthlyLaborCostByTypeVo> list = iPersonnelSalaryService.getMonthlyLaborCostByType(month,rate,site,tabId);
+        ExportParams exportParams = new ExportParams();
+        exportParams.setSheetName("sheet1");
+        exportParams.setStyle(ExcelExportStyle.class);
+        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, MonthlyLaborCostByTypeVo.class, list);
+        try {
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("按人员类别统计（"+month+").xls", "UTF-8"));
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 管技人员报表
+     */
+    @LoginIgnore
+    @GetMapping(value = "/typeLaborCostByDateExportExcel")
+    public void typeLaborCostByDateExportExcel(HttpServletResponse response, @RequestParam("year") String year,
+                                               @RequestParam("typeIds") String typeIds,
+                                               @RequestParam("rate") Float rate,
+                                               @RequestParam("site") String site,
+                                               @RequestParam("tabId") String tabId) {
+        //与简单导出一致
+        List<MonthlyLaborCostByDeptVo> monthlyLaborCostByDeptVoList = iPersonnelSalaryService.getTypeLaborCostByDate(year,rate,site,tabId,typeIds);
+        //导出
+        // excel总体设置
+        ExportParams exportParams = new ExportParams();
+        exportParams.setSheetName("sheet1");
+        exportParams.setStyle(ExcelExportStyle.class);
+        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, MonthlyLaborCostByDeptVo.class, monthlyLaborCostByDeptVoList);
+        try {
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("管技人员按部门统计.xls", "UTF-8"));
             workbook.write(response.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();

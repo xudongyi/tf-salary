@@ -2,13 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="business.mapper.PersonnelWelfareMapper">
     <select id="getPersonnelWelfare" resultType="business.vo.PersonnelWelfareVO">
-        SELECT
+        select * from (SELECT
         t1.*,t2.hr_name
         FROM
         personnel_welfare t1
-        LEFT JOIN hrp_fst.ad_employee_v@hr_test t2 ON t1.workcode =t2.hr_no
-        order by welfare_date desc,id desc
+        LEFT JOIN ad_employee_v t2 ON t1.workcode =t2.hr_no
         ${ew.customSqlSegment}
+        order by welfare_date desc,id desc) v
+                left join (select depart_code,#{site} site
+                    from AD_DEPART_V
+                    start with depart_code= #{site}
+                    Connect by prior depart_code = PARENTCODE) dv on dv.depart_code = v.depart_code
+        where dv.site is not null
     </select>
 
     <select id="getMonthlyLaborCost" resultType="Map">

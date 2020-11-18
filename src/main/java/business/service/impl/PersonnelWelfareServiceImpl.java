@@ -25,7 +25,7 @@ public class PersonnelWelfareServiceImpl extends ServiceImpl<PersonnelWelfareMap
     private PersonnelWelfareMapper personnelWelfareMapper;
 
     @Override
-    public IPage<PersonnelWelfareVO> getPersonnelWelfareList(PersonnelWelfareVO personnelWelfareVO, Integer pageNo, Integer pageSize) {
+    public IPage<PersonnelWelfareVO> getPersonnelWelfareList(PersonnelWelfareVO personnelWelfareVO, String site,Integer pageNo, Integer pageSize) {
         IPage<PersonnelWelfareVO> page = new Page<PersonnelWelfareVO>(pageNo, pageSize);
         QueryWrapper<PersonnelWelfareVO> welfareQueryWrapper = new QueryWrapper<>();
 
@@ -41,7 +41,7 @@ public class PersonnelWelfareServiceImpl extends ServiceImpl<PersonnelWelfareMap
         if(StringUtils.isNotBlank(personnelWelfareVO.getWelfareendmonth())){
             welfareQueryWrapper.le("t1.welfare_date", personnelWelfareVO.getWelfareendmonth());
         }
-        return personnelWelfareMapper.getPersonnelWelfare(page,welfareQueryWrapper);
+        return personnelWelfareMapper.getPersonnelWelfare(page,welfareQueryWrapper,site);
     }
 
     @Override

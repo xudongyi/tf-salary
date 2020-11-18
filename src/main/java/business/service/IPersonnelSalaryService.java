@@ -15,7 +15,7 @@ import java.util.Map;
 
 public interface IPersonnelSalaryService extends IService<PersonnelSalary> {
 
-    IPage<PersonnelSalaryVO> getPersonnelSalaryList(PersonnelSalaryVO personnelSalaryVo,Integer pageNo,Integer pageSize);
+    IPage<PersonnelSalaryVO> getPersonnelSalaryList(PersonnelSalaryVO personnelSalaryVo,String site,Integer pageNo,Integer pageSize);
 
     List<PersonnelSalaryVO> getPersonnelSalaryList(Wrapper<PersonnelSalaryVO> queryWrapper);
 
@@ -28,6 +28,8 @@ public interface IPersonnelSalaryService extends IService<PersonnelSalary> {
     List<MonthlyLaborCostByDeptVo> getMonthlyLaborCostByDept(String year, Float rate,String site,String tabId);
 
     List<MonthlyLaborCostByTypeVo> getMonthlyLaborCostByType(String month, Float rate, String site, String tabId);
+
+    List<MonthlyLaborCostByDeptVo> getTypeLaborCostByDate(String year, Float rate, String site, String tabId,String typeIds);
 
     List<ExcelDepartMonthVo> getMonthlyLaborCostByManufacturingDept(String year, Float rate,String site,String tabId);
 

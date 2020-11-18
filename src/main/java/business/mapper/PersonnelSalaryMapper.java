@@ -18,7 +18,7 @@ public interface PersonnelSalaryMapper extends BaseMapper<PersonnelSalary> {
     /**
      * 薪资查询关联人员姓名
      */
-    IPage<PersonnelSalaryVO> getPersonnelSalary(IPage<PersonnelSalaryVO> page,@Param(Constants.WRAPPER) Wrapper<PersonnelSalaryVO> queryWrapper);
+    IPage<PersonnelSalaryVO> getPersonnelSalary(IPage<PersonnelSalaryVO> page,@Param(Constants.WRAPPER) Wrapper<PersonnelSalaryVO> queryWrapper,String site);
 
     List<PersonnelSalaryVO> getPersonnelSalary(@Param(Constants.WRAPPER) Wrapper<PersonnelSalaryVO> queryWrapper);
 
@@ -43,6 +43,10 @@ public interface PersonnelSalaryMapper extends BaseMapper<PersonnelSalary> {
     List<ExcelDepartMonthDeptDetail> getMonthlyLaborCostByManufacturingDept(String year, Float rate,String site,String tabId);
 
     List<ExcelDepartMonthDeptDetail> getMonthlyLaborCostByManufacturingStage(String year, Float rate,String site,String tabId);
+
+    List<Map<String,Object>> getTypeLaborCostByDate(String year, Float rate, String site, String tabId,String typeIds);
+
+    List<Map<String,Object>> getTypeLaborTotalCostByDate(String year, Float rate, String site, String tabId,String typeIds);
 
     List<ExcelDepartMonthDeptDetail> getMonthlyLaborCostByDeptCode(String year, Float rate,String code1,String code2,String code3,String code4,String code5,String code6,String code7,String code8);
 
