@@ -2,18 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="business.mapper.HrMapper">
 <select id="getMobilePhone" resultType="Map">
-         select * from ad_employee_v where HR_NO=#{workcode}
+         select * from hrp_fst.AD_EMPLOYEE_V@hr_test where HR_NO=#{workcode}
     </select>
 <select id="departMentAll" resultType="Map">
     select DEPART_CODE,DEPART_NAME as label,DEPARTID,PARENTCODE as pid , CONCAT(CONCAT(DEPART_CODE,'_'),PARENTCODE) as value  from
-    AD_DEPART_V where status='N' and DEPART_NAME is not null and depart_code is not null
+    hrp_fst.AD_DEPART_V@hr_test where status='N' and DEPART_NAME is not null and depart_code is not null
     <if test="departMentName != null">
         AND DEPART_NAME like CONCAT(CONCAT('%',#{departMentName}),'%')
     </if>
 </select>
     <select id="subDepartMentAll" resultType="Map">
         select DEPART_CODE,DEPART_NAME as label,DEPARTID,PARENTCODE as pid , DEPART_CODE as value  from
-        AD_DEPART_V where status='N' and DEPART_NAME is not null and PARENTCODE is null
+        hrp_fst.AD_DEPART_V@hr_test where status='N' and DEPART_NAME is not null and PARENTCODE is null
         <if test="departMentName != null">
             AND DEPART_NAME like CONCAT(CONCAT('%',#{departMentName}),'%')
         </if>
@@ -21,13 +21,13 @@
 
     <select id="departMentAllBySub" resultType="Map">
         select distinct(depart_code),DEPART_NAME as label,DEPARTID,PARENTCODE as pid , DEPART_CODE as value
-        from AD_DEPART_V
+        from hrp_fst.AD_DEPART_V@hr_test
         where status='N' and DEPART_NAME is not null
         Start with depart_code=#{subid}
         Connect by prior depart_code=PARENTCODE
     </select>
 <select id="getHrmResource" resultType="Map">
-    SELECT t1.* FROM ad_employee_v t1
+    SELECT t1.* FROM hrp_fst.AD_EMPLOYEE_V@hr_test t1
     where 1=1
     <if test="lastname != null">
         AND t1.HR_NAME like CONCAT(CONCAT('%',#{lastname}),'%')
@@ -35,9 +35,9 @@
 </select>
 
 <select id="getAllHrmResource" resultType="Map">
-    SELECT DISTINCT(HR_NO),DEPART_CODE FROM ad_employee_v WHERE DEPART_CODE IS NOT NULL
+    SELECT DISTINCT(HR_NO),DEPART_CODE FROM hrp_fst.AD_EMPLOYEE_V@hr_test WHERE DEPART_CODE IS NOT NULL
 </select>
 <select id="getSiteDepartMent" resultType="Map">
-    select * from (SELECT * FROM AD_DEPART_V START WITH DEPART_CODE = #{departMentCode} CONNECT BY PRIOR PARENTCODE=DEPART_CODE) where  PARENTCODE is null ;
+    select * from (SELECT * FROM hrp_fst.AD_DEPART_V@hr_test START WITH DEPART_CODE = #{departMentCode} CONNECT BY PRIOR PARENTCODE=DEPART_CODE) where  PARENTCODE is null ;
 </select>
 </mapper>

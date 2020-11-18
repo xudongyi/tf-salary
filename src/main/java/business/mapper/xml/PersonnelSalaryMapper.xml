@@ -4,13 +4,13 @@
     <select id="getPersonnelSalary" resultType="business.vo.PersonnelSalaryVO">
        select * from (select t1.*,t2.hr_name,v1.welfare_amount_salaries,v1.welfare_amount_bonus,v1.welfare_amount_weal
         from personnel_salary t1
-        left join ad_employee_v t2 on t1.workcode =t2.hr_no
+        left join hrp_fst.AD_EMPLOYEE_V@hr_test t2 on t1.workcode =t2.hr_no
         left join (select workcode,welfare_date,sum(welfare_amount_salaries) welfare_amount_salaries,sum(welfare_amount_bonus) welfare_amount_bonus,sum(welfare_amount_weal) welfare_amount_weal from personnel_welfare group by workcode,welfare_date) v1
         on t1.salary_date = v1.welfare_date and t1.workcode = v1.workcode
         ${ew.customSqlSegment}
         order by t1.salary_date desc,t1.id desc) v
                 left join (select depart_code,#{site} site
-                    from AD_DEPART_V
+                    from hrp_fst.AD_DEPART_V@hr_test
                     start with depart_code= #{site}
                     Connect by prior depart_code = PARENTCODE) dv on dv.depart_code = v.depart_code
         where dv.site is not null
@@ -71,7 +71,7 @@
     from SALARY_REPORT_VIEW
     where depart_code in (
         select distinct(depart_code)
-        from AD_DEPART_V
+        from hrp_fst.AD_DEPART_V@hr_test
         Start with  depart_code=#{site}
         Connect by prior  depart_code=PARENTCODE)
         and salary_date like concat(#{year},'-%')
@@ -91,7 +91,7 @@
     from SALARY_REPORT_VIEW
     where depart_code in (
         select distinct(depart_code)
-        from AD_DEPART_V
+        from hrp_fst.AD_DEPART_V@hr_test
         Start with  depart_code=#{site}
         Connect by prior  depart_code=PARENTCODE)
         and salary_date like concat(#{year},'-%')
@@ -108,42 +108,42 @@
         nvl(sum(unemploy_insurance), 0) * #{rate} +nvl(sum(housepovident_fund), 0)+nvl(sum(gross_pay), 0)+nvl(sum(welfare_amount_salaries), 0)+nvl(sum(welfare_amount_bonus), 0)+nvl(sum(welfare_amount_weal), 0) total
         from (
         select depart_code,#{code1} top_code,'组装一期' depart_name,'A1' par_depart_name,'1' depart_sort
-        from AD_DEPART_V
+        from hrp_fst.AD_DEPART_V@hr_test
         start with depart_code = #{code1}
         connect by prior depart_code=parentcode
         union all
         select depart_code,#{code2} top_code,'测试一期' depart_name,'A1' par_depart_name,'2' depart_sort
-        from AD_DEPART_V
+        from hrp_fst.AD_DEPART_V@hr_test
         start with depart_code = #{code2}
         connect by prior depart_code=parentcode
         union all
         select depart_code,#{code3} top_code,'组装二期' depart_name,'D2' par_depart_name,'3' depart_sort
-        from AD_DEPART_V
+        from hrp_fst.AD_DEPART_V@hr_test
         start with depart_code = #{code3}
         connect by prior depart_code=parentcode
         union all
         select depart_code,#{code4} top_code,'测试二期' depart_name,'D2' par_depart_name,'4' depart_sort
-        from AD_DEPART_V
+        from hrp_fst.AD_DEPART_V@hr_test
         start with depart_code = #{code4}
         connect by prior depart_code=parentcode
         union all
         select depart_code,#{code5} top_code,'组装三期' depart_name,'C3' par_depart_name,'5' depart_sort
-        from AD_DEPART_V
+        from hrp_fst.AD_DEPART_V@hr_test
         start with depart_code = #{code5}
         connect by prior depart_code=parentcode
         union all
         select depart_code,#{code6} top_code,'测试三期' depart_name,'C3' par_depart_name,'6' depart_sort
-        from AD_DEPART_V
+        from hrp_fst.AD_DEPART_V@hr_test
         start with depart_code = #{code6}
         connect by prior depart_code=parentcode
         union all
         select depart_code,#{code7} top_code,'圆片级封装部' depart_name,'圆片级封装部' par_depart_name,'7' depart_sort
-        from AD_DEPART_V
+        from hrp_fst.AD_DEPART_V@hr_test
         start with depart_code = #{code7}
         connect by prior depart_code=parentcode
         union all
         select depart_code,#{code8} top_code,'表面处理中心' depart_name,'表面处理中心' par_depart_name,'8' depart_sort
-        from AD_DEPART_V
+        from hrp_fst.AD_DEPART_V@hr_test
         start with depart_code = #{code8}
         connect by prior depart_code=parentcode
         ) d left join (
@@ -162,7 +162,7 @@
         from (
         select t2.depart_code,t1.*,v1.welfare_amount_salaries,v1.welfare_amount_bonus,v1.welfare_amount_weal
         from personnel_salary t1
-        left join ad_employee_v t2 on t1.workcode = t2.hr_no
+        left join hrp_fst.AD_EMPLOYEE_V@hr_test t2 on t1.workcode = t2.hr_no
         left join (
         select workcode,welfare_date,
         sum(welfare_amount_salaries) welfare_amount_salaries,
@@ -240,7 +240,7 @@
             NVL(SUM(SRV.WELFARE_AMOUNT_BONUS),0) WELFARE_AMOUNT_BONUS,
             NVL(SUM(SRV.WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
         FROM SALARY_REPORT_VIEW SRV
-				LEFT JOIN ad_employee_v HR ON SRV.WORKCODE = HR.HR_NO
+				LEFT JOIN hrp_fst.AD_EMPLOYEE_V@hr_test HR ON SRV.WORKCODE = HR.HR_NO
         WHERE SRV.SALARY_DATE LIKE concat(#{year},'-%') AND HR.TYPE_ID IN ('01','02')
         GROUP BY SRV.DEPART_CODE,SRV.SALARY_DATE
     ) SRVV ON SRVV.DEPART_CODE = SRCD.SUB_DEPART
@@ -272,7 +272,7 @@
             NVL(SUM(SRV.WELFARE_AMOUNT_BONUS),0) WELFARE_AMOUNT_BONUS,
             NVL(SUM(SRV.WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
         FROM SALARY_REPORT_VIEW SRV
-				LEFT JOIN ad_employee_v HR ON SRV.WORKCODE = HR.HR_NO
+				LEFT JOIN hrp_fst.AD_EMPLOYEE_V@hr_test HR ON SRV.WORKCODE = HR.HR_NO
         WHERE SRV.SALARY_DATE LIKE concat(#{year},'-%') AND HR.TYPE_ID IN ('01','02')
         GROUP BY SRV.DEPART_CODE,SRV.SALARY_DATE
     ) SRVV ON SRVV.DEPART_CODE = SRCD.SUB_DEPART
@@ -392,7 +392,7 @@
             NVL(SUM(SRV.WELFARE_AMOUNT_BONUS),0) WELFARE_AMOUNT_BONUS,
             NVL(SUM(SRV.WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
         FROM SALARY_REPORT_VIEW SRV
-        LEFT JOIN ad_employee_v HR ON SRV.WORKCODE = HR.HR_NO
+        LEFT JOIN hrp_fst.AD_EMPLOYEE_V@hr_test HR ON SRV.WORKCODE = HR.HR_NO
         WHERE SRV.SALARY_DATE = #{month} AND HR.TYPE_ID IS NOT NULL
         GROUP BY SRV.DEPART_CODE,SRV.SALARY_DATE,HR.TYPE_ID,HR.TYPE_NOTE) SRVV ON SRVV.DEPART_CODE = SRCD.SUB_DEPART
     WHERE SRC.TAB_ID = #{tabId} AND SRC.SITE = #{site}
