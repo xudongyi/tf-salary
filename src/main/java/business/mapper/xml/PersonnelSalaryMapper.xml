@@ -9,9 +9,9 @@
         on t1.salary_date = v1.welfare_date and t1.workcode = v1.workcode
         ${ew.customSqlSegment}
         order by t1.salary_date desc,t1.id desc) v
-                left join (select depart_code,#{site} site
+                left join (select DEPARTID,#{site} site
                     from hrp_fst.AD_DEPART_V@hr_test
-                    start with depart_code= #{site}
+                    start with DEPARTID= #{site}
                     Connect by prior depart_code = PARENTCODE) dv on dv.depart_code = v.depart_code
         where dv.site is not null
     </select>

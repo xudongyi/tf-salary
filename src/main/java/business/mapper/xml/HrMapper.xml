@@ -5,26 +5,27 @@
          select * from hrp_fst.AD_EMPLOYEE_V@hr_test where HR_NO=#{workcode}
     </select>
 <select id="departMentAll" resultType="Map">
-    select DEPART_CODE,DEPART_NAME as label,DEPARTID,PARENTCODE as pid , CONCAT(CONCAT(DEPART_CODE,'_'),PARENTCODE) as value  from
-    hrp_fst.AD_DEPART_V@hr_test where status='N' and DEPART_NAME is not null and depart_code is not null
+    select t1.DEPART_CODE,t1.DEPART_NAME as label,t1.DEPARTID,t2.DEPARTID as PID ,CONCAT(CONCAT(t1.DEPARTID,'_'),t2.DEPARTID) as value from hrp_fst.AD_DEPART_V@hr_test t1
+    left join hrp_fst.AD_DEPART_V@hr_test t2 on t1.PARENTCODE = t2.DEPART_CODE
+     where t1.status='N' and t1.DEPART_NAME is not null and t1.depart_code is not null
     <if test="departMentName != null">
-        AND DEPART_NAME like CONCAT(CONCAT('%',#{departMentName}),'%')
+        AND t1.DEPART_NAME like CONCAT(CONCAT('%',#{departMentName}),'%')
     </if>
 </select>
     <select id="subDepartMentAll" resultType="Map">
-        select DEPART_CODE,DEPART_NAME as label,DEPARTID,PARENTCODE as pid , DEPART_CODE as value  from
-        hrp_fst.AD_DEPART_V@hr_test where status='N' and DEPART_NAME is not null and PARENTCODE is null
+        select t1.DEPART_CODE,t1.DEPART_NAME as label,t1.DEPARTID,t2.DEPARTID as PID ,t1.DEPARTID as value from hrp_fst.AD_DEPART_V@hr_test t1
+        left join hrp_fst.AD_DEPART_V@hr_test t2 on t1.PARENTCODE = t2.DEPART_CODE
+        where t1.status='N' and t1.DEPART_NAME is not null and t1.depart_code is not null and t2.DEPARTID is null
         <if test="departMentName != null">
-            AND DEPART_NAME like CONCAT(CONCAT('%',#{departMentName}),'%')
+            AND t1.DEPART_NAME like CONCAT(CONCAT('%',#{departMentName}),'%')
         </if>
     </select>
 
     <select id="departMentAllBySub" resultType="Map">
-        select distinct(depart_code),DEPART_NAME as label,DEPARTID,PARENTCODE as pid , DEPART_CODE as value
-        from hrp_fst.AD_DEPART_V@hr_test
-        where status='N' and DEPART_NAME is not null
-        Start with depart_code=#{subid}
-        Connect by prior depart_code=PARENTCODE
+        select t1.*,t1.DEPARTID as value,t2.DEPARTID as PID from (select distinct(depart_code),DEPART_NAME as label,DEPARTID,PARENTCODE
+        from hrp_fst.AD_DEPART_V@hr_test where status='N' and DEPART_NAME is not null Start with depart_code=(select depart_code from hrp_fst.AD_DEPART_V@hr_test
+        where DEPARTID=#{subid}) Connect by prior depart_code=PARENTCODE) t1 left join
+        (select * from hrp_fst.AD_DEPART_V@hr_test where status='N' and DEPART_NAME is not null) t2 on t1.PARENTCODE = t2.depart_code
     </select>
 <select id="getHrmResource" resultType="Map">
     SELECT t1.* FROM hrp_fst.AD_EMPLOYEE_V@hr_test t1
@@ -35,9 +36,9 @@
 </select>
 
 <select id="getAllHrmResource" resultType="Map">
-    SELECT DISTINCT(HR_NO),DEPART_CODE FROM hrp_fst.AD_EMPLOYEE_V@hr_test WHERE DEPART_CODE IS NOT NULL
+    SELECT DISTINCT(HR_NO),DEPARTID FROM hrp_fst.AD_EMPLOYEE_V@hr_test WHERE DEPART_CODE IS NOT NULL
 </select>
 <select id="getSiteDepartMent" resultType="Map">
-    select * from (SELECT * FROM hrp_fst.AD_DEPART_V@hr_test START WITH DEPART_CODE = #{departMentCode} CONNECT BY PRIOR PARENTCODE=DEPART_CODE) where  PARENTCODE is null ;
+    select * from (SELECT * FROM hrp_fst.AD_DEPART_V@hr_test START WITH DEPARTID = #{departMentId} CONNECT BY PRIOR PARENTCODE=DEPART_CODE) where  PARENTCODE is null ;
 </select>
 </mapper>

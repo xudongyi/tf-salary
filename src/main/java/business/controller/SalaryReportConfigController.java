@@ -39,7 +39,7 @@ public class SalaryReportConfigController {
         IPage<SalaryReportConfig> page = new Page<>(pageNo, pageSize);
         QueryWrapper<SalaryReportConfig> queryWrapper = new QueryWrapper<>();
         if(StringUtils.isNotBlank(salaryReportConfigVo.getSite())){
-            queryWrapper.eq("t2.DEPART_CODE", salaryReportConfigVo.getSite());
+            queryWrapper.eq("t3.DEPARTID", salaryReportConfigVo.getSite());
         }
         if(StringUtils.isNotBlank(salaryReportConfigVo.getTabId())){
             queryWrapper.eq("t1.TAB_ID", salaryReportConfigVo.getTabId());

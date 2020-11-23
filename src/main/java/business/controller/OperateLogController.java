@@ -51,7 +51,7 @@ public class OperateLogController {
             queryWrapper.eq("t2.hrids", operateLogVO.getUserId());
         }
         if (StringUtils.isNotBlank(operateLogVO.getDept())) {
-            queryWrapper.eq("t2.depart_code", operateLogVO.getDept().split("_")[0]);
+            queryWrapper.eq("t2.departid", operateLogVO.getDept().split("_")[0]);
         }
         if (StringUtils.isNotBlank(operateLogVO.getContent())) {
             queryWrapper.like("t1.content", operateLogVO.getContent());

@@ -22,7 +22,7 @@ public class HRServiceImpl implements IHRService {
         List<TreeSelectSimpleVO> treeSelectSimpleVOS = new ArrayList<>();
         for(Map<String,Object> m : departMentAll){
             TreeSelectSimpleVO vo = new TreeSelectSimpleVO();
-            vo.setId(m.get("DEPART_CODE").toString());
+            vo.setId(m.get("DEPARTID").toString());
             vo.setTitle(m.get("LABEL").toString());
             if(m.containsKey("PID")&&m.get("PID")!=null){
                 vo.setpId(m.get("PID").toString());
@@ -52,7 +52,7 @@ public class HRServiceImpl implements IHRService {
         List<Map<String,Object>> hrmResource = hrMapper.getAllHrmResource();
         Map<String,String> hrmResourceMap = new HashMap<String,String>();
         for(Map<String,Object> m :hrmResource){
-            hrmResourceMap.put(m.get("HR_NO").toString(),m.get("DEPART_CODE").toString());
+            hrmResourceMap.put(m.get("HR_NO").toString(),m.get("DEPARTID").toString());
         }
         return hrmResourceMap;
     }
@@ -63,7 +63,7 @@ public class HRServiceImpl implements IHRService {
         List<TreeSelectSimpleVO> treeSelectSimpleVOS = new ArrayList<>();
         for(Map<String,Object> m : departMentAll){
             TreeSelectSimpleVO vo = new TreeSelectSimpleVO();
-            vo.setId(m.get("DEPART_CODE").toString());
+            vo.setId(m.get("DEPARTID").toString());
             vo.setTitle(m.get("LABEL").toString());
             vo.setSelectable(true);
             vo.setValue(m.get("VALUE").toString());
@@ -78,7 +78,7 @@ public class HRServiceImpl implements IHRService {
         List<TreeSelectSimpleVO> treeSelectSimpleVOS = new ArrayList<>();
         for(Map<String,Object> m : departMentAll){
             TreeSelectSimpleVO vo = new TreeSelectSimpleVO();
-            vo.setId(m.get("DEPART_CODE").toString());
+            vo.setId(m.get("DEPARTID").toString());
             vo.setTitle(m.get("LABEL").toString());
             if(m.containsKey("PID")&&m.get("PID")!=null){
                 vo.setpId(m.get("PID").toString());

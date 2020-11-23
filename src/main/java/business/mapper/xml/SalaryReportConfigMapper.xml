@@ -5,9 +5,10 @@
      select * from SALARY_REPORT_CONFIG where site = #{site} and tab_id = #{tabId} order by id
 </select>
 <select id="getSalaryReportConfigList" resultType="business.bean.SalaryReportConfig">
-    select t1.ID, t1.STAGE,t2.label as SITE,t1.DEPART_NAME,t1.SORT,t1.TAB_ID from SALARY_REPORT_CONFIG t1
-    left join  (select DEPART_CODE,DEPART_NAME as label,DEPARTID,PARENTCODE as pid , CONCAT(CONCAT(DEPART_CODE,'_'),PARENTCODE) as value  from
-    hrp_fst.AD_DEPART_V@hr_test where status='N' and DEPART_NAME is not null) t2 on t1.site=t2.DEPART_CODE
+    select t1.ID, t1.STAGE,t3.label as SITE,t1.DEPART_NAME,t1.SORT,t1.TAB_ID from SALARY_REPORT_CONFIG t1
+    left join  (select t1.DEPART_CODE,t1.DEPART_NAME as label,t1.DEPARTID,t2.DEPARTID as PID ,t1.DEPARTID as value from hrp_fst.AD_DEPART_V@hr_test t1
+        left join hrp_fst.AD_DEPART_V@hr_test t2 on t1.PARENTCODE = t2.DEPART_CODE
+        where t1.status='N' and t1.DEPART_NAME is not null and t1.depart_code is not null and t2.DEPARTID is null) t3 on t1.site=t3.DEPARTID
     ${ew.customSqlSegment}
     order by t1.tab_id,t1.sort
 </select>

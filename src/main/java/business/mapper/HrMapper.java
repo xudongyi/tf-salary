@@ -16,6 +16,6 @@ public interface HrMapper {
 
     List<Map<String,Object>> departMentAllBySub(String subid);
 
-    Map<String,Object> getSiteDepartMent(String departMentCode);
+    Map<String,Object> getSiteDepartMent(String departMentId);
 
 }
