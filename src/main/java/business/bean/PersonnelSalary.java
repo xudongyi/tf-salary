@@ -100,5 +100,5 @@ public class PersonnelSalary extends Model<PersonnelSalary> {
     private Float netSalary;
     @Excel(name = "年月",orderNum="3")
     private String salaryDate;
-    private String departCode;
+    private String departid;
 }

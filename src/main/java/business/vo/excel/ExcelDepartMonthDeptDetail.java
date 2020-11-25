@@ -13,7 +13,7 @@ import java.util.List;
 public class ExcelDepartMonthDeptDetail implements Serializable {
     private static final long serialVersionUID = 6178454340122797296L;
     private String salaryDate;
-    private String departCode;
+    private String departId;
     private String parDepartName;
 
     @Excel(name = "部门",width = 20,needMerge = true)

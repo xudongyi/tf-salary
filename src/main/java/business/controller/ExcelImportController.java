@@ -90,7 +90,7 @@ public class ExcelImportController {
                 return Result.error("第"+i+"薪资数据不能为空！");
             }
             if(deartCodeMap.get(salaryList.get(i).getWorkcode())!=null){
-                salaryList.get(i).setDepartCode(deartCodeMap.get(salaryList.get(i).getWorkcode()).toString());
+                salaryList.get(i).setDepartid(deartCodeMap.get(salaryList.get(i).getWorkcode()).toString());
             }
             importList.add(salaryList.get(i));
         }
@@ -154,7 +154,9 @@ public class ExcelImportController {
                     welfareList.get(i).setWelfareAmountBonus(0f);
                     welfareList.get(i).setWelfareAmountWeal(welfareList.get(i).getWelfareAmount());
                 }
-                welfareList.get(i).setDepartCode(deartCodeMap.get(welfareList.get(i).getWorkcode()).toString());
+                if(deartCodeMap.get(welfareList.get(i).getWorkcode())!=null){
+                    welfareList.get(i).setDepartid(deartCodeMap.get(welfareList.get(i).getWorkcode()).toString());
+                }
                 importList.add(welfareList.get(i));
             }
             personnelWelfareService.saveBatch(importList);
