@@ -9,10 +9,10 @@
         on t1.salary_date = v1.welfare_date and t1.workcode = v1.workcode
         ${ew.customSqlSegment}
         order by t1.salary_date desc,t1.id desc) v
-                left join (select DEPARTID,#{site} site
-                    from hrp_fst.AD_DEPART_V@hr_test
-                    start with DEPARTID= #{site}
-                    Connect by prior depart_code = PARENTCODE) dv on dv.depart_code = v.depart_code
+                left join (select departid,#{site} site
+                from hrp_fst.AD_DEPART_V@hr_test
+                start with departid = #{site}
+                Connect by prior depart_code = PARENTCODE) dv on dv.departid = v.departid
         where dv.site is not null
     </select>
 
@@ -69,10 +69,10 @@
         NVL(SUM(UNEMPLOY_INSURANCE),0)*#{rate} + NVL(SUM(HOUSEPOVIDENT_FUND),0) GJJ,
         NVL(SUM(UNEMPLOY_INSURANCE),0)*#{rate} + NVL(SUM(HOUSEPOVIDENT_FUND),0)+NVL(SUM(GROSS_PAY),0)+NVL(SUM(WELFARE_AMOUNT_SALARIES),0)+NVL(SUM(WELFARE_AMOUNT_BONUS),0)+NVL(SUM(WELFARE_AMOUNT_WEAL),0) TOTAL
     from SALARY_REPORT_VIEW
-    where depart_code in (
-        select distinct(depart_code)
+    where departid in (
+        select distinct(departid)
         from hrp_fst.AD_DEPART_V@hr_test
-        Start with  depart_code=#{site}
+        Start with  departid=#{site}
         Connect by prior  depart_code=PARENTCODE)
         and salary_date like concat(#{year},'-%')
     GROUP BY SALARY_DATE
@@ -89,93 +89,14 @@
         NVL(SUM(UNEMPLOY_INSURANCE),0)*#{rate} + NVL(SUM(HOUSEPOVIDENT_FUND),0) GJJ,
         NVL(SUM(UNEMPLOY_INSURANCE),0)*#{rate} + NVL(SUM(HOUSEPOVIDENT_FUND),0)+NVL(SUM(GROSS_PAY),0)+NVL(SUM(WELFARE_AMOUNT_SALARIES),0)+NVL(SUM(WELFARE_AMOUNT_BONUS),0)+NVL(SUM(WELFARE_AMOUNT_WEAL),0) TOTAL
     from SALARY_REPORT_VIEW
-    where depart_code in (
-        select distinct(depart_code)
+    where departid in (
+        select distinct(departid)
         from hrp_fst.AD_DEPART_V@hr_test
-        Start with  depart_code=#{site}
+        Start with  departid=#{site}
         Connect by prior  depart_code=PARENTCODE)
         and salary_date like concat(#{year},'-%')
     </select>
 
-    <select id="getMonthlyLaborCostByDeptCode" resultType="business.vo.excel.ExcelDepartMonthDeptDetail">
-        select m.imonth salary_date,top_code depart_code,depart_name,par_depart_name,
-        nvl(sum(user_count), 0) user_count,
-        nvl(sum(gross_pay), 0) salary,
-        nvl(sum(welfare_amount_salaries), 0) other_salary,
-        nvl(sum(welfare_amount_bonus), 0) year_total,
-        nvl(sum(welfare_amount_weal), 0) flf,
-        nvl(sum(unemploy_insurance), 0) * #{rate} +nvl(sum(housepovident_fund), 0) gjj,
-        nvl(sum(unemploy_insurance), 0) * #{rate} +nvl(sum(housepovident_fund), 0)+nvl(sum(gross_pay), 0)+nvl(sum(welfare_amount_salaries), 0)+nvl(sum(welfare_amount_bonus), 0)+nvl(sum(welfare_amount_weal), 0) total
-        from (
-        select depart_code,#{code1} top_code,'组装一期' depart_name,'A1' par_depart_name,'1' depart_sort
-        from hrp_fst.AD_DEPART_V@hr_test
-        start with depart_code = #{code1}
-        connect by prior depart_code=parentcode
-        union all
-        select depart_code,#{code2} top_code,'测试一期' depart_name,'A1' par_depart_name,'2' depart_sort
-        from hrp_fst.AD_DEPART_V@hr_test
-        start with depart_code = #{code2}
-        connect by prior depart_code=parentcode
-        union all
-        select depart_code,#{code3} top_code,'组装二期' depart_name,'D2' par_depart_name,'3' depart_sort
-        from hrp_fst.AD_DEPART_V@hr_test
-        start with depart_code = #{code3}
-        connect by prior depart_code=parentcode
-        union all
-        select depart_code,#{code4} top_code,'测试二期' depart_name,'D2' par_depart_name,'4' depart_sort
-        from hrp_fst.AD_DEPART_V@hr_test
-        start with depart_code = #{code4}
-        connect by prior depart_code=parentcode
-        union all
-        select depart_code,#{code5} top_code,'组装三期' depart_name,'C3' par_depart_name,'5' depart_sort
-        from hrp_fst.AD_DEPART_V@hr_test
-        start with depart_code = #{code5}
-        connect by prior depart_code=parentcode
-        union all
-        select depart_code,#{code6} top_code,'测试三期' depart_name,'C3' par_depart_name,'6' depart_sort
-        from hrp_fst.AD_DEPART_V@hr_test
-        start with depart_code = #{code6}
-        connect by prior depart_code=parentcode
-        union all
-        select depart_code,#{code7} top_code,'圆片级封装部' depart_name,'圆片级封装部' par_depart_name,'7' depart_sort
-        from hrp_fst.AD_DEPART_V@hr_test
-        start with depart_code = #{code7}
-        connect by prior depart_code=parentcode
-        union all
-        select depart_code,#{code8} top_code,'表面处理中心' depart_name,'表面处理中心' par_depart_name,'8' depart_sort
-        from hrp_fst.AD_DEPART_V@hr_test
-        start with depart_code = #{code8}
-        connect by prior depart_code=parentcode
-        ) d left join (
-        select to_char(add_months(trunc(to_date(#{year},'yyyy'),'yyyy'),level-1),'yyyy-mm') imonth from dual connect by level &lt;=12
-        ) m on 1=1
-        left join (
-        select
-        depart_code,salary_date,
-        nvl(count(workcode), 0) user_count,
-        nvl(sum(gross_pay), 0) gross_pay,
-        nvl(sum(unemploy_insurance), 0) unemploy_insurance,
-        nvl(sum(housepovident_fund), 0) housepovident_fund,
-        nvl(sum(welfare_amount_salaries), 0) welfare_amount_salaries,
-        nvl(sum(welfare_amount_bonus), 0) welfare_amount_bonus,
-        nvl(sum(welfare_amount_weal), 0) welfare_amount_weal
-        from (
-        select t2.depart_code,t1.*,v1.welfare_amount_salaries,v1.welfare_amount_bonus,v1.welfare_amount_weal
-        from personnel_salary t1
-        left join hrp_fst.AD_EMPLOYEE_V@hr_test t2 on t1.workcode = t2.hr_no
-        left join (
-        select workcode,welfare_date,
-        sum(welfare_amount_salaries) welfare_amount_salaries,
-        sum(welfare_amount_bonus) welfare_amount_bonus,
-        sum(welfare_amount_weal) welfare_amount_weal
-        from personnel_welfare
-        group by workcode,welfare_date
-        ) v1
-        on t1.salary_date = v1.welfare_date and t1.workcode = v1.workcode
-        ) group by depart_code,salary_date
-        ) t on t.salary_date = m.imonth and t.depart_code = d.depart_code
-        group by imonth,top_code,depart_name,depart_sort,par_depart_name order by imonth,depart_sort
-    </select>
 
     <select id="getYearlyLaborCost" resultType="Map">
         select count(workcode) hrm_number,
@@ -201,7 +122,7 @@
         SUM(SRV.UNEMPLOY_INSURANCE)*#{rate} +SUM(SRV.HOUSEPOVIDENT_FUND)+SUM(SRV.GROSS_PAY)+SUM(SRV.WELFARE_AMOUNT_SALARIES)+SUM(SRV.WELFARE_AMOUNT_BONUS)+SUM(SRV.WELFARE_AMOUNT_WEAL) TOTAL
     FROM SALARY_REPORT_CONFIG_DT SRCD LEFT JOIN (
         SELECT
-            DEPART_CODE,SALARY_DATE,COUNT(WORKCODE) WORKCODE,
+            DEPARTID,SALARY_DATE,COUNT(WORKCODE) WORKCODE,
             NVL(SUM(GROSS_PAY),0) GROSS_PAY,
             NVL(SUM(UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,
             NVL(SUM(HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,
@@ -210,8 +131,8 @@
             NVL(SUM(WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
         FROM SALARY_REPORT_VIEW
         WHERE SALARY_DATE LIKE concat(#{year},'-%')
-        GROUP BY DEPART_CODE,SALARY_DATE
-    ) SRV ON SRV.DEPART_CODE = SRCD.SUB_DEPART
+        GROUP BY DEPARTID,SALARY_DATE
+    ) SRV ON SRV.DEPARTID = SRCD.SUB_DEPART
     WHERE SRCD.MAINID IN (
         SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId} AND SITE = #{site}) AND SRV.WORKCODE IS NOT NULL
     GROUP BY SRV.SALARY_DATE,SRCD.MAINID ORDER BY SRCD.MAINID
@@ -232,7 +153,7 @@
         SUM(SRVV.UNEMPLOY_INSURANCE)*#{rate} +SUM(SRVV.HOUSEPOVIDENT_FUND)+SUM(SRVV.GROSS_PAY)+SUM(SRVV.WELFARE_AMOUNT_SALARIES)+SUM(SRVV.WELFARE_AMOUNT_BONUS)+SUM(SRVV.WELFARE_AMOUNT_WEAL) TOTAL
     FROM SALARY_REPORT_CONFIG_DT SRCD LEFT JOIN (
         SELECT
-            SRV.DEPART_CODE,SRV.SALARY_DATE,COUNT(SRV.WORKCODE) WORKCODE,
+            SRV.DEPARTID,SRV.SALARY_DATE,COUNT(SRV.WORKCODE) WORKCODE,
             NVL(SUM(SRV.GROSS_PAY),0) GROSS_PAY,
             NVL(SUM(SRV.UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,
             NVL(SUM(SRV.HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,
@@ -242,8 +163,8 @@
         FROM SALARY_REPORT_VIEW SRV
 				LEFT JOIN hrp_fst.AD_EMPLOYEE_V@hr_test HR ON SRV.WORKCODE = HR.HR_NO
         WHERE SRV.SALARY_DATE LIKE concat(#{year},'-%') AND HR.TYPE_ID IN ('01','02')
-        GROUP BY SRV.DEPART_CODE,SRV.SALARY_DATE
-    ) SRVV ON SRVV.DEPART_CODE = SRCD.SUB_DEPART
+        GROUP BY SRV.DEPARTID,SRV.SALARY_DATE
+    ) SRVV ON SRVV.DEPARTID = SRCD.SUB_DEPART
     WHERE SRCD.MAINID IN (
         SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId} AND SITE = #{site}) AND SRVV.WORKCODE IS NOT NULL
     GROUP BY SRVV.SALARY_DATE,SRCD.MAINID ORDER BY SRCD.MAINID
@@ -264,7 +185,7 @@
         SUM(SRVV.UNEMPLOY_INSURANCE)*#{rate} +SUM(SRVV.HOUSEPOVIDENT_FUND)+SUM(SRVV.GROSS_PAY)+SUM(SRVV.WELFARE_AMOUNT_SALARIES)+SUM(SRVV.WELFARE_AMOUNT_BONUS)+SUM(SRVV.WELFARE_AMOUNT_WEAL) TOTAL
     FROM SALARY_REPORT_CONFIG_DT SRCD LEFT JOIN (
         SELECT
-            SRV.DEPART_CODE,SRV.SALARY_DATE,COUNT(SRV.WORKCODE) WORKCODE,
+            SRV.DEPARTID,SRV.SALARY_DATE,COUNT(SRV.WORKCODE) WORKCODE,
             NVL(SUM(SRV.GROSS_PAY),0) GROSS_PAY,
             NVL(SUM(SRV.UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,
             NVL(SUM(SRV.HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,
@@ -274,8 +195,8 @@
         FROM SALARY_REPORT_VIEW SRV
 				LEFT JOIN hrp_fst.AD_EMPLOYEE_V@hr_test HR ON SRV.WORKCODE = HR.HR_NO
         WHERE SRV.SALARY_DATE LIKE concat(#{year},'-%') AND HR.TYPE_ID IN ('01','02')
-        GROUP BY SRV.DEPART_CODE,SRV.SALARY_DATE
-    ) SRVV ON SRVV.DEPART_CODE = SRCD.SUB_DEPART
+        GROUP BY SRV.DEPARTID,SRV.SALARY_DATE
+    ) SRVV ON SRVV.DEPARTID = SRCD.SUB_DEPART
     WHERE SRCD.MAINID IN (
         SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId} AND SITE = #{site}) AND SRVV.WORKCODE IS NOT NULL
     GROUP BY SRVV.SALARY_DATE
@@ -285,7 +206,7 @@
     SELECT
         SRCV.STAGE PAR_DEPART_NAME,
         '合计' DEPART_NAME,
-        '' DEPART_CODE,
+        '' DEPARTID,
         SRV.SALARY_DATE,
         SUM(SRV.WORKCODE) USER_COUNT,
         SUM(SRV.GROSS_PAY) SALARY,
@@ -296,7 +217,7 @@
         SUM(SRV.UNEMPLOY_INSURANCE)*#{rate} +SUM(SRV.HOUSEPOVIDENT_FUND)+SUM(SRV.GROSS_PAY)+SUM(SRV.WELFARE_AMOUNT_SALARIES)+SUM(SRV.WELFARE_AMOUNT_BONUS)+SUM(SRV.WELFARE_AMOUNT_WEAL) TOTAL
     FROM SALARY_REPORT_CONFIG_DT SRCD LEFT JOIN (
         SELECT
-            DEPART_CODE,SALARY_DATE,COUNT(WORKCODE) WORKCODE,
+            DEPARTID,SALARY_DATE,COUNT(WORKCODE) WORKCODE,
             NVL(SUM(GROSS_PAY),0) GROSS_PAY,
             NVL(SUM(UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,
             NVL(SUM(HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,
@@ -305,20 +226,20 @@
             NVL(SUM(WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
         FROM SALARY_REPORT_VIEW
         WHERE SALARY_DATE LIKE concat(#{year},'-%')
-        GROUP BY DEPART_CODE,SALARY_DATE
+        GROUP BY DEPARTID,SALARY_DATE
         UNION ALL
 				SELECT
-            DEPART_CODE,'1-6月' SALARY_DATE,COUNT(WORKCODE) WORKCODE,NVL(SUM(GROSS_PAY),0) GROSS_PAY,NVL(SUM(UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,NVL(SUM(HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,NVL(SUM(WELFARE_AMOUNT_SALARIES),0) WELFARE_AMOUNT_SALARIES,NVL(SUM(WELFARE_AMOUNT_BONUS),0) WELFARE_AMOUNT_BONUS,NVL(SUM(WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
+            DEPARTID,'1-6月' SALARY_DATE,COUNT(WORKCODE) WORKCODE,NVL(SUM(GROSS_PAY),0) GROSS_PAY,NVL(SUM(UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,NVL(SUM(HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,NVL(SUM(WELFARE_AMOUNT_SALARIES),0) WELFARE_AMOUNT_SALARIES,NVL(SUM(WELFARE_AMOUNT_BONUS),0) WELFARE_AMOUNT_BONUS,NVL(SUM(WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
         FROM SALARY_REPORT_VIEW
         WHERE SALARY_DATE IN (concat(#{year},'-01'),concat(#{year},'-02'),concat(#{year},'-03'),concat(#{year},'-04'),concat(#{year},'-05'),concat(#{year},'-06'))
-        GROUP BY DEPART_CODE
+        GROUP BY DEPARTID
 				UNION ALL
 				SELECT
-            DEPART_CODE,'1-12月' SALARY_DATE,COUNT(WORKCODE) WORKCODE,NVL(SUM(GROSS_PAY),0) GROSS_PAY,NVL(SUM(UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,NVL(SUM(HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,NVL(SUM(WELFARE_AMOUNT_SALARIES),0) WELFARE_AMOUNT_SALARIES,NVL(SUM(WELFARE_AMOUNT_BONUS),0) WELFARE_AMOUNT_BONUS,NVL(SUM(WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
+            DEPARTID,'1-12月' SALARY_DATE,COUNT(WORKCODE) WORKCODE,NVL(SUM(GROSS_PAY),0) GROSS_PAY,NVL(SUM(UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,NVL(SUM(HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,NVL(SUM(WELFARE_AMOUNT_SALARIES),0) WELFARE_AMOUNT_SALARIES,NVL(SUM(WELFARE_AMOUNT_BONUS),0) WELFARE_AMOUNT_BONUS,NVL(SUM(WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
         FROM SALARY_REPORT_VIEW
         WHERE SALARY_DATE LIKE concat(#{year},'-%')
-        GROUP BY DEPART_CODE
-    ) SRV ON SRV.DEPART_CODE = SRCD.SUB_DEPART
+        GROUP BY DEPARTID
+    ) SRV ON SRV.DEPARTID = SRCD.SUB_DEPART
     LEFT JOIN (SELECT * FROM SALARY_REPORT_CONFIG WHERE SITE = #{site} AND TAB_ID = #{tabId}) SRCV ON SRCV.ID = SRCD.MAINID
     WHERE SRCD.MAINID IN (
         SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId} AND SITE = #{site}) AND SRV.WORKCODE IS NOT NULL
@@ -329,7 +250,7 @@
     SELECT
         SRCV.STAGE PAR_DEPART_NAME,
         SRCV.DEPART_NAME,
-        SRCD.MAINID DEPART_CODE,
+        SRCD.MAINID DEPARTID,
         SRV.SALARY_DATE,
         SUM(SRV.WORKCODE) USER_COUNT,
         SUM(SRV.GROSS_PAY) SALARY,
@@ -340,23 +261,23 @@
         SUM(SRV.UNEMPLOY_INSURANCE)*#{rate} +SUM(SRV.HOUSEPOVIDENT_FUND)+SUM(SRV.GROSS_PAY)+SUM(SRV.WELFARE_AMOUNT_SALARIES)+SUM(SRV.WELFARE_AMOUNT_BONUS)+SUM(SRV.WELFARE_AMOUNT_WEAL) TOTAL
     FROM SALARY_REPORT_CONFIG_DT SRCD LEFT JOIN (
         SELECT
-            DEPART_CODE,SALARY_DATE,COUNT(WORKCODE) WORKCODE,NVL(SUM(GROSS_PAY),0) GROSS_PAY,NVL(SUM(UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,NVL(SUM(HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,NVL(SUM(WELFARE_AMOUNT_SALARIES),0) WELFARE_AMOUNT_SALARIES,NVL(SUM(WELFARE_AMOUNT_BONUS),0) WELFARE_AMOUNT_BONUS,NVL(SUM(WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
+            DEPARTID,SALARY_DATE,COUNT(WORKCODE) WORKCODE,NVL(SUM(GROSS_PAY),0) GROSS_PAY,NVL(SUM(UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,NVL(SUM(HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,NVL(SUM(WELFARE_AMOUNT_SALARIES),0) WELFARE_AMOUNT_SALARIES,NVL(SUM(WELFARE_AMOUNT_BONUS),0) WELFARE_AMOUNT_BONUS,NVL(SUM(WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
         FROM SALARY_REPORT_VIEW
         WHERE SALARY_DATE LIKE concat(#{year},'-%')
-        GROUP BY DEPART_CODE,SALARY_DATE
+        GROUP BY DEPARTID,SALARY_DATE
         UNION ALL
 		SELECT
-            DEPART_CODE,'1-6月' SALARY_DATE,COUNT(WORKCODE) WORKCODE,NVL(SUM(GROSS_PAY),0) GROSS_PAY,NVL(SUM(UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,NVL(SUM(HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,NVL(SUM(WELFARE_AMOUNT_SALARIES),0) WELFARE_AMOUNT_SALARIES,NVL(SUM(WELFARE_AMOUNT_BONUS),0) WELFARE_AMOUNT_BONUS,NVL(SUM(WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
+            DEPARTID,'1-6月' SALARY_DATE,COUNT(WORKCODE) WORKCODE,NVL(SUM(GROSS_PAY),0) GROSS_PAY,NVL(SUM(UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,NVL(SUM(HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,NVL(SUM(WELFARE_AMOUNT_SALARIES),0) WELFARE_AMOUNT_SALARIES,NVL(SUM(WELFARE_AMOUNT_BONUS),0) WELFARE_AMOUNT_BONUS,NVL(SUM(WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
         FROM SALARY_REPORT_VIEW
         WHERE SALARY_DATE IN (concat(#{year},'-01'),concat(#{year},'-02'),concat(#{year},'-03'),concat(#{year},'-04'),concat(#{year},'-05'),concat(#{year},'-06'))
-        GROUP BY DEPART_CODE
+        GROUP BY DEPARTID
 				UNION ALL
 		SELECT
-            DEPART_CODE,'1-12月' SALARY_DATE,COUNT(WORKCODE) WORKCODE,NVL(SUM(GROSS_PAY),0) GROSS_PAY,NVL(SUM(UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,NVL(SUM(HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,NVL(SUM(WELFARE_AMOUNT_SALARIES),0) WELFARE_AMOUNT_SALARIES,NVL(SUM(WELFARE_AMOUNT_BONUS),0) WELFARE_AMOUNT_BONUS,NVL(SUM(WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
+            DEPARTID,'1-12月' SALARY_DATE,COUNT(WORKCODE) WORKCODE,NVL(SUM(GROSS_PAY),0) GROSS_PAY,NVL(SUM(UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,NVL(SUM(HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,NVL(SUM(WELFARE_AMOUNT_SALARIES),0) WELFARE_AMOUNT_SALARIES,NVL(SUM(WELFARE_AMOUNT_BONUS),0) WELFARE_AMOUNT_BONUS,NVL(SUM(WELFARE_AMOUNT_WEAL),0) WELFARE_AMOUNT_WEAL
         FROM SALARY_REPORT_VIEW
         WHERE SALARY_DATE LIKE concat(#{year},'-%')
-        GROUP BY DEPART_CODE
-    ) SRV ON SRV.DEPART_CODE = SRCD.SUB_DEPART
+        GROUP BY DEPARTID
+    ) SRV ON SRV.DEPARTID = SRCD.SUB_DEPART
     LEFT JOIN (SELECT * FROM SALARY_REPORT_CONFIG WHERE SITE = #{site} AND TAB_ID = #{tabId}) SRCV ON SRCV.ID = SRCD.MAINID
     WHERE SRCD.MAINID IN (
         SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId} AND SITE = #{site}) AND SRV.WORKCODE IS NOT NULL
@@ -384,7 +305,7 @@
     LEFT JOIN SALARY_REPORT_CONFIG SRC ON SRCD.MAINID = SRC.ID
     LEFT JOIN (
         SELECT
-            SRV.DEPART_CODE,SRV.SALARY_DATE,COUNT(SRV.WORKCODE) WORKCODE,HR.TYPE_ID,HR.TYPE_NOTE,
+            SRV.DEPARTID,SRV.SALARY_DATE,COUNT(SRV.WORKCODE) WORKCODE,HR.TYPE_ID,HR.TYPE_NOTE,
             NVL(SUM(SRV.GROSS_PAY),0) GROSS_PAY,
             NVL(SUM(SRV.UNEMPLOY_INSURANCE),0) UNEMPLOY_INSURANCE,
             NVL(SUM(SRV.HOUSEPOVIDENT_FUND),0) HOUSEPOVIDENT_FUND,
@@ -394,7 +315,7 @@
         FROM SALARY_REPORT_VIEW SRV
         LEFT JOIN hrp_fst.AD_EMPLOYEE_V@hr_test HR ON SRV.WORKCODE = HR.HR_NO
         WHERE SRV.SALARY_DATE = #{month} AND HR.TYPE_ID IS NOT NULL
-        GROUP BY SRV.DEPART_CODE,SRV.SALARY_DATE,HR.TYPE_ID,HR.TYPE_NOTE) SRVV ON SRVV.DEPART_CODE = SRCD.SUB_DEPART
+        GROUP BY SRV.DEPARTID,SRV.SALARY_DATE,HR.TYPE_ID,HR.TYPE_NOTE) SRVV ON SRVV.DEPARTID = SRCD.SUB_DEPART
     WHERE SRC.TAB_ID = #{tabId} AND SRC.SITE = #{site}
     GROUP BY SRVV.SALARY_DATE,SRCD.MAINID,SRC.DEPART_NAME,SRVV.TYPE_ID,SRVV.TYPE_NOTE
     </select>

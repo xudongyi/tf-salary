@@ -907,11 +907,11 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
                     if(excelDepartMonthDept.getDeptName().equals(salaryReportConfig.getStage())){
                         ExcelDepartMonthDeptDetail newExcelDepartMonthDeptDetail = new ExcelDepartMonthDeptDetail();
                         newExcelDepartMonthDeptDetail.setParDepartName(salaryReportConfig.getStage());
-                        newExcelDepartMonthDeptDetail.setDepartCode(salaryReportConfig.getId().toString());
+                        newExcelDepartMonthDeptDetail.setDepartId(salaryReportConfig.getId().toString());
                         newExcelDepartMonthDeptDetail.setDepartName(salaryReportConfig.getDepartName());
                         newExcelDepartMonthDeptDetail.setSalaryDate(month);
                         for(ExcelDepartMonthDeptDetail salaryData:salaryDataList){
-                            if(salaryData.getSalaryDate().equals(month)&&salaryData.getDepartCode().equals(salaryReportConfig.getId().toString())){
+                            if(salaryData.getSalaryDate().equals(month)&&salaryData.getDepartId().equals(salaryReportConfig.getId().toString())){
                                 newExcelDepartMonthDeptDetail = salaryData;
                             }
                         }
