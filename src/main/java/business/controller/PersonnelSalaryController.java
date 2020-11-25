@@ -73,7 +73,7 @@ public class PersonnelSalaryController {
     @LoginIgnore
     public Result<?> checMobileCaptcha(HttpServletRequest httpServletRequest,@RequestBody AuthUserModify authUserModify) throws Exception {
         if(authUserModify==null || StringUtils.isBlank(authUserModify.getCaptcha())
-                || StringUtils.isBlank( authUserModify.getWorkcode()) || authUserModify.getMobile()==null|| authUserModify.getCaptcha()==null){
+                || StringUtils.isBlank( authUserModify.getWorkcode()) || authUserModify.getMobile()==null|| authUserModify.getCaptcha()==null|| StringUtils.isBlank( authUserModify.getPassword())){
             return Result.error(500,"参数错误！");
         }
         //1.验证手机号和验证码是否匹配
@@ -89,22 +89,21 @@ public class PersonnelSalaryController {
      * */
     @RequestMapping(value = "/checkPassword", method = RequestMethod.POST)
     public Result<?> checkPassword(HttpServletRequest httpServletRequest,@RequestBody AuthUserModify authUserModify) throws Exception {
-//        if(authUserModify==null || StringUtils.isBlank(authUserModify.getCaptcha())
-//                ||StringUtils.isBlank( authUserModify.getWorkcode()) || authUserModify.getPassword()==null){
-//            return Result.error(500,"参数错误！");
-//        }
-//        //1.验证手机号和验证码是否匹配
-//        String result = CaptchaUtil.validate(authUserModify.getMobile(),authUserModify.getCaptcha());
-//        if(!result.equals("")){
-//            return Result.error(500,result);
-//        }
-
+        if(authUserModify==null || StringUtils.isBlank(authUserModify.getCaptcha())
+                ||StringUtils.isBlank( authUserModify.getWorkcode()) || authUserModify.getPassword()==null){
+            return Result.error(500,"参数错误！");
+        }
         QueryWrapper<AuthUser> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.eq("workcode",authUserModify.getWorkcode());
         userQueryWrapper.eq("password", SecureUtil.md5(authUserModify.getPassword()));
         List<AuthUser> userList = iAuthUserService.list(userQueryWrapper);
         if(userList.size()==0){
             return Result.error(500,"密码输入错误！");
+        }
+        //1.验证手机号和验证码是否匹配
+        String result = CaptchaUtil.validate(authUserModify.getMobile(),authUserModify.getCaptcha());
+        if(!result.equals("")){
+            return Result.error(500,result);
         }
         return Result.ok();
     }

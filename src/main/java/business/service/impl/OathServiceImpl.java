@@ -223,6 +223,16 @@ public class OathServiceImpl implements IOauthService {
         //TODO 发送短信
         String code = "888888";
         CaptchaUtil.save(authUserModify.getMobile(),code,180);
+        //插入日志
+        OperateLog operateLog = new OperateLog();
+        operateLog.setOperateType(OperLogType.SEND_MOBILE.TYPE());
+        operateLog.setUserId(authUserModify.getWorkcode());
+        operateLog.setIp(IpAddressUtil.getIp());
+        operateLog.setOperateTime(new Date());
+        operateLog.setOperateName(OperLogType.SEND_MOBILE.NAME());
+        operateLog.setContent("发送短信");
+        log.debug("loginLog===="+ operateLog);
+        iOperateLogService.save(operateLog);
         return Result.ok("发送成功,本月已发送："+list.size()+"次");
     }
 

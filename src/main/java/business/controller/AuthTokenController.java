@@ -51,7 +51,6 @@ public class AuthTokenController {
      * @param authUserModify
      * @return
      */
-    @Log(type= OperLogType.SEND_MOBILE,value = "发送短信验证码")
     @PostMapping("/user/sendMobile")
     @LoginIgnore
     public Result<?> sendMobile(HttpServletRequest httpServletRequest, @RequestBody AuthUserModify authUserModify){
@@ -64,6 +63,7 @@ public class AuthTokenController {
      * @return
      */
     @PostMapping("/user/modifyPassword")
+    @LoginIgnore
     public Result<?> modifyPassword(HttpServletRequest httpServletRequest, @RequestBody AuthUserModify authUserModify){
         return iOauthService.modifyPassword(httpServletRequest,authUserModify);
     }
