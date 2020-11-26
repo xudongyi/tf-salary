@@ -6,11 +6,11 @@
         t1.*,t2.hr_name
         FROM
         personnel_welfare t1
-        LEFT JOIN hrp_fst.AD_EMPLOYEE_V@hr_test t2 ON t1.workcode =t2.hr_no
+        LEFT JOIN AD_EMPLOYEE_V t2 ON t1.workcode =t2.hr_no
         ${ew.customSqlSegment}
         order by welfare_date desc,id desc) v
                 left join (select departid,#{site} site
-                from hrp_fst.AD_DEPART_V@hr_test
+                from ad_depart_v
                 start with departid = #{site}
                 Connect by prior depart_code = PARENTCODE) dv on dv.departid = v.departid
         where dv.site is not null
