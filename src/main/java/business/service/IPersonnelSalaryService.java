@@ -19,9 +19,9 @@ public interface IPersonnelSalaryService extends IService<PersonnelSalary> {
 
     List<PersonnelSalaryVO> getPersonnelSalaryList(Wrapper<PersonnelSalaryVO> queryWrapper);
 
-    Map<String, Object> getReportHeader();
+    Map<String, Object> getReportHeader(String site);
 
-    Map<String, Object> getReportBodyList(String staDate,String endDate);
+    Map<String, Object> getReportBodyList(String staDate,String endDate,String site);
 
     List<Map<String, Object>> getMonthlyLaborCost(String year, Float rate, String site);
 

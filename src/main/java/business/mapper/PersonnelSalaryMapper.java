@@ -22,13 +22,13 @@ public interface PersonnelSalaryMapper extends BaseMapper<PersonnelSalary> {
 
     List<PersonnelSalaryVO> getPersonnelSalary(@Param(Constants.WRAPPER) Wrapper<PersonnelSalaryVO> queryWrapper);
 
-    List<Map<String,Object>> getSalaryBetweenMonth(String staDate,String endDate);
+    List<Map<String,Object>> getSalaryBetweenMonth(String staDate,String endDate,String site);
 
-    List<Map<String,Object>> getSalaryByMonth(String month);
+    List<Map<String,Object>> getSalaryByMonth(String month,String site);
 
-    List<Map<String,Object>> getImportNumberByMonth(String month);
+    List<Map<String,Object>> getImportNumberByMonth(String month,String site);
 
-    List<Map<String,Object>> getSalaryRankByDepartment();
+    List<Map<String,Object>> getSalaryRankByDepartment(String month,String site);
 
     Map<String, Object> getMonthlyLaborCost(String month);
 

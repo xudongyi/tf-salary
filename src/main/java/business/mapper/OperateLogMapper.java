@@ -21,13 +21,13 @@ public interface OperateLogMapper extends BaseMapper<OperateLog> {
      */
     IPage<OperateLog> queryLog(IPage<OperateLogVO> page ,@Param(Constants.WRAPPER) Wrapper<OperateLogVO> queryWrapper);
 
-    List<Map<String,Object>> getVisitTimesByMonth(String month);
+    List<Map<String,Object>> getVisitTimesByMonth(String month,String site);
 
-    List<Map<String,Object>> getNoteNumberByMonth(String month);
+    List<Map<String,Object>> getNoteNumberByMonth(String month,String site);
 
-    List<Map<String,Object>> getNoteTimesRankByDepartment();
+    List<Map<String,Object>> getNoteTimesRankByDepartment(String month,String site);
 
-    List<Map<String,Object>> getNoteTimesBetweenMonth(String staDate,String endDate);
+    List<Map<String,Object>> getNoteTimesBetweenMonth(String staDate,String endDate,String site);
 
     List<OperateLog> loginInfo(OperateLogVO operateLogVO);
 

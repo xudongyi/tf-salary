@@ -7,39 +7,67 @@
 </select>
 
 <select id="getVisitTimesByMonth" resultType="Map">
-    select count(*) VISIT_TIMES from OPERATE_LOG where OPERATE_TYPE in (0,3) AND TO_CHAR(OPERATE_TIME,'yyyy-mm') = #{month}
+    select count(*) VISIT_TIMES
+    from OPERATE_LOG OL
+    LEFT JOIN AD_EMPLOYEE_V AEV ON OL.USER_ID = AEV.HR_NO
+    where OL.OPERATE_TYPE in (0,3)
+    AND TO_CHAR(OL.OPERATE_TIME,'yyyy-mm') = #{month}
+    AND AEV.DEPARTID
+    in (
+        select distinct(departid)
+        from ad_depart_v
+        Start with  departid=#{site}
+        Connect by prior  depart_code=PARENTCODE)
 </select>
 
 <select id="getNoteNumberByMonth" resultType="Map">
-    select count(*) NOTE_NUMBER from OPERATE_LOG where OPERATE_TYPE in (2) AND TO_CHAR(OPERATE_TIME,'yyyy-mm') = #{month}
+    select count(*) NOTE_NUMBER
+    from OPERATE_LOG OL
+    LEFT JOIN AD_EMPLOYEE_V AEV ON OL.USER_ID = AEV.HR_NO
+    where OL.OPERATE_TYPE in (2)
+    AND TO_CHAR(OL.OPERATE_TIME,'yyyy-mm') = #{month}
+    AND AEV.DEPARTID
+    in (
+        select distinct(departid)
+        from ad_depart_v
+        Start with  departid=#{site}
+        Connect by prior  depart_code=PARENTCODE)
 </select>
 
 
 <select id="getNoteTimesRankByDepartment" resultType="Map">
-        select u1.totalnumber,u2.departmentname
-    from (
-        select count(*) totalnumber,t3.DEPARTMENTID
-        from OPERATE_LOG t1
-        left join AUTH_USER t2 on t1.user_id = t2.loginid
-        left join HRMRESOURCE t3 on t2.workcode = t3.workcode
-        where t1.operate_type = '2'
-        group by t3.DEPARTMENTID
-        order by totalnumber desc) u1
-    left join HrmDepartment u2 on u1.departmentid = u2.id
-    where u2.id is not null and rownum &lt;9
+    select totalnumber,depart_name from (
+    select count(*) totalnumber,aev.departid,adv.depart_name from OPERATE_LOG ol
+    left join AD_EMPLOYEE_V aev on ol.user_id = aev.hr_no
+    left join AD_DEPART_V adv on aev.departid = adv.departid
+    where ol.operate_type = '2'
+    and TO_CHAR(OL.OPERATE_TIME,'yyyy-mm') = #{month}
+    and aev.departid is not null
+    and aev.departid in (select distinct(departid)
+    from ad_depart_v
+    Start with  departid=#{site}
+    Connect by prior  depart_code=PARENTCODE)
+    group by aev.departid,aev.departid,adv.depart_name
+    order by totalnumber desc)
+    where rownum &lt;9
 </select>
 
 <select id="getNoteTimesBetweenMonth" resultType="Map">
-    select count(*) note_times,TO_CHAR(OPERATE_TIME,'yyyy-mm') note_date
-    from OPERATE_LOG
-    where operate_type = '2'
+    select count(*) note_times,TO_CHAR(OL.OPERATE_TIME,'yyyy-mm') note_date
+    from OPERATE_LOG OL LEFT JOIN AD_EMPLOYEE_V AEV ON OL.USER_ID = AEV.HR_NO
+    where OL.operate_type = '2' and AEV.DEPARTID
+    in (
+    select distinct(departid)
+    from ad_depart_v
+    Start with  departid=#{site}
+    Connect by prior  depart_code=PARENTCODE)
     <if test="endDate != null">
-        and TO_CHAR(OPERATE_TIME,'yyyy-mm') &lt;= #{endDate}
+        and TO_CHAR(OL.OPERATE_TIME,'yyyy-mm') &lt;= #{endDate}
     </if>
     <if test="staDate != null">
-        and TO_CHAR(OPERATE_TIME,'yyyy-mm') &gt;= #{staDate}
+        and TO_CHAR(OL.OPERATE_TIME,'yyyy-mm') &gt;= #{staDate}
     </if>
-    GROUP BY TO_CHAR(OPERATE_TIME,'yyyy-mm')
+    GROUP BY TO_CHAR(OL.OPERATE_TIME,'yyyy-mm')
 </select>
 
 
