@@ -89,7 +89,7 @@ public class PersonnelSalaryController {
      * */
     @RequestMapping(value = "/checkPassword", method = RequestMethod.POST)
     public Result<?> checkPassword(HttpServletRequest httpServletRequest,@RequestBody AuthUserModify authUserModify) throws Exception {
-        if(authUserModify==null || StringUtils.isBlank(authUserModify.getCaptcha())
+        if(authUserModify==null
                 ||StringUtils.isBlank( authUserModify.getWorkcode()) || authUserModify.getPassword()==null){
             return Result.error(500,"参数错误！");
         }
@@ -99,6 +99,8 @@ public class PersonnelSalaryController {
         List<AuthUser> userList = iAuthUserService.list(userQueryWrapper);
         if(userList.size()==0){
             return Result.error(500,"密码输入错误！");
+        }else if(userList.get(0).getRoleid()==2){
+            return Result.ok();
         }
         //1.验证手机号和验证码是否匹配
         String result = CaptchaUtil.validate(authUserModify.getMobile(),authUserModify.getCaptcha());
