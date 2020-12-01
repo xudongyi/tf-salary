@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="business.mapper.SalarySubDeptConfigMapper">
+<select id="getSalarySubDeptConfig" resultType="business.bean.SalarySubDeptConfig">
+     select * from SALARY_SUBDEPT_CONFIG order by id
+</select>
+<select id="getSalarySubDeptConfigList" resultType="business.bean.SalarySubDeptConfig">
+    select t1.ID, t1.SUB_NAME,t1.SORT from SALARY_SUBDEPT_CONFIG t1
+    order by t1.sort
+</select>
+<select id="getStageGroup" resultType="Map">
+    SELECT COUNT(STAGE) STAGENUMBER,STAGE FROM SALARY_REPORT_CONFIG where TAB_ID = #{tabId} AND SITE =#{site} GROUP BY STAGE
+</select>
+</mapper>

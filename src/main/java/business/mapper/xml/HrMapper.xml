@@ -22,11 +22,16 @@
     </select>
 
     <select id="departMentAllBySub" resultType="Map">
-        select t1.*,t1.DEPARTID as value,t2.DEPARTID as PID from (select distinct(depart_code),DEPART_NAME as label,DEPARTID,PARENTCODE
-        from ad_depart_v where status='N' and DEPART_NAME is not null Start with depart_code=(select depart_code from ad_depart_v
-        where DEPARTID=#{subid}) Connect by prior depart_code=PARENTCODE) t1 left join
+        select distinct(t1.DEPARTID) as value,t1.*,t2.DEPARTID as PID from (select distinct(depart_code),DEPART_NAME as label,DEPARTID,PARENTCODE
+        from ad_depart_v where status='N' and DEPART_NAME is not null
+        <if test="subid != null">
+            Start with depart_code=(select depart_code from ad_depart_v
+            where DEPARTID=#{subid}) Connect by prior depart_code=PARENTCODE
+        </if>
+        ) t1 left join
         (select * from ad_depart_v where status='N' and DEPART_NAME is not null) t2 on t1.PARENTCODE = t2.depart_code
     </select>
+
     <select id="getHrmResource" resultType="Map">
         SELECT t1.* FROM AD_EMPLOYEE_V t1
         where 1=1
