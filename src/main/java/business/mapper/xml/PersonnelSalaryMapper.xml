@@ -17,7 +17,12 @@
     </select>
 
     <select id="getSalaryBetweenMonth" resultType="Map">
-        select sum(NET_SALARY) NET_SALARY,SALARY_DATE from personnel_salary where 1=1
+        select sum(GROSS_PAY) GROSS_PAY,SALARY_DATE from personnel_salary where 1=1
+        and departid in (
+        select distinct(departid)
+        from ad_depart_v
+        Start with  departid=#{site}
+        Connect by prior  depart_code=PARENTCODE)
         <if test="endDate != null">
             and SALARY_DATE &lt;= #{endDate}
         </if>
@@ -29,25 +34,34 @@
     </select>
 
     <select id="getSalaryByMonth" resultType="Map">
-        select sum(NET_SALARY) NET_SALARY,SALARY_DATE from personnel_salary where SALARY_DATE = #{month}
+        SELECT SUM(GROSS_PAY) GROSS_PAY,SALARY_DATE from personnel_salary where SALARY_DATE = #{month} AND
+        departid in (
+        select distinct(departid)
+        from ad_depart_v
+        Start with  departid=#{site}
+        Connect by prior  depart_code=PARENTCODE)
         group by SALARY_DATE
     </select>
 
     <select id="getImportNumberByMonth" resultType="Map">
-        select count(*) IMPORT_NUMBER,SALARY_DATE from personnel_salary where SALARY_DATE = #{month}
+        select count(*) IMPORT_NUMBER,SALARY_DATE from personnel_salary where SALARY_DATE = #{month} AND
+        departid in (
+        select distinct(departid)
+        from ad_depart_v
+        Start with  departid=#{site}
+        Connect by prior  depart_code=PARENTCODE)
         group by SALARY_DATE
     </select>
 
     <select id="getSalaryRankByDepartment" resultType="Map">
-        select u1.totalnumber,u2.departmentname
-        from (
-            select sum(t1.NET_SALARY) totalnumber,t2.DEPARTMENTID
-            from PERSONNEL_SALARY t1
-            left join HRMRESOURCE t2 on t1.WORKCODE = t2.WORKCODE
-            group by t2.DEPARTMENTID
-            ORDER BY totalnumber desc) u1
-        left join HrmDepartment u2 on u1.departmentid = u2.id
-        where u2.id is not null and rownum &lt;9
+        select totalnumber,DEPART_NAME from (select sum(ps.GROSS_PAY) totalnumber,adv.departid,adv.depart_name from personnel_salary ps left join AD_DEPART_V adv on ps.departid = adv.departid
+        where adv.departid is not null and salary_date = #{month}
+        group by adv.departid,adv.depart_name  ORDER BY totalnumber desc) where rownum &lt;9  and
+        departid in (
+        select distinct(departid)
+        from ad_depart_v
+        Start with  departid=#{site}
+        Connect by prior  depart_code=PARENTCODE)
     </select>
 
     <select id="getMonthlyLaborCost" resultType="Map">

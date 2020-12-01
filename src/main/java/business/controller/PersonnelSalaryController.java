@@ -117,16 +117,16 @@ public class PersonnelSalaryController {
     /**
      * 报表查询
      * */
-    @RequestMapping(value = "/queryReportHeader", method = RequestMethod.POST)
-    public Result<?> queryReportHeader(){
-        return Result.ok(iPersonnelSalaryService.getReportHeader());
+    @RequestMapping(value = "/queryReportHeader", method = RequestMethod.GET)
+    public Result<?> queryReportHeader(@RequestParam(name="site") String site){
+        return Result.ok(iPersonnelSalaryService.getReportHeader(site));
     }
 
     /**
      * 报表查询(有日期)
      * */
     @RequestMapping(value = "/queryReportBody", method = RequestMethod.POST)
-    public Result<?> queryReportBody(@RequestParam(name="staDate") String staDate,@RequestParam(name="endDate") String endDate){
-        return Result.ok(iPersonnelSalaryService.getReportBodyList(staDate,endDate));
+    public Result<?> queryReportBody(@RequestParam(name="staDate") String staDate,@RequestParam(name="endDate") String endDate,@RequestParam(name="site") String site){
+        return Result.ok(iPersonnelSalaryService.getReportBodyList(staDate,endDate,site));
     }
 }

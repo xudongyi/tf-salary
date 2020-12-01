@@ -69,21 +69,21 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
 
 
     @Override
-    public Map<String, Object> getReportHeader() {
+    public Map<String, Object> getReportHeader(String site) {
         Date currentDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         String currentMonth = sdf.format(currentDate);
         String lastMonthStr = getMonth("",-1);
-        String currentMonthSalary = personnelSalaryMapper.getSalaryByMonth(currentMonth).size()==0?"0":personnelSalaryMapper.getSalaryByMonth(currentMonth).get(0).get("NET_SALARY").toString();
-        String lastMonthSalary = personnelSalaryMapper.getSalaryByMonth(lastMonthStr).size()==0?"0":personnelSalaryMapper.getSalaryByMonth(lastMonthStr).get(0).get("NET_SALARY").toString();
-        String currentMonthImportNumber = personnelSalaryMapper.getImportNumberByMonth(currentMonth).size()==0?"0":personnelSalaryMapper.getImportNumberByMonth(currentMonth).get(0).get("IMPORT_NUMBER").toString();
-        String lastMonthImportNumber = personnelSalaryMapper.getImportNumberByMonth(lastMonthStr).size()==0?"0":personnelSalaryMapper.getImportNumberByMonth(lastMonthStr).get(0).get("IMPORT_NUMBER").toString();
-        String currentMonthVisitTimes = operateLogMapper.getVisitTimesByMonth(currentMonth).size()==0?"0":operateLogMapper.getVisitTimesByMonth(currentMonth).get(0).get("VISIT_TIMES").toString();
-        String lastMonthVisitTimes = operateLogMapper.getVisitTimesByMonth(lastMonthStr).size()==0?"0":operateLogMapper.getVisitTimesByMonth(lastMonthStr).get(0).get("VISIT_TIMES").toString();
-        String currentMonthNoteNumber = operateLogMapper.getNoteNumberByMonth(currentMonth).size()==0?"0":operateLogMapper.getNoteNumberByMonth(currentMonth).get(0).get("NOTE_NUMBER").toString();
-        String lastMonthNoteNumber = operateLogMapper.getNoteNumberByMonth(lastMonthStr).size()==0?"0":operateLogMapper.getNoteNumberByMonth(currentMonth).get(0).get("NOTE_NUMBER").toString();
-        List<Map<String, Object>> salaryDepartmentRankList = personnelSalaryMapper.getSalaryRankByDepartment();
-        List<Map<String, Object>> noteTimesDepartmentRankList = operateLogMapper.getNoteTimesRankByDepartment();
+        String currentMonthSalary = personnelSalaryMapper.getSalaryByMonth(currentMonth,site).size()==0?"0":personnelSalaryMapper.getSalaryByMonth(currentMonth,site).get(0).get("GROSS_PAY").toString();
+        String lastMonthSalary = personnelSalaryMapper.getSalaryByMonth(lastMonthStr,site).size()==0?"0":personnelSalaryMapper.getSalaryByMonth(lastMonthStr,site).get(0).get("GROSS_PAY").toString();
+        String currentMonthImportNumber = personnelSalaryMapper.getImportNumberByMonth(currentMonth,site).size()==0?"0":personnelSalaryMapper.getImportNumberByMonth(currentMonth,site).get(0).get("IMPORT_NUMBER").toString();
+        String lastMonthImportNumber = personnelSalaryMapper.getImportNumberByMonth(lastMonthStr,site).size()==0?"0":personnelSalaryMapper.getImportNumberByMonth(lastMonthStr,site).get(0).get("IMPORT_NUMBER").toString();
+        String currentMonthVisitTimes = operateLogMapper.getVisitTimesByMonth(currentMonth,site).size()==0?"0":operateLogMapper.getVisitTimesByMonth(currentMonth,site).get(0).get("VISIT_TIMES").toString();
+        String lastMonthVisitTimes = operateLogMapper.getVisitTimesByMonth(lastMonthStr,site).size()==0?"0":operateLogMapper.getVisitTimesByMonth(lastMonthStr,site).get(0).get("VISIT_TIMES").toString();
+        String currentMonthNoteNumber = operateLogMapper.getNoteNumberByMonth(currentMonth,site).size()==0?"0":operateLogMapper.getNoteNumberByMonth(currentMonth,site).get(0).get("NOTE_NUMBER").toString();
+        String lastMonthNoteNumber = operateLogMapper.getNoteNumberByMonth(lastMonthStr,site).size()==0?"0":operateLogMapper.getNoteNumberByMonth(currentMonth,site).get(0).get("NOTE_NUMBER").toString();
+        List<Map<String, Object>> salaryDepartmentRankList = personnelSalaryMapper.getSalaryRankByDepartment(currentMonth,site);
+        List<Map<String, Object>> noteTimesDepartmentRankList = operateLogMapper.getNoteTimesRankByDepartment(currentMonth,site);
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("currentMonthSalary", currentMonthSalary);
         result.put("lastMonthSalary", lastMonthSalary);
@@ -99,7 +99,7 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
     }
 
     @Override
-    public Map<String, Object> getReportBodyList(String staDate, String endDate) {
+    public Map<String, Object> getReportBodyList(String staDate, String endDate,String site) {
         if ((staDate.equals("") || staDate == null) && (endDate.equals("") || staDate == null)) {
             Date currentDate = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
@@ -111,8 +111,8 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
             endDate = getMonth(staDate, 11);
         }
         Map<String, Object> result = new HashMap<String, Object>();
-        List<Map<String, Object>> salaryList = personnelSalaryMapper.getSalaryBetweenMonth(staDate,endDate);
-        List<Map<String, Object>> noteTimesList = operateLogMapper.getNoteTimesBetweenMonth(staDate,endDate);
+        List<Map<String, Object>> salaryList = personnelSalaryMapper.getSalaryBetweenMonth(staDate,endDate,site);
+        List<Map<String, Object>> noteTimesList = operateLogMapper.getNoteTimesBetweenMonth(staDate,endDate,site);
         result.put("salaryList",salaryList);
         result.put("noteTimesList",noteTimesList);
         return result;
