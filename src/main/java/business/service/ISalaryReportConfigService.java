@@ -1,6 +1,7 @@
 package business.service;
 
 import business.bean.SalaryReportConfig;
+import business.common.api.vo.Result;
 import business.vo.SalaryReportConfigVo;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

@@ -1,6 +1,7 @@
 package business.service;
 
 import business.bean.SalarySubDeptConfig;
+import business.common.api.vo.Result;
 import business.vo.SalarySubDeptConfigVo;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -15,4 +16,9 @@ public interface ISalarySubDeptConfigService extends IService<SalarySubDeptConfi
     boolean removeSalarySubDeptConfig(String id);
 
     SalarySubDeptConfigVo getSalarySubDeptConfig(String id);
+
+    Result<?> subDepartMentAll();
+
+    Result<?> departMentAllBySub(int subid);
+
 }

@@ -4,6 +4,7 @@ import business.bean.SalarySubDeptConfig;
 import business.common.api.vo.Result;
 import business.jwt.LoginIgnore;
 import business.service.ISalarySubDeptConfigService;
+import business.vo.SalaryReportConfigVo;
 import business.vo.SalarySubDeptConfigVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -40,6 +41,12 @@ public class SalarySubDeptConfigController {
         return Result.ok(iSalarySubDeptConfigService.query(page,queryWrapper));
     }
 
+    @GetMapping(value = "/queryList")
+    public Result<?> queryList(
+            @ModelAttribute SalaryReportConfigVo salaryReportConfigVo) {
+        return iSalarySubDeptConfigService.subDepartMentAll();
+    }
+
 
     @PostMapping(value = "/save")
     @LoginIgnore
@@ -61,5 +68,13 @@ public class SalarySubDeptConfigController {
             String id) {
         return Result.ok(iSalarySubDeptConfigService.getSalarySubDeptConfig(id));
     }
+
+    @GetMapping(value = "/departMentAllBySub")
+    @LoginIgnore
+    public Result<?> departMentAllBySub(
+            int id) {
+        return iSalarySubDeptConfigService.departMentAllBySub(id);
+    }
+
 
 }

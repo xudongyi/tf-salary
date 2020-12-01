@@ -15,6 +15,9 @@ public class TreeSelectSimpleVO {
 
     private boolean selectable = false;
 
+    private boolean disabled = false;
+
+    private boolean checkable = true;
 
     public String getId() {
         return id;
@@ -54,5 +57,21 @@ public class TreeSelectSimpleVO {
 
     public void setSelectable(boolean selectable) {
         this.selectable = selectable;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public boolean isCheckable() {
+        return checkable;
+    }
+
+    public void setCheckable(boolean checkable) {
+        this.checkable = checkable;
     }
 }
