@@ -14,10 +14,9 @@
     AND TO_CHAR(OL.OPERATE_TIME,'yyyy-mm') = #{month}
     AND AEV.DEPARTID
     in (
-        select distinct(departid)
-        from ad_depart_v
-        Start with  departid=#{site}
-        Connect by prior  depart_code=PARENTCODE)
+        select sub_depart departid
+        from salary_subdept_config_dt
+        where mainid = #{site})
 </select>
 
 <select id="getNoteNumberByMonth" resultType="Map">
@@ -28,10 +27,9 @@
     AND TO_CHAR(OL.OPERATE_TIME,'yyyy-mm') = #{month}
     AND AEV.DEPARTID
     in (
-        select distinct(departid)
-        from ad_depart_v
-        Start with  departid=#{site}
-        Connect by prior  depart_code=PARENTCODE)
+        select sub_depart departid
+        from salary_subdept_config_dt
+        where mainid = #{site})
 </select>
 
 
@@ -43,10 +41,9 @@
     where ol.operate_type = '2'
     and TO_CHAR(OL.OPERATE_TIME,'yyyy-mm') = #{month}
     and aev.departid is not null
-    and aev.departid in (select distinct(departid)
-    from ad_depart_v
-    Start with  departid=#{site}
-    Connect by prior  depart_code=PARENTCODE)
+    and aev.departid in (select sub_depart departid
+        from salary_subdept_config_dt
+        where mainid = #{site})
     group by aev.departid,aev.departid,adv.depart_name
     order by totalnumber desc)
     where rownum &lt;9
@@ -57,10 +54,9 @@
     from OPERATE_LOG OL LEFT JOIN AD_EMPLOYEE_V AEV ON OL.USER_ID = AEV.HR_NO
     where OL.operate_type = '2' and AEV.DEPARTID
     in (
-    select distinct(departid)
-    from ad_depart_v
-    Start with  departid=#{site}
-    Connect by prior  depart_code=PARENTCODE)
+    select sub_depart departid
+    from salary_subdept_config_dt
+    where mainid = #{site})
     <if test="endDate != null">
         and TO_CHAR(OL.OPERATE_TIME,'yyyy-mm') &lt;= #{endDate}
     </if>
