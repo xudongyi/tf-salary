@@ -36,13 +36,14 @@ public class ExcelImportController {
     private IHRService iHRService;
 
     @RequestMapping(value = "/salaryImport", method = RequestMethod.POST)
-    public Result<?> salaryImportExcel(@RequestParam("file") MultipartFile file,@RequestParam("uploadDate") String uploadDate) throws Exception {
+    public Result<?> salaryImportExcel(@RequestParam("file") MultipartFile file,@RequestParam("belongDate") String belongDate,@RequestParam("grantDate") String grantDate) throws Exception {
         List<PersonnelSalary> salaryList = FileUtils.importExcel(file, 0,1, PersonnelSalary.class);
         List<PersonnelSalary> importList = new ArrayList<PersonnelSalary>();
         Map deartCodeMap = iHRService.getAllHrmResource();
 
         for(int i=0;i<salaryList.size();i++){
-            salaryList.get(i).setSalaryDate(uploadDate);
+            salaryList.get(i).setSalaryDate(grantDate);
+            salaryList.get(i).setBelongDate(belongDate);
             if((salaryList.get(i).getWorkcode()==null||salaryList.get(i).getWorkcode().equals(""))
                     &&(salaryList.get(i).getBasePay()==null||salaryList.get(i).getBasePay().equals(""))
                     &&(salaryList.get(i).getAssessmentPay()==null||salaryList.get(i).getAssessmentPay().equals(""))
