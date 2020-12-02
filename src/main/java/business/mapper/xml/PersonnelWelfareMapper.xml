@@ -41,7 +41,7 @@
     </select>
     <select id="getMonthlyWelfareSingle" resultType="business.bean.PersonnelWelfare">
             select workcode,welfare_date,sum(welfare_amount_salaries) welfare_amount_salaries,sum(welfare_amount_bonus) welfare_amount_bonus,sum(welfare_amount_weal) welfare_amount_weal from personnel_welfare
-            where welfare_date = #{month}
+            where welfare_date = #{month} and workcode=#{workcode}
             group by workcode,welfare_date
 
     </select>
