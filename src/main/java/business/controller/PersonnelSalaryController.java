@@ -73,7 +73,7 @@ public class PersonnelSalaryController {
     @LoginIgnore
     public Result<?> checMobileCaptcha(HttpServletRequest httpServletRequest,@RequestBody AuthUserModify authUserModify) throws Exception {
         if(authUserModify==null || StringUtils.isBlank(authUserModify.getCaptcha())
-                || StringUtils.isBlank( authUserModify.getWorkcode()) || authUserModify.getMobile()==null|| authUserModify.getCaptcha()==null|| StringUtils.isBlank( authUserModify.getPassword())){
+                || StringUtils.isBlank( authUserModify.getWorkcode()) || authUserModify.getMobile()==null|| authUserModify.getCaptcha()==null){
             return Result.error(500,"参数错误！");
         }
         //1.验证手机号和验证码是否匹配
