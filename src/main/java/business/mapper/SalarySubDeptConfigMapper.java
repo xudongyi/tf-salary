@@ -17,4 +17,6 @@ public interface SalarySubDeptConfigMapper extends BaseMapper<SalarySubDeptConfi
 
     IPage<SalarySubDeptConfig> getSalarySubDeptConfigList(IPage<SalarySubDeptConfig> page, @Param(Constants.WRAPPER) Wrapper<SalarySubDeptConfig> queryWrapper);
 
+    List<SalarySubDeptConfig> getSubDept(String departMentId);
+
 }

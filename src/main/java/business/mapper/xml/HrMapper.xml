@@ -5,7 +5,7 @@
          select * from AD_EMPLOYEE_V where HR_NO=#{workcode}
     </select>
     <select id="departMentAll" resultType="Map">
-        select t1.DEPART_CODE,t1.DEPART_NAME as label,t1.DEPARTID,t2.DEPARTID as PID ,CONCAT(CONCAT(t1.DEPARTID,'_'),t2.DEPARTID) as value from ad_depart_v t1
+        select t1.DEPART_CODE,t1.DEPART_NAME as label,t1.DEPARTID,t2.DEPARTID as PID ,t1.DEPARTID as value from ad_depart_v t1
         left join ad_depart_v t2 on t1.PARENTCODE = t2.DEPART_CODE
         where t1.status='N' and t1.DEPART_NAME is not null and t1.depart_code is not null
         <if test="departMentName != null">

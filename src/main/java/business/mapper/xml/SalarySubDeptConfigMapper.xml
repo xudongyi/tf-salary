@@ -11,4 +11,10 @@
 <select id="getStageGroup" resultType="Map">
     SELECT COUNT(STAGE) STAGENUMBER,STAGE FROM SALARY_REPORT_CONFIG where TAB_ID = #{tabId} AND SITE =#{site} GROUP BY STAGE
 </select>
+
+<select id="getSubDept" resultType="business.bean.SalarySubDeptConfig">
+    select t1.ID, t1.SUB_NAME,t1.SORT from SALARY_SUBDEPT_CONFIG t1 left join SALARY_SUBDEPT_CONFIG_DT t2 on t1.ID=t2.MAINID
+    where t2.SUB_DEPART=#{departMentId}
+    order by t1.sort
+</select>
 </mapper>

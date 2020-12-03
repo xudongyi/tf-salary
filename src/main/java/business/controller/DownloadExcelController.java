@@ -2,6 +2,9 @@ package business.controller;
 
 import business.jwt.LoginIgnore;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,8 +24,8 @@ public class DownloadExcelController {
     @LoginIgnore
     public void downloadExcel(HttpServletResponse response, HttpServletRequest request,@PathVariable String fileName,@PathVariable String prefix) throws Exception {
         try {
-            File file = new File("src/main/resources/static/"+fileName+"."+prefix);
-            InputStream inputStream = new FileInputStream(file);
+            Resource resource = new ClassPathResource("static/"+fileName+"."+prefix);
+            InputStream inputStream = resource.getInputStream();
             response.setContentType("application/zip");
             OutputStream out = response.getOutputStream();
             response.setHeader("Content-Disposition","attachment; filename=" + java.net.URLEncoder.encode(fileName,"UTF-8") +"."+prefix);

@@ -8,10 +8,7 @@ import business.constant.Constants;
 import business.emum.ErrorEnum;
 import business.emum.OperLogType;
 import business.jwt.JwtUtil;
-import business.mapper.AuthTokenMapper;
-import business.mapper.AuthUserMapper;
-import business.mapper.HrMapper;
-import business.mapper.HrmResourceMapper;
+import business.mapper.*;
 import business.service.IOauthService;
 import business.service.IOperateLogService;
 import business.util.CaptchaUtil;
@@ -49,9 +46,13 @@ public class OathServiceImpl implements IOauthService {
 
     @Resource
     private IOperateLogService iOperateLogService;
-
     @Resource
     private HrMapper hrMapper;
+
+    @Resource
+    private SalarySubDeptConfigMapper salarySubDeptConfigMapper;
+
+
 
     @Override
     public Result<?> login(AuthUserVO authUserVO) {
@@ -130,7 +131,7 @@ public class OathServiceImpl implements IOauthService {
             authUser.setWorkcode(hrmresource.get("WORKCODE").toString());
             authUser.setFirstLogin(0);
             authUser.setLastname(hrmresource.get("LASTNAME").toString());
-            authUser.setSite(hrMapper.getSiteDepartMent(hrmInfo.get("DEPART_CODE").toString()).get("DEPART_CODE").toString());
+            authUser.setSite(String.valueOf(salarySubDeptConfigMapper.getSubDept(hrmInfo.get("DEPARTID").toString()).get(0).getId()));
             authUserMapper.insert(authUser);
         }
         String token = JwtUtil.getSSOToken(authUserSSO);
