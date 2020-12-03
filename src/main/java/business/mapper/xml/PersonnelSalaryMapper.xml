@@ -12,20 +12,24 @@
                 GROUP BY WORKCODE,WELFARE_DATE,DEPARTID
         ) PWV ON PS.WORKCODE = PWV.WORKCODE AND PS.SALARY_DATE = PWV.WELFARE_DATE
         LEFT JOIN AD_EMPLOYEE_V AEV ON AEV.HR_NO = PS.WORKCODE
-        WHERE PS.DEPARTID IN (
-                SELECT SUB_DEPART DEPARTID
-                FROM SALARY_SUBDEPT_CONFIG_DT
-                WHERE MAINID =  #{site}
-        )
+        <if test="site != null">
+            WHERE PS.DEPARTID IN (
+            SELECT SUB_DEPART DEPARTID
+            FROM SALARY_SUBDEPT_CONFIG_DT
+            WHERE MAINID =  #{site}
+            )
+        </if>
         ORDER BY PS.SALARY_DATE DESC,PS.ID DESC
     </select>
 
     <select id="getSalaryBetweenMonth" resultType="Map">
         select sum(GROSS_PAY) GROSS_PAY,SALARY_DATE from personnel_salary where 1=1
-        and departid in (
-        select distinct(sub_depart) departid
-        from salary_subdept_config_dt
-        where mainid = #{site})
+        <if test="site != null">
+            and departid in (
+            select distinct(sub_depart) departid
+            from salary_subdept_config_dt
+            where mainid = #{site})
+        </if>
         <if test="endDate != null">
             and SALARY_DATE &lt;= #{endDate}
         </if>
@@ -37,31 +41,37 @@
     </select>
 
     <select id="getSalaryByMonth" resultType="Map">
-        SELECT SUM(GROSS_PAY) GROSS_PAY,SALARY_DATE from personnel_salary where SALARY_DATE = #{month} AND
-        departid in (
-        select distinct(sub_depart) departid
-        from salary_subdept_config_dt
-        where mainid = #{site})
+        SELECT SUM(GROSS_PAY) GROSS_PAY,SALARY_DATE from personnel_salary where SALARY_DATE = #{month}
+        <if test="site != null">
+            AND departid in (
+            select distinct(sub_depart) departid
+            from salary_subdept_config_dt
+            where mainid = #{site})
+        </if>
         group by SALARY_DATE
     </select>
 
     <select id="getImportNumberByMonth" resultType="Map">
-        select count(*) IMPORT_NUMBER,SALARY_DATE from personnel_salary where SALARY_DATE = #{month} AND
-        departid in (
-        select distinct(sub_depart) departid
-        from salary_subdept_config_dt
-        where mainid = #{site})
+        select count(*) IMPORT_NUMBER,SALARY_DATE from personnel_salary where SALARY_DATE = #{month}
+        <if test="site != null">
+            AND departid in (
+            select distinct(sub_depart) departid
+            from salary_subdept_config_dt
+            where mainid = #{site})
+        </if>
         group by SALARY_DATE
     </select>
 
     <select id="getSalaryRankByDepartment" resultType="Map">
         select totalnumber,DEPART_NAME from (select sum(ps.GROSS_PAY) totalnumber,adv.departid,adv.depart_name from personnel_salary ps left join AD_DEPART_V adv on ps.departid = adv.departid
         where adv.departid is not null and salary_date = #{month}
-        group by adv.departid,adv.depart_name  ORDER BY totalnumber desc) where rownum &lt;9  and
-        departid in (
-        select distinct(sub_depart) departid
-        from salary_subdept_config_dt
-        where mainid = #{site})
+        group by adv.departid,adv.depart_name  ORDER BY totalnumber desc) where rownum &lt;9
+        <if test="site != null">
+            and departid in (
+            select distinct(sub_depart) departid
+            from salary_subdept_config_dt
+            where mainid = #{site})
+        </if>
     </select>
 
     <select id="getMonthlyLaborCost" resultType="Map">
@@ -83,10 +93,13 @@
         NVL(SUM(UNEMPLOY_INSURANCE),0)*#{rate} + NVL(SUM(HOUSEPOVIDENT_FUND),0) GJJ,
         NVL(SUM(UNEMPLOY_INSURANCE),0)*#{rate} + NVL(SUM(HOUSEPOVIDENT_FUND),0)+NVL(SUM(GROSS_PAY),0)+NVL(SUM(WELFARE_AMOUNT_SALARIES),0)+NVL(SUM(WELFARE_AMOUNT_BONUS),0)+NVL(SUM(WELFARE_AMOUNT_WEAL),0) TOTAL
     from SALARY_REPORT_VIEW
-    where departid in (
-        select distinct(sub_depart) departid
-        from salary_subdept_config_dt
-        where mainid = #{site})
+    where 1=1
+        <if test="site != null">
+            and departid in (
+            select distinct(sub_depart) departid
+            from salary_subdept_config_dt
+            where mainid = #{site})
+        </if>
         and salary_date like concat(#{year},'-%')
     GROUP BY SALARY_DATE
     </select>
@@ -102,10 +115,13 @@
         NVL(SUM(UNEMPLOY_INSURANCE),0)*#{rate} + NVL(SUM(HOUSEPOVIDENT_FUND),0) GJJ,
         NVL(SUM(UNEMPLOY_INSURANCE),0)*#{rate} + NVL(SUM(HOUSEPOVIDENT_FUND),0)+NVL(SUM(GROSS_PAY),0)+NVL(SUM(WELFARE_AMOUNT_SALARIES),0)+NVL(SUM(WELFARE_AMOUNT_BONUS),0)+NVL(SUM(WELFARE_AMOUNT_WEAL),0) TOTAL
     from SALARY_REPORT_VIEW
-    where departid in (
-        select distinct(sub_depart) departid
-        from salary_subdept_config_dt
-        where mainid = #{site})
+    where 1=1
+        <if test="site != null">
+            and departid in (
+            select distinct(sub_depart) departid
+            from salary_subdept_config_dt
+            where mainid = #{site})
+        </if>
         and salary_date like concat(#{year},'-%')
     </select>
 
@@ -146,7 +162,11 @@
         GROUP BY DEPARTID,SALARY_DATE
     ) SRV ON SRV.DEPARTID = SRCD.SUB_DEPART
     WHERE SRCD.MAINID IN (
-        SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId} AND SITE = #{site}) AND SRV.WORKCODE IS NOT NULL
+        SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId}
+        <if test="site != null">
+        AND SITE = #{site}
+        </if>
+        ) AND SRV.WORKCODE IS NOT NULL
     GROUP BY SRV.SALARY_DATE,SRCD.MAINID ORDER BY SRCD.MAINID
     </select>
 
@@ -178,7 +198,11 @@
         GROUP BY SRV.DEPARTID,SRV.SALARY_DATE
     ) SRVV ON SRVV.DEPARTID = SRCD.SUB_DEPART
     WHERE SRCD.MAINID IN (
-        SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId} AND SITE = #{site}) AND SRVV.WORKCODE IS NOT NULL
+        SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId}
+        <if test="site != null">
+        AND SITE = #{site}
+        </if>
+        ) AND SRVV.WORKCODE IS NOT NULL
     GROUP BY SRVV.SALARY_DATE,SRCD.MAINID ORDER BY SRCD.MAINID
     </select>
 
@@ -210,7 +234,11 @@
         GROUP BY SRV.DEPARTID,SRV.SALARY_DATE
     ) SRVV ON SRVV.DEPARTID = SRCD.SUB_DEPART
     WHERE SRCD.MAINID IN (
-        SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId} AND SITE = #{site}) AND SRVV.WORKCODE IS NOT NULL
+        SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId}
+        <if test="site != null">
+        AND SITE = #{site}
+        </if>
+        ) AND SRVV.WORKCODE IS NOT NULL
     GROUP BY SRVV.SALARY_DATE
     </select>
 
@@ -254,7 +282,11 @@
     ) SRV ON SRV.DEPARTID = SRCD.SUB_DEPART
     LEFT JOIN (SELECT * FROM SALARY_REPORT_CONFIG WHERE SITE = #{site} AND TAB_ID = #{tabId}) SRCV ON SRCV.ID = SRCD.MAINID
     WHERE SRCD.MAINID IN (
-        SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId} AND SITE = #{site}) AND SRV.WORKCODE IS NOT NULL
+        SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId}
+        <if test="site != null">
+        AND SITE = #{site}
+        </if>
+        ) AND SRV.WORKCODE IS NOT NULL
     GROUP BY SRV.SALARY_DATE,SRCV.STAGE
     </select>
 
@@ -290,9 +322,17 @@
         WHERE SALARY_DATE LIKE concat(#{year},'-%')
         GROUP BY DEPARTID
     ) SRV ON SRV.DEPARTID = SRCD.SUB_DEPART
-    LEFT JOIN (SELECT * FROM SALARY_REPORT_CONFIG WHERE SITE = #{site} AND TAB_ID = #{tabId}) SRCV ON SRCV.ID = SRCD.MAINID
+    LEFT JOIN (SELECT * FROM SALARY_REPORT_CONFIG WHERE 1=1
+        <if test="site != null">
+        and SITE = #{site}
+         </if>
+         AND TAB_ID = #{tabId}) SRCV ON SRCV.ID = SRCD.MAINID
     WHERE SRCD.MAINID IN (
-        SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId} AND SITE = #{site}) AND SRV.WORKCODE IS NOT NULL
+        SELECT ID FROM SALARY_REPORT_CONFIG WHERE TAB_ID=#{tabId}
+        <if test="site != null">
+        AND SITE = #{site}
+        </if>
+        ) AND SRV.WORKCODE IS NOT NULL
     GROUP BY SRV.SALARY_DATE,SRCD.MAINID,SRCV.STAGE,SRCV.DEPART_NAME ORDER BY SRCD.MAINID
     </select>
 
@@ -328,7 +368,10 @@
         LEFT JOIN AD_EMPLOYEE_V HR ON SRV.WORKCODE = HR.HR_NO
         WHERE SRV.SALARY_DATE = #{month} AND HR.TYPE_ID IS NOT NULL
         GROUP BY SRV.DEPARTID,SRV.SALARY_DATE,HR.TYPE_ID,HR.TYPE_NOTE) SRVV ON SRVV.DEPARTID = SRCD.SUB_DEPART
-    WHERE SRC.TAB_ID = #{tabId} AND SRC.SITE = #{site}
+    WHERE SRC.TAB_ID = #{tabId}
+    <if test="site != null">
+    AND SRC.SITE = #{site}
+    </if>
     GROUP BY SRVV.SALARY_DATE,SRCD.MAINID,SRC.DEPART_NAME,SRVV.TYPE_ID,SRVV.TYPE_NOTE
     </select>
 

@@ -30,16 +30,16 @@ public class PersonnelWelfareServiceImpl extends ServiceImpl<PersonnelWelfareMap
         QueryWrapper<PersonnelWelfareVO> welfareQueryWrapper = new QueryWrapper<>();
 
         if (StringUtils.isNotBlank(personnelWelfareVO.getWorkcode())) {
-            welfareQueryWrapper.eq("t1.workcode", personnelWelfareVO.getWorkcode());
+            welfareQueryWrapper.eq("workcode", personnelWelfareVO.getWorkcode());
         }
         if(StringUtils.isNotBlank(personnelWelfareVO.getDept())){
-            welfareQueryWrapper.eq("t2.depart_code", personnelWelfareVO.getDept().split("_")[0]);
+            welfareQueryWrapper.eq("depart_code", personnelWelfareVO.getDept().split("_")[0]);
         }
         if(StringUtils.isNotBlank(personnelWelfareVO.getWelfarestamonth())){
-            welfareQueryWrapper.ge("t1.welfare_date", personnelWelfareVO.getWelfarestamonth());
+            welfareQueryWrapper.ge("welfare_date", personnelWelfareVO.getWelfarestamonth());
         }
         if(StringUtils.isNotBlank(personnelWelfareVO.getWelfareendmonth())){
-            welfareQueryWrapper.le("t1.welfare_date", personnelWelfareVO.getWelfareendmonth());
+            welfareQueryWrapper.le("welfare_date", personnelWelfareVO.getWelfareendmonth());
         }
         return personnelWelfareMapper.getPersonnelWelfare(page,welfareQueryWrapper,site);
     }

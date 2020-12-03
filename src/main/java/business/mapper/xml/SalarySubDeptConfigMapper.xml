@@ -9,7 +9,11 @@
     order by t1.sort
 </select>
 <select id="getStageGroup" resultType="Map">
-    SELECT COUNT(STAGE) STAGENUMBER,STAGE FROM SALARY_REPORT_CONFIG where TAB_ID = #{tabId} AND SITE =#{site} GROUP BY STAGE
+    SELECT COUNT(STAGE) STAGENUMBER,STAGE FROM SALARY_REPORT_CONFIG where TAB_ID = #{tabId}
+    <if test="site != null">
+    AND SITE =#{site}
+    </if>
+    GROUP BY STAGE
 </select>
 
 <select id="getSubDept" resultType="business.bean.SalarySubDeptConfig">
