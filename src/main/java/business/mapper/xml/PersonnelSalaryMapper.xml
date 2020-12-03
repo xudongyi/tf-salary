@@ -2,16 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="business.mapper.PersonnelSalaryMapper">
     <select id="getPersonnelSalary" resultType="business.vo.PersonnelSalaryVO">
-        select * from (select t1.*,t2.hr_name,v1.welfare_amount_salaries,v1.welfare_amount_bonus,v1.welfare_amount_weal
-        from personnel_salary t1
-        left join AD_EMPLOYEE_V t2 on t1.workcode =t2.hr_no
-        left join (select workcode,welfare_date,sum(welfare_amount_salaries) welfare_amount_salaries,sum(welfare_amount_bonus) welfare_amount_bonus,sum(welfare_amount_weal) welfare_amount_weal from personnel_welfare group by workcode,welfare_date) v1
-        on t1.salary_date = v1.welfare_date and t1.workcode = v1.workcode
-        ${ew.customSqlSegment}
-        order by t1.salary_date desc,t1.id desc) v
-        left join (select distinct(sub_depart) departid
-        from salary_subdept_config_dt
-        where mainid = #{site}) dv on dv.departid = v.departid
+        SELECT AEV.HR_NAME,PS.ID,PS.BASE_PAY,PS.ASSESSMENT_PAY,PS.WATER_ELECTRIC_FEE,PS.OVERTIME_PAY,PS.PIECE_RATE_PAY,PS.PIECE_OVER_PAY,PS.ONDUTY_PAY,PS.SKILL_PAY,PS.TRAFFIC_SUBSIDY,PS.INCREASING_DAY_PAY,PS.THREE_SHIFTS_PAY,PS.APPRENTICE_SUBSIDY,PS.COLLEGE_SUBSIDY,PS.GROUP_LEADER_SUBSIDY,PS.NIGHT_SHIFT_SUBSIDY,PS.SICK_PAY,	PS.SUPPLEMENT_PAY,PS.PURIFICATION_SUBSIDY,PS.QUALITY_AWARD,PS.PLASTIC_SEAL_SUBSIDY,PS.SUBSIDY,PS.OTHER_SUBSIDY,PS.GROSS_PAY,PS.SICK_DEDUCTION,PS.INCOME_TAX,PS.SUPPLEMENTARY_TAX,PS.ACCOMMONDATION_FEE,PS.SOCIAL_SERVICE_FEE,PS.MEMBERSHIP_FEE,PS.COMMUNICATION_FEE,PS.ADMIN_REPAY,PS.OTHER_DEDUCTION,PS.HOUSEPOVIDENT_FUND,PS.UNEMPLOY_INSURANCE,PS.ENDOWMENT_INSURANCE,PS.MEDICAL_INSURANCE,PS.NET_SALARY,PS.BELONG_DATE,PS.SALARY_DATE,PS.WORKCODE,PS.DEPARTID,PWV.WELFARE_AMOUNT_SALARIES,PWV.WELFARE_AMOUNT_BONUS,PWV.WELFARE_AMOUNT_WEAL FROM (
+                SELECT * FROM PERSONNEL_SALARY
+                ${ew.customSqlSegment}
+        ) PS
+        LEFT JOIN (
+                SELECT SUM(WELFARE_AMOUNT_SALARIES) WELFARE_AMOUNT_SALARIES,SUM(WELFARE_AMOUNT_BONUS) WELFARE_AMOUNT_BONUS,SUM(WELFARE_AMOUNT_WEAL) WELFARE_AMOUNT_WEAL,WORKCODE,WELFARE_DATE,DEPARTID
+                FROM PERSONNEL_WELFARE
+                GROUP BY WORKCODE,WELFARE_DATE,DEPARTID
+        ) PWV ON PS.WORKCODE = PWV.WORKCODE AND PS.SALARY_DATE = PWV.WELFARE_DATE
+        LEFT JOIN AD_EMPLOYEE_V AEV ON AEV.HR_NO = PS.WORKCODE
+        WHERE PS.DEPARTID IN (
+                SELECT SUB_DEPART DEPARTID
+                FROM SALARY_SUBDEPT_CONFIG_DT
+                WHERE MAINID =  #{site}
+        )
+        ORDER BY PS.SALARY_DATE DESC,PS.ID DESC
     </select>
 
     <select id="getSalaryBetweenMonth" resultType="Map">

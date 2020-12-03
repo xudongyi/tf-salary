@@ -48,16 +48,16 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
         QueryWrapper<PersonnelSalaryVO> sqlaryQueryWrapper = new QueryWrapper<>();
         //sqlaryQueryWrapper.lambda().orderByDesc(PersonnelSalary::getId);
         if (StringUtils.isNotBlank(personnelSalaryVo.getWorkcode())) {
-            sqlaryQueryWrapper.eq("t1.workcode", personnelSalaryVo.getWorkcode());
+            sqlaryQueryWrapper.eq("workcode", personnelSalaryVo.getWorkcode());
         }
         if(StringUtils.isNotBlank(personnelSalaryVo.getDept())){
-            sqlaryQueryWrapper.eq("t2.DEPARTID", personnelSalaryVo.getDept().split("_")[0]);
+            sqlaryQueryWrapper.eq("DEPARTID", personnelSalaryVo.getDept().split("_")[0]);
         }
         if(StringUtils.isNotBlank(personnelSalaryVo.getSalarystamonth())){
-            sqlaryQueryWrapper.ge("t1.salary_date", personnelSalaryVo.getSalarystamonth());
+            sqlaryQueryWrapper.ge("salary_date", personnelSalaryVo.getSalarystamonth());
         }
         if(StringUtils.isNotBlank(personnelSalaryVo.getSalaryendmonth())){
-            sqlaryQueryWrapper.le("t1.salary_date", personnelSalaryVo.getSalaryendmonth());
+            sqlaryQueryWrapper.le("salary_date", personnelSalaryVo.getSalaryendmonth());
         }
         return personnelSalaryMapper.getPersonnelSalary(page, sqlaryQueryWrapper,site);
     }
