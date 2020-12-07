@@ -12,7 +12,7 @@
     LEFT JOIN AD_EMPLOYEE_V AEV ON OL.USER_ID = AEV.HR_NO
     where OL.OPERATE_TYPE in (0,3)
     AND TO_CHAR(OL.OPERATE_TIME,'yyyy-mm') = #{month}
-    <if test="site != null">
+    <if test="site != ''">
     AND AEV.DEPARTID
     in (
         select sub_depart departid
@@ -27,7 +27,7 @@
     LEFT JOIN AD_EMPLOYEE_V AEV ON OL.USER_ID = AEV.HR_NO
     where OL.OPERATE_TYPE in (2)
     AND TO_CHAR(OL.OPERATE_TIME,'yyyy-mm') = #{month}
-    <if test="site != null">
+    <if test="site != ''">
     AND AEV.DEPARTID
     in (
         select sub_depart departid
@@ -45,7 +45,7 @@
     where ol.operate_type = '2'
     and TO_CHAR(OL.OPERATE_TIME,'yyyy-mm') = #{month}
     and aev.departid is not null
-    <if test="site != null">
+    <if test="site != ''">
     and aev.departid in (select sub_depart departid
         from salary_subdept_config_dt
         where mainid = #{site})
@@ -59,7 +59,7 @@
     select count(*) note_times,TO_CHAR(OL.OPERATE_TIME,'yyyy-mm') note_date
     from OPERATE_LOG OL LEFT JOIN AD_EMPLOYEE_V AEV ON OL.USER_ID = AEV.HR_NO
     where OL.operate_type = '2'
-    <if test="site != null">
+    <if test="site != ''">
     and AEV.DEPARTID
     in (
     select sub_depart departid

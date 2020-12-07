@@ -29,4 +29,6 @@ public class SalaryReportConfig extends Model<SalaryReportConfig> {
     private Integer sort;
 
     private String tabId;
+
+    private Integer isTotal;
 }

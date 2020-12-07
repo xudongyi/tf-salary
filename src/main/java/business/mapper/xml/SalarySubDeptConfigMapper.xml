@@ -10,7 +10,7 @@
 </select>
 <select id="getStageGroup" resultType="Map">
     SELECT COUNT(STAGE) STAGENUMBER,STAGE FROM SALARY_REPORT_CONFIG where TAB_ID = #{tabId}
-    <if test="site != null">
+    <if test="site != ''">
     AND SITE =#{site}
     </if>
     GROUP BY STAGE

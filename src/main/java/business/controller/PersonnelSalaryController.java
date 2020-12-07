@@ -44,7 +44,7 @@ public class PersonnelSalaryController {
             @ModelAttribute PersonnelSalaryVO personnelSalaryVo,
             @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
             @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-            @RequestParam(name="site") String site,
+            @RequestParam(name="site",required = false,defaultValue = "") String site,
             HttpServletRequest req) {
         return Result.ok(iPersonnelSalaryService.getPersonnelSalaryList(personnelSalaryVo,site,pageNo,pageSize));
     }
@@ -54,7 +54,7 @@ public class PersonnelSalaryController {
             @ModelAttribute PersonnelWelfareVO personnelWelfareVO,
             @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
             @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-            @RequestParam(name="site") String site,
+            @RequestParam(name="site",required = false,defaultValue = "") String site,
             HttpServletRequest req) {
         return Result.ok(iPersonnelWelfareService.getPersonnelWelfareList(personnelWelfareVO,site,pageNo,pageSize));
     }

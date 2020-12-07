@@ -7,7 +7,7 @@
             SELECT * FROM AD_EMPLOYEE_V
             ${ew.customSqlSegment}
         ) AEV ON PW.WORKCODE = AEV.HR_NO
-        <if test="site != null">
+        <if test="site != ''">
         WHERE PW.DEPARTID IN (
         SELECT SUB_DEPART DEPARTID
         FROM SALARY_SUBDEPT_CONFIG_DT
