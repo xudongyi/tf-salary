@@ -17,9 +17,19 @@ public class SalaryReportConfigVo extends SalaryReportConfig {
         this.setSort(config.getSort());
         this.setStage(config.getStage());
         this.setTabId(config.getTabId());
+        this.setIsTotal(config.getIsTotal());
     }
 
     private List<SalaryReportConfigDt> details;
 
     private Object[] detail;
+
+    private List<SubDepartLabel> subDepartLabel;
+
+    @Data
+    public static class SubDepartLabel{
+        private String label;
+        private String value;
+    }
+
 }

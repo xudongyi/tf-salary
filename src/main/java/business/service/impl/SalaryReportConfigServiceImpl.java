@@ -3,6 +3,7 @@ package business.service.impl;
 import business.bean.AuthUser;
 import business.bean.SalaryReportConfig;
 import business.bean.SalaryReportConfigDt;
+import business.mapper.HrMapper;
 import business.mapper.SalaryReportConfigDtMapper;
 import business.mapper.SalaryReportConfigMapper;
 import business.service.ISalaryReportConfigDtService;
@@ -17,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SalaryReportConfigServiceImpl extends ServiceImpl<SalaryReportConfigMapper, SalaryReportConfig> implements ISalaryReportConfigService {
@@ -26,6 +29,9 @@ public class SalaryReportConfigServiceImpl extends ServiceImpl<SalaryReportConfi
 
     @Resource
     private SalaryReportConfigDtMapper salaryReportConfigDtMapper;
+
+    @Resource
+    private HrMapper hrMapper;
 
     @Resource
     private ISalaryReportConfigDtService salaryReportConfigDtService;
@@ -43,6 +49,7 @@ public class SalaryReportConfigServiceImpl extends ServiceImpl<SalaryReportConfi
         config.setSort(salaryReportConfigVo.getSort());
         config.setStage(salaryReportConfigVo.getStage());
         config.setTabId(salaryReportConfigVo.getTabId());
+        config.setIsTotal(salaryReportConfigVo.getIsTotal());
         if(salaryReportConfigVo.getId()!=null){
             //更新主表
             config.setId(salaryReportConfigVo.getId());
@@ -85,12 +92,20 @@ public class SalaryReportConfigServiceImpl extends ServiceImpl<SalaryReportConfi
     public SalaryReportConfigVo getSalaryReportConfig(String id) {
         SalaryReportConfig salaryReportConfig = salaryReportConfigMapper.selectById(id);
         SalaryReportConfigVo vo = new SalaryReportConfigVo(salaryReportConfig);
+        List<Map<String,Object>> departMentAll = hrMapper.departMentAll(null);
+        Map<String,Object> departMentsMap = new HashMap<>();
+        for(Map<String,Object> map : departMentAll){
+            departMentsMap.put(map.get("DEPARTID").toString(),map.get("LABEL").toString());
+        }
         List<SalaryReportConfigDt> details = salaryReportConfigDtMapper.selectList(new LambdaQueryWrapper<SalaryReportConfigDt>()
                 .eq(SalaryReportConfigDt::getMainid, id));
         vo.setDetails(details);
         List<Object> detailArray = new ArrayList<>();
         for(SalaryReportConfigDt dt : details){
-            detailArray.add(dt.getSubDepart());
+            SalaryReportConfigVo.SubDepartLabel subDepartLabel = new SalaryReportConfigVo.SubDepartLabel();
+            subDepartLabel.setValue(dt.getSubDepart());
+            subDepartLabel.setLabel(departMentsMap.get(dt.getSubDepart()).toString());
+            detailArray.add(subDepartLabel);
         }
         vo.setDetail(detailArray.toArray());
         return vo;
