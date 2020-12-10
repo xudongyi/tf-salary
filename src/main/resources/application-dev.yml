@@ -91,25 +91,15 @@ spring:
         # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
         connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
       datasource:
-#        master:
-#          url: jdbc:mysql://127.0.0.1:3306/jeecg-boot-test?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false
-#          username: root
-#          password: root
-#          driver-class-name: com.mysql.jdbc.Driver
         master:
           url: jdbc:oracle:thin:@172.16.20.6:1521:RPTDB
-          username: oaprod_new
-          password: oaprod
+          username: oa_g3
+          password: OAG3hr1208
           driver-class-name: oracle.jdbc.OracleDriver
         G3:
           url: jdbc:oracle:thin:@172.16.7.60:1521/HR
           username: HRAD
           password: HRad060
-          driver-class-name: oracle.jdbc.OracleDriver
-        hr:
-          url: jdbc:oracle:thin:@172.16.20.6:1521:RPTDB
-          username: oaprod
-          password: oaprod
           driver-class-name: oracle.jdbc.OracleDriver
 
 #mybatis plus 设置
