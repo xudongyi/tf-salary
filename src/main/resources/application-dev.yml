@@ -96,6 +96,11 @@ spring:
           username: oa_g3
           password: OAG3hr1208
           driver-class-name: oracle.jdbc.OracleDriver
+        oa:
+          url: jdbc:oracle:thin:@172.16.20.6:1521:RPTDB
+          username: oaprod_new
+          password: oaprod
+          driver-class-name: oracle.jdbc.OracleDriver
         G3:
           url: jdbc:oracle:thin:@172.16.7.60:1521/HR
           username: HRAD

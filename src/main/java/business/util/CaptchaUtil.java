@@ -33,6 +33,9 @@ public class CaptchaUtil {
         String sessionCode = blank(concurrentHashMap.get("sms_code_"+mobile));
         String createTime = blank(concurrentHashMap.get("sms_createTime_"+mobile));
         String expire = blank(concurrentHashMap.get("sms_expire_"+mobile));
+        if((System.currentTimeMillis() - Long.parseLong(createTime)) > 1000 * Integer.parseInt(expire)){
+            return "验证码已过期";
+        }
         if(sessionMobile.equals(""))
             return "未生成验证码";
         if(!sessionMobile.equals(mobile)){
@@ -41,9 +44,7 @@ public class CaptchaUtil {
         if(!sessionCode.equals(code)){
             return "验证码错误";
         }
-        if((System.currentTimeMillis() - Long.parseLong(createTime)) > 1000 * Integer.parseInt(expire)){
-            return "验证码已过期";
-        }
+
         save("", "", 0);
         return "";
     }
