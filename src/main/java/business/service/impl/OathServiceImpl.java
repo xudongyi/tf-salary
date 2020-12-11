@@ -14,11 +14,13 @@ import business.service.IOperateLogService;
 import business.util.CaptchaUtil;
 import business.util.ExceptionUtil;
 import business.util.IpAddressUtil;
+import business.util.MessageUtil;
 import business.vo.AuthUserModify;
 import business.vo.AuthUserSSO;
 import business.vo.AuthUserVO;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.crypto.SecureUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -107,19 +109,19 @@ public class OathServiceImpl implements IOauthService {
     public Result<?> sso(AuthUserSSO authUserSSO) {
         log.debug("sso {}", authUserSSO);
         if (authUserSSO == null || StringUtils.isBlank(authUserSSO.getAppid())|| StringUtils.isBlank(authUserSSO.getLoginid())|| StringUtils.isBlank(authUserSSO.getWorkcode())) {
-            ExceptionUtil.rollback(ErrorEnum.PARAM_ERROR);
+            return Result.error(500,"参数异常！"+ JSON.toJSONString(authUserSSO));
         }
 
         if(!authUserSSO.getAppid().equals(Constants.OA_APP_ID)){
-            ExceptionUtil.rollback(ErrorEnum.PARAM_INCORRECT);
+            return Result.error(500,"APPID错误");
         }
         AuthUser authUser = authUserMapper.selectOne(new LambdaQueryWrapper<AuthUser>()
-                .eq(AuthUser::getLoginid, authUserSSO.getLoginid()));
+                .eq(AuthUser::getWorkcode, authUserSSO.getWorkcode()));
         if(authUser==null){
-            Map<String,Object> hrmresource = hrmResourceMapper.getHrmResource(authUserSSO.getLoginid());
+            List<Map<String,Object>> hrmresource = hrmResourceMapper.getHrmResourceByWorkcode(authUserSSO.getWorkcode());
             Map<String,Object> hrmInfo = hrMapper.getMobilePhone(authUserSSO.getWorkcode());
-            if(hrmresource==null){
-                return Result.error(500,"OA系统中未找到该登录名，请核查信息！");
+            if(hrmresource==null||hrmresource.size()==0){
+                return Result.error(500,"OA系统中未找到该工号，请核查OA中是否有此工号信息！");
             }
             if(hrmInfo==null){
                 return Result.error(500,"HR系统中未找到该工号，请核查信息！");
@@ -128,9 +130,9 @@ public class OathServiceImpl implements IOauthService {
             authUser = new AuthUser();
             authUser.setLoginid(authUserSSO.getWorkcode());
             authUser.setRoleid(1L);
-            authUser.setWorkcode(hrmresource.get("WORKCODE").toString());
+            authUser.setWorkcode(hrmresource.get(0).get("WORKCODE").toString());
             authUser.setFirstLogin(0);
-            authUser.setLastname(hrmresource.get("LASTNAME").toString());
+            authUser.setLastname(hrmresource.get(0).get("LASTNAME").toString());
             authUser.setSite(String.valueOf(salarySubDeptConfigMapper.getSubDept(hrmInfo.get("DEPARTID").toString()).get(0).getId()));
             authUserMapper.insert(authUser);
         }
@@ -171,14 +173,14 @@ public class OathServiceImpl implements IOauthService {
         if (authUserSSO == null || StringUtils.isBlank(authUserSSO.getLoginid())|| StringUtils.isBlank(authUserSSO.getToken())) {
             return Result.error(500,"参数错误！");
         }
-        Map<String,Object> hrmresource = hrmResourceMapper.getHrmResource(authUserSSO.getLoginid());
-        if(hrmresource==null){
-            return Result.error(500,"OA中不存在该用户！");
+        List<Map<String,Object>> hrmresource = hrmResourceMapper.getHrmResourceByWorkcode(authUserSSO.getLoginid());
+        if(hrmresource==null || hrmresource.size()==0){
+            return Result.error(500,"OA中该工号："+authUserSSO.getLoginid()+"不存在该用户！");
         }
         AuthUser authUser = authUserMapper.selectOne(new LambdaQueryWrapper<AuthUser>()
                 .eq(AuthUser::getLoginid, authUserSSO.getLoginid()));
         if(authUser==null){
-            return Result.error(500,"用户未在系统中注册，请检查用户！");
+            return Result.error(500,"该用户,工号为："+authUserSSO.getLoginid()+"未在系统中注册，请检查用户！");
         }
         AuthToken authToken = authTokenMapper.selectOne(new LambdaQueryWrapper<AuthToken>().eq(AuthToken::getUserId,authUser.getId()).eq(AuthToken::getToken,authUserSSO.getToken()));
         if(authToken==null){
@@ -186,7 +188,7 @@ public class OathServiceImpl implements IOauthService {
         }
         authUserSSO.setRoleId(authUser.getRoleid());
         authUserSSO.setWorkcode(authUser.getWorkcode());
-        authUserSSO.setLastname(hrmresource.get("LASTNAME").toString());
+        authUserSSO.setLastname(hrmresource.get(0).get("LASTNAME").toString());
         authUserSSO.setExpireTime(authToken.getExpireTime().getTime());
         authUserSSO.setFirst_login(authUser.getFirstLogin());
         authUserSSO.setSite(authUser.getSite());
@@ -214,29 +216,34 @@ public class OathServiceImpl implements IOauthService {
         if(!authUserModify.getMobile().equals(hr.get("MOBILEPHONE"))){
             return Result.error(500,"手机号不匹配，HR中的手机号为："+hr.get("MOBILEPHONE")+"！");
         }
-        //TODO 查询本月该用户的已发送次数,没有超过发送次数则发送短信，否则提示用户本月无法查询
         List<OperateLog> list = iOperateLogService.list(new LambdaQueryWrapper<OperateLog>()
                 .eq(OperateLog::getUserId, authUserModify.getWorkcode())
                 .ge(OperateLog::getOperateTime, DateUtil.beginOfDay(new Date()))
                 .le(OperateLog::getOperateTime, new Date())
                 .eq(OperateLog::getOperateType, 2));
-
-        //TODO 发送短信
-        String code = "888888";
-        CaptchaUtil.save(authUserModify.getMobile(),code,180);
-        //插入日志
-        OperateLog operateLog = new OperateLog();
-        operateLog.setOperateType(OperLogType.SEND_MOBILE.TYPE());
-        operateLog.setUserId(authUserModify.getWorkcode());
-        operateLog.setIp(IpAddressUtil.getIp());
-        operateLog.setOperateTime(new Date());
-        operateLog.setOperateName(OperLogType.SEND_MOBILE.NAME());
-        operateLog.setContent("发送短信");
-        log.debug("loginLog===="+ operateLog);
-        iOperateLogService.save(operateLog);
-        return Result.ok("发送成功,本月已发送："+list.size()+"次");
+        if(list.size()<5){
+            String code = MessageUtil.getRandom6();
+            Map<String,String> result  = MessageUtil.sendMessage(authUserModify.getMobile(),code);
+            if(result.get("result").equals("0")){
+                CaptchaUtil.save(authUserModify.getMobile(),code,180);
+                //插入日志
+                OperateLog operateLog = new OperateLog();
+                operateLog.setOperateType(OperLogType.SEND_MOBILE.TYPE());
+                operateLog.setUserId(authUserModify.getWorkcode());
+                operateLog.setIp(IpAddressUtil.getIp());
+                operateLog.setOperateTime(new Date());
+                operateLog.setOperateName(OperLogType.SEND_MOBILE.NAME());
+                operateLog.setContent("发送短信,验证码为："+code);
+                log.debug("loginLog===="+ operateLog);
+                iOperateLogService.save(operateLog);
+                return Result.ok("发送成功,本月已发送："+list.size()+"次");
+            }else{
+                return Result.error(result.get("description"));
+            }
+        }else{
+            return Result.error("发送失败,本月次数已用完！");
+        }
     }
-
 
     @Override
     public Result<?> modifyPassword(HttpServletRequest httpRequest,AuthUserModify authUserModify) {

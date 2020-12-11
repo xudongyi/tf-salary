@@ -26,7 +26,7 @@ public class JwtUtil {
      * @return
      */
     public static String getSSOToken(AuthUserSSO authUserSSO) {
-        String sign = authUserSSO.getLoginid();
+        String sign = authUserSSO.getWorkcode();
         return JWT.create().withExpiresAt(new Date(System.currentTimeMillis()+ 3600)).withAudience(JSON.toJSONString(authUserSSO))
                 .sign(Algorithm.HMAC256(sign));
     }

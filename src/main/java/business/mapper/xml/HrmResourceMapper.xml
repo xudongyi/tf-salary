@@ -5,6 +5,6 @@
         select * from hrmresource where loginid=#{loginId}
     </select>
     <select id="getHrmResourceByWorkcode" resultType="Map">
-        select * from hrmresource where workcode = (#{workcode})
+        select * from hrmresource where workcode = #{workcode}
     </select>
 </mapper>

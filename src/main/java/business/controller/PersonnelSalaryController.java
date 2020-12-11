@@ -88,6 +88,7 @@ public class PersonnelSalaryController {
      * 校验密码
      * */
     @RequestMapping(value = "/checkPassword", method = RequestMethod.POST)
+    @LoginIgnore
     public Result<?> checkPassword(HttpServletRequest httpServletRequest,@RequestBody AuthUserModify authUserModify) throws Exception {
         if(authUserModify==null
                 ||StringUtils.isBlank( authUserModify.getWorkcode()) || authUserModify.getPassword()==null){
