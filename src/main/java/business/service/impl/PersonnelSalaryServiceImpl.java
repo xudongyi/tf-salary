@@ -81,7 +81,7 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
         String currentMonthVisitTimes = operateLogMapper.getVisitTimesByMonth(currentMonth,site).size()==0?"0":operateLogMapper.getVisitTimesByMonth(currentMonth,site).get(0).get("VISIT_TIMES").toString();
         String lastMonthVisitTimes = operateLogMapper.getVisitTimesByMonth(lastMonthStr,site).size()==0?"0":operateLogMapper.getVisitTimesByMonth(lastMonthStr,site).get(0).get("VISIT_TIMES").toString();
         String currentMonthNoteNumber = operateLogMapper.getNoteNumberByMonth(currentMonth,site).size()==0?"0":operateLogMapper.getNoteNumberByMonth(currentMonth,site).get(0).get("NOTE_NUMBER").toString();
-        String lastMonthNoteNumber = operateLogMapper.getNoteNumberByMonth(lastMonthStr,site).size()==0?"0":operateLogMapper.getNoteNumberByMonth(currentMonth,site).get(0).get("NOTE_NUMBER").toString();
+        String lastMonthNoteNumber = operateLogMapper.getNoteNumberByMonth(lastMonthStr,site).size()==0?"0":operateLogMapper.getNoteNumberByMonth(lastMonthStr,site).get(0).get("NOTE_NUMBER").toString();
         List<Map<String, Object>> salaryDepartmentRankList = personnelSalaryMapper.getSalaryRankByDepartment(currentMonth,site);
         List<Map<String, Object>> noteTimesDepartmentRankList = operateLogMapper.getNoteTimesRankByDepartment(currentMonth,site);
         Map<String, Object> result = new HashMap<String, Object>();
@@ -111,10 +111,50 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
             endDate = getMonth(staDate, 11);
         }
         Map<String, Object> result = new HashMap<String, Object>();
+
+        List<String> betweenMonthList = getMonthBetween(staDate,endDate);
         List<Map<String, Object>> salaryList = personnelSalaryMapper.getSalaryBetweenMonth(staDate,endDate,site);
         List<Map<String, Object>> noteTimesList = operateLogMapper.getNoteTimesBetweenMonth(staDate,endDate,site);
-        result.put("salaryList",salaryList);
-        result.put("noteTimesList",noteTimesList);
+        List<Map<String, Object>> salaryResultList = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> noteTimesResultList = new ArrayList<Map<String, Object>>();
+        Map<String,Object> salaryResultMap = new HashMap<String,Object>();
+        Map<String,Object> noteTimesResultMap = new HashMap<String,Object>();
+        Boolean hasAddSalaryList = false;
+        Boolean hasAddNoteTimesList = false;
+
+        for(String m:betweenMonthList){
+            hasAddSalaryList = false;
+            for(Map<String,Object> salaryInfo:salaryList){
+                if(salaryInfo.get("SALARY_DATE").equals(m)){
+                    salaryResultList.add(salaryInfo);
+                    hasAddSalaryList = true;
+                }
+            }
+            if(!hasAddSalaryList){
+                salaryResultMap = new HashMap<String,Object>();
+                salaryResultMap.put("GROSS_PAY", 0);
+                salaryResultMap.put("SALARY_DATE", m);
+                salaryResultList.add(salaryResultMap);
+            }
+
+            hasAddNoteTimesList = false;
+            for(Map<String,Object> noteTimes:noteTimesList){
+                if(noteTimes.get("NOTE_DATE").equals(m)){
+                    noteTimesResultList.add(noteTimes);
+                    hasAddNoteTimesList = true;
+                }
+            }
+            if(!hasAddNoteTimesList){
+                noteTimesResultMap = new HashMap<String,Object>();
+                noteTimesResultMap.put("NOTE_TIMES", 0);
+                noteTimesResultMap.put("NOTE_DATE", m);
+                noteTimesResultList.add(noteTimesResultMap);
+            }
+        }
+
+
+        result.put("salaryList",salaryResultList);
+        result.put("noteTimesList",noteTimesResultList);
         return result;
     }
 
@@ -1060,5 +1100,30 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
         date = calendar.getTime();
         String accDate = format.format(date);
         return accDate;
+    }
+
+    private static List<String> getMonthBetween(String minDate, String maxDate) {
+        ArrayList<String> result = new ArrayList<String>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");//格式化为年月
+
+        Calendar min = Calendar.getInstance();
+        Calendar max = Calendar.getInstance();
+
+        try {
+            min.setTime(sdf.parse(minDate));
+            max.setTime(sdf.parse(maxDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        min.set(min.get(Calendar.YEAR), min.get(Calendar.MONTH), 1);
+        max.set(max.get(Calendar.YEAR), max.get(Calendar.MONTH), 2);
+
+        Calendar curr = min;
+        while (curr.before(max)) {
+            result.add(sdf.format(curr.getTime()));
+            curr.add(Calendar.MONTH, 1);
+        }
+
+        return result;
     }
 }
