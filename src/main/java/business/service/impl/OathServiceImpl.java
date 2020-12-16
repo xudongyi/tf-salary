@@ -18,6 +18,7 @@ import business.util.MessageUtil;
 import business.vo.AuthUserModify;
 import business.vo.AuthUserSSO;
 import business.vo.AuthUserVO;
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSON;
@@ -214,11 +215,11 @@ public class OathServiceImpl implements IOauthService {
             return Result.error(500,"工号在HR系统中未查询到，请检查！");
         }
         if(!authUserModify.getMobile().equals(hr.get("MOBILEPHONE"))){
-            return Result.error(500,"手机号不匹配，HR中的手机号为："+hr.get("MOBILEPHONE")+"！");
+            return Result.error(500,"手机号码不匹配，请到人力资源修改！");
         }
         List<OperateLog> list = iOperateLogService.list(new LambdaQueryWrapper<OperateLog>()
                 .eq(OperateLog::getUserId, authUserModify.getWorkcode())
-                .ge(OperateLog::getOperateTime, DateUtil.beginOfDay(new Date()))
+                .ge(OperateLog::getOperateTime, DateUtil.beginOfMonth(new Date()))
                 .le(OperateLog::getOperateTime, new Date())
                 .eq(OperateLog::getOperateType, 2));
         if(list.size()<5){
