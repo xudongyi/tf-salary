@@ -17,7 +17,7 @@ public interface IPersonnelSalaryService extends IService<PersonnelSalary> {
 
     IPage<PersonnelSalaryVO> getPersonnelSalaryList(PersonnelSalaryVO personnelSalaryVo,String site,Integer pageNo,Integer pageSize);
 
-    List<PersonnelSalaryVO> getPersonnelSalaryList(Wrapper<PersonnelSalaryVO> queryWrapper);
+    List<PersonnelSalaryVO> getPersonnelSalaryList(Wrapper<PersonnelSalaryVO> queryWrapper,String site);
 
     Map<String, Object> getReportHeader(String site);
 

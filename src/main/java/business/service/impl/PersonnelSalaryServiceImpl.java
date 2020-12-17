@@ -63,8 +63,8 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
     }
 
     @Override
-    public List<PersonnelSalaryVO> getPersonnelSalaryList(Wrapper<PersonnelSalaryVO> queryWrapper) {
-        return personnelSalaryMapper.getPersonnelSalary(queryWrapper);
+    public List<PersonnelSalaryVO> getPersonnelSalaryList(Wrapper<PersonnelSalaryVO> queryWrapper,String site) {
+        return personnelSalaryMapper.getPersonnelSalary(queryWrapper,site);
     }
 
 

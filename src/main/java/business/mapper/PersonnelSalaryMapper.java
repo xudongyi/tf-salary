@@ -20,7 +20,7 @@ public interface PersonnelSalaryMapper extends BaseMapper<PersonnelSalary> {
      */
     IPage<PersonnelSalaryVO> getPersonnelSalary(IPage<PersonnelSalaryVO> page,@Param(Constants.WRAPPER) Wrapper<PersonnelSalaryVO> queryWrapper,String site);
 
-    List<PersonnelSalaryVO> getPersonnelSalary(@Param(Constants.WRAPPER) Wrapper<PersonnelSalaryVO> queryWrapper);
+    List<PersonnelSalaryVO> getPersonnelSalary(@Param(Constants.WRAPPER) Wrapper<PersonnelSalaryVO> queryWrapper,String site);
 
     List<Map<String,Object>> getSalaryBetweenMonth(String staDate,String endDate,String site);
 
