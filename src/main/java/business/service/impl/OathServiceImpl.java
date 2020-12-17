@@ -25,6 +25,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -55,6 +56,8 @@ public class OathServiceImpl implements IOauthService {
     @Resource
     private SalarySubDeptConfigMapper salarySubDeptConfigMapper;
 
+    @Resource
+    private MessageUtil util;
 
 
     @Override
@@ -224,7 +227,7 @@ public class OathServiceImpl implements IOauthService {
                 .eq(OperateLog::getOperateType, 2));
         if(list.size()<5){
             String code = MessageUtil.getRandom6();
-            Map<String,String> result  = MessageUtil.sendMessage(authUserModify.getMobile(),code);
+            Map<String,String> result  = util.sendMessage(authUserModify.getMobile(),code);
             if(result.get("result").equals("0")){
                 CaptchaUtil.save(authUserModify.getMobile(),code,180);
                 //插入日志

@@ -6,6 +6,8 @@ import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -17,14 +19,24 @@ import java.util.Random;
 
 
 @Slf4j
+@Component
 public class MessageUtil {
-    static String BASE_URL = "http://www.ums10010.com:9090/api/";
+    @Value("${message.url}")
+    public String base_url;
 
-    public static Map<String, String> sendMessage(String mobile, String code) {
+    @Value("${message.spcode}")
+    public String spcode;
+
+    @Value("${message.loginname}")
+    public String loginname;
+
+    @Value("${message.password}")
+    public String password;
+    public  Map<String, String> sendMessage(String mobile, String code) {
         Map<String, Object> params = new HashMap<>();
-        params.put("SpCode", "18651081092"); //企业编号（没特殊要求，一般都是和LoginName一样）
-        params.put("LoginName", "18651081092"); //用户编码（也叫登录账号）
-        params.put("Password", "Jpp140653"); //用户密码
+        params.put("SpCode", spcode); //企业编号（没特殊要求，一般都是和LoginName一样）
+        params.put("LoginName", loginname); //用户编码（也叫登录账号）
+        params.put("Password",password); //用户密码
         String msg = "验证码："+code+",用于薪资查询，泄露有风险，请勿转发。有效期3分钟";
         params.put("MessageContent", charsetEncode(msg, "GBK")); //短信内容, 最大480个字（短信内容要求的编码为gbk）
         params.put("MessageType", "1"); //短信类型，1=验证码、2=通知、3=广告
@@ -34,7 +46,7 @@ public class MessageUtil {
         params.put("ExtendAccessNum", ""); // 接入号扩展号（默认不填，扩展号为数字，扩展位数由当前所配的接入号长度决定，整个接入号最长4位）
         params.put("f", "1"); // 提交时检测方式 1 --- 提交号码中有效的号码仍正常发出短信，无效的号码在返回参数faillist中列出 不为1 或该参数不存在 --- 提交号码中只要有无效的号码，那么所有的号码都不发出短信，所有的号码在返回参数faillist中列出
         params.put("AutographId", ""); //签名编码，可选参数，如果不传则使用默认签名发送
-        String result = HttpUtil.post(BASE_URL + "send", params);
+        String result = HttpUtil.post(base_url + "send", params);
         Map<String, String> resultMap = getUrlMap(result);
         if (resultMap.containsKey("description")) {
             resultMap.put("description", charsetDecode(resultMap.get("description"), "GB2312"));
@@ -112,17 +124,5 @@ public class MessageUtil {
             code = code + r;  //把每次随机出的数字拼在一起
         }
         return code;
-    }
-    public static void main(String[] args) {
-      /*  Map<String, String> map = MessageUtil.getUrlMap("result=0&description=%B7%A2%CB%CD%B3%C9%B9%A6&faillist=");
-        System.out.println(JSON.toJSONString(map));
-        if (map.containsKey("description")) {
-            map.put("description", charsetDecode(map.get("description"), "GB2312"));
-        }
-        System.out.println(JSON.toJSONString(map));*/
-
-        Map<String,String> result = MessageUtil.sendMessage("18551308728","888888");
-        System.out.println(JSON.toJSONString(result));
-
     }
 }

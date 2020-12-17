@@ -130,24 +130,12 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     # 返回类型为Map,显示null对应的字段
     call-setters-on-nulls: true
-
-#制造部门codes
-manufacturing-dept:
-  #组装一期
-  dept-a1-assembly-codes: B012000000
-  #测试一期
-  dept-a1-testing-codes: B293000000
-  #组装二期
-  dept-d2-assembly-codes: B204000000
-  #测试二期
-  dept-d2-testing-codes: B206000000
-  #组装三期
-  dept-a3-assembly-codes: B281000000
-  #测试三期
-  dept-a3-testing-codes: B285000000
-  #圆片级封装部
-  packaging-codes: B018000000
-  #表面处理中心
-  surface-codes: B310000000
-  #需要统计的部门名称
-  depart-names: A1组装部,A1工艺工程部,A1计划部,A1技术部,A1设备部,A1测试部,A2组装部,A2工艺工程部,A2计划部,A2技术部,A2品质保证部,A2设备部,A2FC,A2测试部,A3组装部,A3工艺工程部,A3其他,A3技术部,A3设备部,A3测试部,CIE,表面处理中心,财务部,崇川厂办公室,动力工程部,工会,技术中心,经营管理办公室,人力资源部,审计部,生产管理部,投资部,物资部,项目办公室,公共事务办公室,销售部,信息技术部,圆片级封装部,质量部,总裁办,CIM制造系统部,Memory,SIP项目部,行政中心总务部,崇川总计,金BP,MEMS元件部,研究院
+message:
+  #发送短信API地址
+  url: http://www.ums10010.com:9090/api/
+  #企业编号（没特殊要求，一般都是和LoginName一样）
+  spcode: 18651081092
+  #用户编码（也叫登录账号）
+  loginname: 18651081092
+  #用户密码
+  password: Jpp140653

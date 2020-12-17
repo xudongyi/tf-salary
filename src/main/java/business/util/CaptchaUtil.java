@@ -33,11 +33,11 @@ public class CaptchaUtil {
         String sessionCode = blank(concurrentHashMap.get("sms_code_"+mobile));
         String createTime = blank(concurrentHashMap.get("sms_createTime_"+mobile));
         String expire = blank(concurrentHashMap.get("sms_expire_"+mobile));
+        if(sessionMobile.equals(""))
+            return "未生成验证码";
         if((System.currentTimeMillis() - Long.parseLong(createTime)) > 1000 * Integer.parseInt(expire)){
             return "验证码已过期";
         }
-        if(sessionMobile.equals(""))
-            return "未生成验证码";
         if(!sessionMobile.equals(mobile)){
             return "手机号错误";
         }
