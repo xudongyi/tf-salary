@@ -2,6 +2,16 @@ server:
   port: 8888
   tomcat:
     max-swallow-size: -1
+    #最小线程数
+    min-spare-threads: 500
+    #最大线程数
+    max-threads: 2500
+    #最大链接数
+    max-connections: 10000
+    #最大等待队列长度
+    accept-count: 1000
+    #请请求体最大长度kb
+    #max-http-post-size: 2097152
   servlet:
     context-path: /salary
   compression:
@@ -16,6 +26,8 @@ management:
         include: metrics,httptrace
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   servlet:
     multipart:
       max-file-size: 10MB
@@ -68,9 +80,9 @@ spring:
       druid: # 全局druid参数，绝大部分值和默认保持一致。(现已支持的参数如下,不清楚含义不要乱设置)
         # 连接池的配置信息
         # 初始化大小，最小，最大
-        initial-size: 5
+        initial-size: 10
         min-idle: 5
-        maxActive: 30
+        maxActive: 100
         # 配置获取连接等待超时的时间
         maxWait: 60000
         # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
@@ -89,25 +101,17 @@ spring:
         # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
         connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
       datasource:
-        #        master:
-        #          url: jdbc:mysql://127.0.0.1:3306/jeecg-boot-test?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false
-        #          username: root
-        #          password: root
-        #          driver-class-name: com.mysql.jdbc.Driver
+        # 薪资数据库
         master:
-          url: jdbc:oracle:thin:@172.16.20.6:1521:RPTDB
-          username: oaprod_new
-          password: oaprod
+          url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=172.16.11.168)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.16.11.169)(PORT=1521))(LOAD_BALANCE=yes)(FAILOVER=ON)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME= prod)(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC)(RETIRES=180)(DELAY=10))))
+          username: oa_g3
+          password: oa_g3
           driver-class-name: oracle.jdbc.OracleDriver
-        G3:
-          url: jdbc:oracle:thin:@172.16.7.60:1521/HR
-          username: HRAD
-          password: HRad060
-          driver-class-name: oracle.jdbc.OracleDriver
-        hr:
-          url: jdbc:oracle:thin:@172.16.20.6:1521:RPTDB
+        # oa数据库
+        oa:
+          url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=172.16.11.168)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.16.11.169)(PORT=1521))(LOAD_BALANCE=yes)(FAILOVER=ON)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME= prod)(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC)(RETIRES=180)(DELAY=10))))
           username: oaprod
-          password: oaprod
+          password: OAprod056^^
           driver-class-name: oracle.jdbc.OracleDriver
 
 #mybatis plus 设置
