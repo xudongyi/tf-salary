@@ -11,7 +11,7 @@
         WHERE MAINID = #{site}
         )
         </if>
-        ORDER BY WELFARE_DATE DESC,ID DESC
+        ORDER BY WELFARE_DATE DESC,ID ASC
     </select>
 
     <select id="getMonthlyLaborCost" resultType="Map">

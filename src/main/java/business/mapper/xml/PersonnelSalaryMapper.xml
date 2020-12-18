@@ -19,7 +19,7 @@
             WHERE MAINID =  #{site}
             )
         </if>
-        ORDER BY PS.SALARY_DATE DESC,PS.ID DESC
+        ORDER BY PS.SALARY_DATE DESC,PS.ID ASC
     </select>
 
     <select id="getSalaryBetweenMonth" resultType="Map">
