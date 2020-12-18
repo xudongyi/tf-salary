@@ -240,7 +240,7 @@ public class OathServiceImpl implements IOauthService {
                 operateLog.setContent("发送短信,验证码为："+code);
                 log.debug("loginLog===="+ operateLog);
                 iOperateLogService.save(operateLog);
-                return Result.ok("发送成功,本月已发送："+(list.size()+1)+"次");
+                return Result.ok("发送成功,本月已发送："+(list.size()+1)+"次,每月最多发送5次验证码！");
             }else{
                 return Result.error(result.get("description"));
             }
