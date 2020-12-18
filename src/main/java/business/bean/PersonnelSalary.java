@@ -22,7 +22,7 @@ import lombok.experimental.Accessors;
 public class PersonnelSalary extends Model<PersonnelSalary> {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
-    @Excel(name = "工号",orderNum="2")
+    @Excel(name = "工号",orderNum="1")
     private String workcode;
     @Excel(name = "基本工资",orderNum="10")
     private Float basePay;

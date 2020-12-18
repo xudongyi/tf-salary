@@ -9,7 +9,7 @@ public class PersonnelSalaryVO extends PersonnelSalary {
 
     //部门信息
     private String dept;
-    @Excel(name = "姓名",orderNum="1")
+    @Excel(name = "姓名",orderNum="2")
     private String hrName;
 
     private String salarystamonth;
