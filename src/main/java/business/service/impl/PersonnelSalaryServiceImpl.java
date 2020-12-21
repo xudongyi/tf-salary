@@ -51,7 +51,7 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
             sqlaryQueryWrapper.eq("workcode", personnelSalaryVo.getWorkcode());
         }
         if(StringUtils.isNotBlank(personnelSalaryVo.getDept())){
-            sqlaryQueryWrapper.eq("DEPARTID", personnelSalaryVo.getDept().split("_")[0]);
+            sqlaryQueryWrapper.eq("DEPARTID", personnelSalaryVo.getDept());
         }
         if(StringUtils.isNotBlank(personnelSalaryVo.getSalarystamonth())){
             sqlaryQueryWrapper.ge("salary_date", personnelSalaryVo.getSalarystamonth());

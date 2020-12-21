@@ -29,19 +29,12 @@ public class ExcelExporttController {
     public void exportExcel(HttpServletResponse response, @ModelAttribute PersonnelSalaryVO personnelSalaryVo,
                             @RequestParam(name="site",required = false,defaultValue = "") String site) throws Exception {
         QueryWrapper<PersonnelSalaryVO> sqlaryQueryWrapper = new QueryWrapper<>();
-        QueryWrapper<HrmResource> hrmQueryWrapper = new QueryWrapper<>();
 
         if (StringUtils.isNotBlank(personnelSalaryVo.getWorkcode())) {
             sqlaryQueryWrapper.eq("workcode", personnelSalaryVo.getWorkcode());
         }
         if(StringUtils.isNotBlank(personnelSalaryVo.getDept())){
-            hrmQueryWrapper.lambda().eq(HrmResource::getDepartmentid,personnelSalaryVo.getDept().split("_")[0]);
-            List<HrmResource> hrmList = iHrmResourceService.getBaseMapper().selectList(hrmQueryWrapper);
-            String[] hrmDepartmentIdArr = new String[hrmList.size()];
-            for(int i = 0; i < hrmList.size();i++){
-                hrmDepartmentIdArr[i] = hrmList.get(i).getDepartmentid();
-            }
-            sqlaryQueryWrapper.in("departmentid",hrmDepartmentIdArr);
+            sqlaryQueryWrapper.eq("DEPARTID", personnelSalaryVo.getDept());
         }
         if(StringUtils.isNotBlank(personnelSalaryVo.getSalarystamonth())){
             sqlaryQueryWrapper.ge("salary_date", personnelSalaryVo.getSalarystamonth());
