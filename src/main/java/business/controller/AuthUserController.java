@@ -1,12 +1,12 @@
 package business.controller;
 
-import business.annotation.Log;
+import business.bean.AuthUser;
 import business.common.api.vo.Result;
-import business.emum.OperLogType;
 import business.jwt.LoginIgnore;
 import business.service.IOauthService;
 import business.vo.AuthUserVO;
 import business.service.IAuthUserService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,4 +29,10 @@ public class AuthUserController {
     public Result<?> login(@RequestBody AuthUserVO authUserVO) {
         return iOauthService.login(authUserVO);
     }
+
+    @PostMapping("/admin/checkSite")
+    public Result<?> checkSite(@RequestBody AuthUserVO authUserVO) {
+        return Result.ok(authUserService.list(new LambdaQueryWrapper<AuthUser>().eq(AuthUser::getSite, authUserVO.getSite())));
+    }
+
 }

@@ -50,7 +50,7 @@ public class ExcelImportController {
                     &&(salaryList.get(i).getOvertimePay()==null||salaryList.get(i).getOvertimePay().equals(""))){
                 break;
             }else if(salaryList.get(i).getWorkcode()==null||salaryList.get(i).getWorkcode().equals("")){
-                return Result.error("第"+i+"行工号不能为空！");
+                return Result.error("第"+(i+2)+"行工号不能为空！");
             }else if((salaryList.get(i).getBasePay()==null||salaryList.get(i).getBasePay().equals(""))||
                     (salaryList.get(i).getAssessmentPay()==null||salaryList.get(i).getAssessmentPay().equals(""))||
                     (salaryList.get(i).getOvertimePay()==null||salaryList.get(i).getOvertimePay().equals(""))||
@@ -88,7 +88,7 @@ public class ExcelImportController {
                     (salaryList.get(i).getEndowmentInsurance()==null||salaryList.get(i).getEndowmentInsurance().equals(""))||
                     (salaryList.get(i).getMedicalInsurance()==null||salaryList.get(i).getMedicalInsurance().equals(""))||
                     (salaryList.get(i).getNetSalary()==null||salaryList.get(i).getNetSalary().equals(""))){
-                return Result.error("第"+i+"薪资数据不能为空！");
+                return Result.error("第"+(i+2)+"薪资数据不能为空！");
             }
             if(deartCodeMap.get(salaryList.get(i).getWorkcode())!=null){
                 salaryList.get(i).setDepartid(deartCodeMap.get(salaryList.get(i).getWorkcode()).toString());
@@ -125,13 +125,13 @@ public class ExcelImportController {
                         &&(welfareList.get(i).getWelfareDate()==null||welfareList.get(i).getWelfareDate().equals(""))){
                     break;
                 }else if(welfareList.get(i).getWorkcode()==null||welfareList.get(i).getWorkcode().equals("")){
-                    return Result.error("第"+i+"行工号不能为空！");
+                    return Result.error("第"+(i+2)+"行工号不能为空！");
                 }else if(welfareList.get(i).getWelfareTypeName()==null||welfareList.get(i).getWelfareTypeName().equals("")){
-                    return Result.error("第"+i+"名称不能为空！");
+                    return Result.error("第"+(i+2)+"名称不能为空！");
                 }else if(welfareList.get(i).getWelfareAmount()==null||welfareList.get(i).getWelfareAmount().equals("")){
-                    return Result.error("第"+i+"金额不能为空！");
+                    return Result.error("第"+(i+2)+"金额不能为空！");
                 }else if(welfareList.get(i).getWelfareDate()==null||welfareList.get(i).getWelfareDate().equals("")){
-                    return Result.error("第"+i+"发放时间不能为空！");
+                    return Result.error("第"+(i+2)+"发放时间不能为空！");
                 }
 
                 if(welfareList.get(i).getWelfareTypeName().equals("十三薪")){
