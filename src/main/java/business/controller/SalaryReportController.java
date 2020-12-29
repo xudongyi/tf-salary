@@ -13,6 +13,7 @@ import business.vo.excel.MonthlyLaborCostByDeptVo;
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +86,9 @@ public class SalaryReportController {
      */
     @RequestMapping(value = "/getMonthlyLaborCostByType", method = RequestMethod.POST)
     public Result<?> getMonthlyLaborCostByType(@RequestParam("month") String month,@RequestParam("rate") Float rate,@RequestParam("site") String site,@RequestParam("tabId") String tabId) {
+        if(!StringUtils.isNotBlank(site)){
+            return Result.error("当前管理员分部不存在！");
+        }
         return Result.ok(iPersonnelSalaryService.getMonthlyLaborCostByType(month,rate,site,tabId));
     }
 

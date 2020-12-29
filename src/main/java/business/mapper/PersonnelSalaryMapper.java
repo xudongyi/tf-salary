@@ -48,7 +48,11 @@ public interface PersonnelSalaryMapper extends BaseMapper<PersonnelSalary> {
 
     List<Map<String,Object>> getTypeLaborTotalCostByDate(String year, Float rate, String site, String tabId,String typeIds);
 
-    List<Map<String,Object>> getMonthlyLaborCostByType(String month, Float rate,String site,String tabId);
+    List<Map<String,Object>> getMonthlyLaborCostIsTotalByType(String month, Float rate,String site,String tabId);
 
+    List<Map<String,Object>> getMonthlyLaborCostNoTotalByType(String month, Float rate,String site,String tabId);
 
+    List<Map<String,Object>> getMonthlyLaborCostTotalByType(String month, Float rate,String site,String tabId);
+
+    void deleteSalaryBySiteAndDate(String site,String belongDate,String grantDate);
 }

@@ -41,9 +41,14 @@
     </select>
 
     <select id="getAllHrmResource" resultType="Map">
-    SELECT DISTINCT(HR_NO),DEPARTID FROM AD_EMPLOYEE_V WHERE DEPART_CODE IS NOT NULL
-</select>
+    SELECT DISTINCT(HR_NO),DEPARTID FROM AD_EMPLOYEE_V_SYNC WHERE DEPART_CODE IS NOT NULL
+    </select>
+
     <select id="getSiteDepartMent" resultType="Map">
-    select * from (SELECT * FROM ad_depart_v START WITH DEPARTID = #{departMentId} CONNECT BY PRIOR PARENTCODE=DEPART_CODE) where  PARENTCODE is null ;
-</select>
+        select * from (SELECT * FROM ad_depart_v START WITH DEPARTID = #{departMentId} CONNECT BY PRIOR PARENTCODE=DEPART_CODE) where  PARENTCODE is null ;
+    </select>
+
+    <select id="getDeptByDepartName" resultType="Map">
+        SELECT * FROM AD_DEPART_V WHERE DEPART_NAME = #{departName}
+    </select>
 </mapper>

@@ -102,4 +102,6 @@ public class PersonnelSalary extends Model<PersonnelSalary> {
     private String salaryDate;
     private String belongDate;
     private String departid;
+    @Excel(name = "部门",orderNum="47")
+    private String departName;
 }

@@ -11,7 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 public interface SalaryReportConfigMapper extends BaseMapper<SalaryReportConfig> {
+    List<SalaryReportConfig> getSalaryReportConfigIsTotal(String site,String tabId);
+
     List<SalaryReportConfig> getSalaryReportConfig(String site,String tabId);
+
+    List<SalaryReportConfig> getSalaryReportConfigNoTotal(String site,String tabId);
 
     List<Map<String,Object>> getSiteInfoByConfigure(String site,String tabId);
 

@@ -33,4 +33,5 @@ public interface IPersonnelSalaryService extends IService<PersonnelSalary> {
 
     List<ExcelDepartMonthVo> getMonthlyLaborCostByManufacturingDept(String year, Float rate,String site,String tabId);
 
+    void deleteSalaryBySiteAndDate(String site,String belongDate,String grantDate);
 }

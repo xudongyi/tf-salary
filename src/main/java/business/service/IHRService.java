@@ -16,4 +16,6 @@ public interface IHRService {
     Result<?> getHrmResource(String lastname);
 
     Map<String,String> getAllHrmResource();
+
+    List<Map<String,Object>> getDeptByDepartName(String departName);
 }

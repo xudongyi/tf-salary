@@ -58,6 +58,11 @@ public class HRServiceImpl implements IHRService {
     }
 
     @Override
+    public List<Map<String, Object>> getDeptByDepartName(String departName) {
+        return hrMapper.getDeptByDepartName(departName);
+    }
+
+    @Override
     public Result<?> subDepartMentAll(String departMentName) {
         List<Map<String,Object>> departMentAll = hrMapper.subDepartMentAll(departMentName);
         List<TreeSelectSimpleVO> treeSelectSimpleVOS = new ArrayList<>();

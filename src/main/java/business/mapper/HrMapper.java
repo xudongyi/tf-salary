@@ -18,4 +18,7 @@ public interface HrMapper {
 
     Map<String,Object> getSiteDepartMent(String departMentId);
 
+    List<Map<String,Object>> getDeptByDepartName(String departName);
+
+
 }
