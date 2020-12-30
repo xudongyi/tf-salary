@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * @author xudy
- * @since 2019-09-18
+ * @since 2020-09-18
  */
 public interface AuthTokenMapper extends BaseMapper<AuthToken> {
 

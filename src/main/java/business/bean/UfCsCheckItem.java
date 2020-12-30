@@ -12,7 +12,7 @@ import java.io.Serializable;
 /**
  * 权限token
  * @author xudy
- * @since 2019-09-18
+ * @since 2020-09-18
  */
 @Data
 @TableName("uf_cs_checkitem")

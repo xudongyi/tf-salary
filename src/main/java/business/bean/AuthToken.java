@@ -14,7 +14,7 @@ import java.util.Date;
 /**
  * 权限token
  * @author xudy
- * @since 2019-09-18
+ * @since 2020-09-18
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
