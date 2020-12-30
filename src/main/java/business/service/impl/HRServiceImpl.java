@@ -48,6 +48,16 @@ public class HRServiceImpl implements IHRService {
     }
 
     @Override
+    public Map<String,String> getAllHrmResourceByDate(String belongDate) {
+        List<Map<String,Object>> hrmResource = hrMapper.getAllHrmResourceByDate(belongDate);
+        Map<String,String> hrmResourceMap = new HashMap<String,String>();
+        for(Map<String,Object> m :hrmResource){
+            hrmResourceMap.put(m.get("HR_NO").toString(),m.get("DEPARTID").toString());
+        }
+        return hrmResourceMap;
+    }
+
+    @Override
     public Map<String,String> getAllHrmResource() {
         List<Map<String,Object>> hrmResource = hrMapper.getAllHrmResource();
         Map<String,String> hrmResourceMap = new HashMap<String,String>();

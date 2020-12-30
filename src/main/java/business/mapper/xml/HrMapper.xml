@@ -49,6 +49,10 @@
         </if>
     </select>
 
+    <select id="getAllHrmResourceByDate" resultType="Map">
+    SELECT DISTINCT(HR_NO),DEPARTID FROM AD_EMPLOYEE_V_SYNC WHERE DEPART_CODE IS NOT NULL AND SYNC_DATE = #{belongDate}
+    </select>
+
     <select id="getAllHrmResource" resultType="Map">
     SELECT DISTINCT(HR_NO),DEPARTID FROM AD_EMPLOYEE_V_SYNC WHERE DEPART_CODE IS NOT NULL
     </select>

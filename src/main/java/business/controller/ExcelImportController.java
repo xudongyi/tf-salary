@@ -43,7 +43,7 @@ public class ExcelImportController {
                                        @RequestParam("site") String site) throws Exception {
         List<PersonnelSalary> salaryList = FileUtils.importExcel(file, 0,1, PersonnelSalary.class);
         List<PersonnelSalary> importList = new ArrayList<PersonnelSalary>();
-        Map departCodeMap = iHRService.getAllHrmResource();
+        Map departCodeMap = iHRService.getAllHrmResourceByDate(belongDate);
         try {
             if(!StringUtils.isNotBlank(site)){
                 return Result.error("当前管理员分部不存在！");
@@ -156,12 +156,12 @@ public class ExcelImportController {
                     return Result.error("第"+(i+2)+"发放时间不能为空！");
                 }
 
-                if(welfareList.get(i).getWelfareTypeName().equals("十三薪")){
-                    welfareList.get(i).setWelfareType(1);
-                    welfareList.get(i).setWelfareAmountSalaries(welfareList.get(i).getWelfareAmount());
-                    welfareList.get(i).setWelfareAmountBonus(0f);
-                    welfareList.get(i).setWelfareAmountWeal(0f);
-                }else if(welfareList.get(i).getWelfareTypeName().equals("年终奖")){
+                    if(welfareList.get(i).getWelfareTypeName().equals("十三薪")){
+                        welfareList.get(i).setWelfareType(1);
+                        welfareList.get(i).setWelfareAmountSalaries(welfareList.get(i).getWelfareAmount());
+                        welfareList.get(i).setWelfareAmountBonus(0f);
+                        welfareList.get(i).setWelfareAmountWeal(0f);
+                    }else if(welfareList.get(i).getWelfareTypeName().equals("年终奖")){
                     welfareList.get(i).setWelfareType(3);
                     welfareList.get(i).setWelfareAmountSalaries(0f);
                     welfareList.get(i).setWelfareAmountBonus(welfareList.get(i).getWelfareAmount());
