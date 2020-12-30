@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="business.mapper.AdEmployeeVSyncMapper">
+    <select id="getAllAdEmployeeV" resultType="business.bean.AdEmployeeVSync">
+       select * from AD_EMPLOYEE_V where DEPARTID in (select t2.SUB_DEPART from SALARY_SUBDEPT_CONFIG t1
+        left join SALARY_SUBDEPT_CONFIG_DT t2 on t1.id = t2.MAINID where t1.id=#{site})
+    </select>
+
+    <select id="getAllAdEmployeeVWidthOutTree" resultType="business.bean.AdEmployeeVSync">
+         select * from AD_EMPLOYEE_V where DEPARTID in (
+              select DEPARTID from AD_DEPART_V where DEPARTID not in (select SUB_DEPART from SALARY_SUBDEPT_CONFIG_DT)
+         )
+    </select>
+
+    <select id="checkAdEmployeeV" resultType="Map">
+     select count(1) as counts from AD_EMPLOYEE_V_SYNC where DEPARTID=#{departMentId} and SYNC_DATE=#{syncDate}
+    </select>
+
+    <delete id="deleteAllAdEmployeeVSyncByDate">
+        delete from AD_EMPLOYEE_V_SYNC where DEPARTID in (select t2.SUB_DEPART from SALARY_SUBDEPT_CONFIG t1
+        left join SALARY_SUBDEPT_CONFIG_DT t2 on t1.id = t2.MAINID where t1.id=#{site}) and SYNC_DATE=#{syncDate}
+    </delete>
+</mapper>

@@ -8,6 +8,7 @@ import business.mapper.SalarySubDeptConfigDtMapper;
 import business.mapper.SalarySubDeptConfigMapper;
 import business.service.ISalarySubDeptConfigDtService;
 import business.service.ISalarySubDeptConfigService;
+import business.vo.SalaryReportConfigVo;
 import business.vo.SalarySubDeptConfigVo;
 import business.vo.TreeSelectSimpleVO;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
@@ -88,13 +89,21 @@ public class SalarySubDeptConfigServiceImpl extends ServiceImpl<SalarySubDeptCon
     @Override
     public SalarySubDeptConfigVo getSalarySubDeptConfig(String id) {
         SalarySubDeptConfig salarySubDeptConfig = salarySubDeptConfigMapper.selectById(id);
+        List<Map<String,Object>> departMentAll = hrMapper.departMentAll(null);
+        Map<String,Object> departMentsMap = new HashMap<>();
+        for(Map<String,Object> map : departMentAll){
+            departMentsMap.put(map.get("DEPARTID").toString(),map.get("LABEL").toString());
+        }
         SalarySubDeptConfigVo vo = new SalarySubDeptConfigVo(salarySubDeptConfig);
         List<SalarySubDeptConfigDt> details = salarySubDeptConfigDtMapper.selectList(new LambdaQueryWrapper<SalarySubDeptConfigDt>()
                 .eq(SalarySubDeptConfigDt::getMainid, id));
         vo.setDetails(details);
         List<Object> detailArray = new ArrayList<>();
         for(SalarySubDeptConfigDt dt : details){
-            detailArray.add(dt.getSubDepart());
+            SalaryReportConfigVo.SubDepartLabel subDepartLabel = new SalaryReportConfigVo.SubDepartLabel();
+            subDepartLabel.setValue(dt.getSubDepart());
+            subDepartLabel.setLabel(departMentsMap.get(dt.getSubDepart()).toString());
+            detailArray.add(subDepartLabel);
         }
         vo.setDetail(detailArray.toArray());
         return vo;

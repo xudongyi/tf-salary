@@ -20,4 +20,12 @@ public class SalarySubDeptConfigVo extends SalarySubDeptConfig {
     private List<SalarySubDeptConfigDt> details;
 
     private Object[] detail;
+
+    private List<SalarySubDeptConfigVo.SubDepartLabel> subDepartLabel;
+
+    @Data
+    public static class SubDepartLabel{
+        private String label;
+        private String value;
+    }
 }

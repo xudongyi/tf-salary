@@ -12,9 +12,9 @@ public class IpAddressUtil {
 
     public static String getIp() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String ip = "null";
+        String ip = null;
         try {
-            ip = request.getHeader("x-forwarded-for");
+//            ip = request.getHeader("x-forwarded-for");
             if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
                 ip = request.getHeader("Proxy-Client-IP");
             }

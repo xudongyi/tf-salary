@@ -35,7 +35,7 @@
 </select>
 
 <select id="getSalaryReportConfigList" resultType="business.bean.SalaryReportConfig">
-    select t1.ID, t1.STAGE,t2.SUB_NAME as SITE,t1.DEPART_NAME,t1.SORT,t1.TAB_ID from SALARY_REPORT_CONFIG t1
+    select t1.ID, t1.STAGE,t2.SUB_NAME as SITE,t1.DEPART_NAME,t1.SORT,t1.TAB_ID,t1.IS_TOTAL from SALARY_REPORT_CONFIG t1
     left join SALARY_SUBDEPT_CONFIG t2   on t1.site=t2.id
     ${ew.customSqlSegment}
     order by t1.tab_id,t1.sort

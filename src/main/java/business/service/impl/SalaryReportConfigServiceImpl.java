@@ -1,6 +1,5 @@
 package business.service.impl;
 
-import business.bean.AuthUser;
 import business.bean.SalaryReportConfig;
 import business.bean.SalaryReportConfigDt;
 import business.mapper.HrMapper;
