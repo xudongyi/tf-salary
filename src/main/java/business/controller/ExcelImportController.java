@@ -100,17 +100,20 @@ public class ExcelImportController {
                         (salaryList.get(i).getEndowmentInsurance()==null||salaryList.get(i).getEndowmentInsurance().equals(""))||
                         (salaryList.get(i).getMedicalInsurance()==null||salaryList.get(i).getMedicalInsurance().equals(""))||
                         (salaryList.get(i).getNetSalary()==null||salaryList.get(i).getNetSalary().equals(""))){
-                    return Result.error("第"+(i+2)+"薪资数据不能为空！");
+                    return Result.error("第"+(i+2)+"行薪资数据不能为空！");
                 }
                 if(departCodeMap.get(salaryList.get(i).getWorkcode())!=null){
                     salaryList.get(i).setDepartid(departCodeMap.get(salaryList.get(i).getWorkcode()).toString());
                 }else{
                     //根据工号取不到部门数据就按照导入的部门来
+                    if(!StringUtils.isNotBlank(salaryList.get(i).getDepartName())){
+                        return Result.error("第"+(i+2)+"行匹配不到部门，请导入EXCEL时填写部门！");
+                    }
                     List<Map<String,Object>> deptInfoList = iHRService.getDeptByDepartName(salaryList.get(i).getDepartName());
                     if(deptInfoList.size()==0){
-                        return Result.error("第"+(i+2)+"部门名称不存在！");
+                        return Result.error("第"+(i+2)+"行部门名称不存在！");
                     }else if(deptInfoList.size()>1){
-                        return Result.error("第"+(i+2)+"部门名称存在重复！");
+                        return Result.error("第"+(i+2)+"行部门名称存在重复！");
                     }else{
                         salaryList.get(i).setDepartid(deptInfoList.get(0).get("DEPARTID").toString());
                     }

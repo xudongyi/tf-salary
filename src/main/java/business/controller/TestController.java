@@ -3,6 +3,7 @@ package business.controller;
 import business.bean.HrmResource;
 import business.bean.ManufacturingDeptConfig;
 import business.common.api.vo.Result;
+import business.jwt.LoginIgnore;
 import business.jwt.LoginRequired;
 import business.mapper.HrMapper;
 import business.service.IHrmResourceService;
@@ -24,6 +25,24 @@ public class TestController {
 
     @RequestMapping("/test")
     public String test(){
+        return "123";
+    }
+
+
+
+    @RequestMapping("/test1")
+    @LoginIgnore
+    public String test1(){
+        return "123";
+    }
+
+
+
+
+
+    @RequestMapping("/test2")
+    @LoginIgnore
+    public String test2(){
         return "123";
     }
 
