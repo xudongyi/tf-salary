@@ -54,7 +54,7 @@
     </select>
 
     <select id="getAllHrmResource" resultType="Map">
-    SELECT DISTINCT(HR_NO),DEPARTID FROM AD_EMPLOYEE_V_SYNC WHERE DEPART_CODE IS NOT NULL
+    SELECT DISTINCT(HR_NO),DEPARTID FROM AD_EMPLOYEE_V WHERE DEPART_CODE IS NOT NULL
     </select>
 
     <select id="getSiteDepartMent" resultType="Map">
