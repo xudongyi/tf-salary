@@ -2,6 +2,7 @@ package business.bean;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -103,5 +104,6 @@ public class PersonnelSalary extends Model<PersonnelSalary> {
     private String belongDate;
     private String departid;
     @Excel(name = "部门",orderNum="47")
+    @TableField(exist=false)
     private String departName;
 }
