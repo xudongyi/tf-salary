@@ -1,6 +1,5 @@
 package business.bean;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
@@ -38,9 +37,6 @@ public class AdEmployeeV extends Model<AdEmployeeV> {
     private String userStatus2;
 
     private String gender;
-
-    @TableField(value = "\"CREATE OR REPLACE_DATE\"")
-    private String createOrReplaceDate;
 
     private String updateDate;
 

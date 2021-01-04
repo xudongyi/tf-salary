@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="business.mapper.AdEmployeeVSyncMapper">
     <select id="getAllAdEmployeeV" resultType="business.bean.AdEmployeeVSync">
-       select "CREATE OR REPLACE_DATE" as CREATE_OR_REPLACE_DATE ,HRIDS,HR_NO,HR_NAME,DEPARTID,DEPART_CODE,
+       select HRIDS,HR_NO,HR_NAME,DEPARTID,DEPART_CODE,
        DEPART_NAME,DEPARTLCODE,DEPARTLNAME,MOBILEPHONE,HEADSHIP_TYPE_CNNAME,USER_STATUS,USER_STATUS2,
        GENDER,UPDATE_DATE,PAY_JOB_NAME,MINISTRIESCODE,MINISTRIESNAME,TYPE_ID,TYPE_NOTE from AD_EMPLOYEE_V
        where DEPARTID in (select t2.SUB_DEPART from SALARY_SUBDEPT_CONFIG t1
