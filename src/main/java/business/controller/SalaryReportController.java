@@ -42,7 +42,7 @@ public class SalaryReportController {
     @Resource
     private ManufacturingDeptConfig manufacturingDeptConfig;
     /**
-     * 统计报表
+     * 每月人工成本(按tab1的配置获取需要统计的所有崇川部门)
      * @param year
      * @return
      */

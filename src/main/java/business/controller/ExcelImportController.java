@@ -7,10 +7,12 @@ import business.service.IHRService;
 import business.service.IPersonnelSalaryService;
 import business.service.IPersonnelWelfareService;
 import business.util.FileUtils;
+import com.alibaba.fastjson.JSONObject;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.executor.BatchExecutorException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +37,11 @@ public class ExcelImportController {
     @Resource
     private IHRService iHRService;
 
+    @Value("${site.CH}")
+    public String ch;
+    @Value("${site.ST}")
+    public String st;
+
     @RequestMapping(value = "/salaryImport", method = RequestMethod.POST)
     public Result<?> salaryImportExcel(@RequestParam("file") MultipartFile file,
                                        @RequestParam("belongDate") String belongDate,
@@ -43,15 +50,18 @@ public class ExcelImportController {
                                        @RequestParam("site") String site) throws Exception {
         List<PersonnelSalary> salaryList = FileUtils.importExcel(file, 0,1, PersonnelSalary.class);
         List<PersonnelSalary> importList = new ArrayList<PersonnelSalary>();
-        Map departCodeMap = iHRService.getAllHrmResourceByDate(belongDate);
+        Map departCodeMap = iHRService.getAllHrmResourceByDate(belongDate,site);
         try {
             if(!StringUtils.isNotBlank(site)){
                 return Result.error("当前管理员分部不存在！");
+            }else if(!site.equals(ch)&&!site.equals(st)){
+                return Result.error("当前管理员分部未对接薪资系统，请联系系统管理员！");
             }
             if(importType.equals("0")){
                 //全量导入,需要把当前导入管理员所在分部的人员数据全部清掉（发放日期相同的数据）
                 personnelSalaryService.deleteSalaryBySiteAndDate(site,belongDate,grantDate);
             }
+
 
             for(int i=0;i<salaryList.size();i++){
                 salaryList.get(i).setSalaryDate(grantDate);
@@ -67,21 +77,14 @@ public class ExcelImportController {
                         (salaryList.get(i).getAssessmentPay()==null||salaryList.get(i).getAssessmentPay().equals(""))||
                         (salaryList.get(i).getOvertimePay()==null||salaryList.get(i).getOvertimePay().equals(""))||
                         (salaryList.get(i).getPieceRatePay()==null||salaryList.get(i).getPieceRatePay().equals(""))||
-                        (salaryList.get(i).getPieceOverPay()==null||salaryList.get(i).getPieceOverPay().equals(""))||
-                        (salaryList.get(i).getOndutyPay()==null||salaryList.get(i).getOndutyPay().equals(""))||
                         (salaryList.get(i).getSkillPay()==null||salaryList.get(i).getSkillPay().equals(""))||
                         (salaryList.get(i).getTrafficSubsidy()==null||salaryList.get(i).getTrafficSubsidy().equals(""))||
-                        (salaryList.get(i).getIncreasingDayPay()==null||salaryList.get(i).getIncreasingDayPay().equals(""))||
                         (salaryList.get(i).getThreeShiftsPay()==null||salaryList.get(i).getThreeShiftsPay().equals(""))||
                         (salaryList.get(i).getApprenticeSubsidy()==null||salaryList.get(i).getApprenticeSubsidy().equals(""))||
-                        (salaryList.get(i).getCollegeSubsidy()==null||salaryList.get(i).getCollegeSubsidy().equals(""))||
-                        (salaryList.get(i).getGroupLeaderSubsidy()==null||salaryList.get(i).getGroupLeaderSubsidy().equals(""))||
                         (salaryList.get(i).getNightShiftSubsidy()==null||salaryList.get(i).getNightShiftSubsidy().equals(""))||
-                        (salaryList.get(i).getSickPay()==null||salaryList.get(i).getSickPay().equals(""))||
                         (salaryList.get(i).getSupplementPay()==null||salaryList.get(i).getSupplementPay().equals(""))||
                         (salaryList.get(i).getPurificationSubsidy()==null||salaryList.get(i).getPurificationSubsidy().equals(""))||
                         (salaryList.get(i).getQualityAward()==null||salaryList.get(i).getQualityAward().equals(""))||
-                        (salaryList.get(i).getPlasticSealSubsidy()==null||salaryList.get(i).getPlasticSealSubsidy().equals(""))||
                         (salaryList.get(i).getSubsidy()==null||salaryList.get(i).getSubsidy().equals(""))||
                         (salaryList.get(i).getOtherSubsidy()==null||salaryList.get(i).getOtherSubsidy().equals(""))||
                         (salaryList.get(i).getGrossPay()==null||salaryList.get(i).getGrossPay().equals(""))||
@@ -101,15 +104,28 @@ public class ExcelImportController {
                         (salaryList.get(i).getMedicalInsurance()==null||salaryList.get(i).getMedicalInsurance().equals(""))||
                         (salaryList.get(i).getNetSalary()==null||salaryList.get(i).getNetSalary().equals(""))){
                     return Result.error("第"+(i+2)+"行薪资数据不能为空！");
+                }else if(((salaryList.get(i).getPieceOverPay()==null||salaryList.get(i).getPieceOverPay().equals(""))||
+                        (salaryList.get(i).getOndutyPay()==null||salaryList.get(i).getOndutyPay().equals(""))||
+                        (salaryList.get(i).getIncreasingDayPay()==null||salaryList.get(i).getIncreasingDayPay().equals(""))||
+                        (salaryList.get(i).getCollegeSubsidy()==null||salaryList.get(i).getCollegeSubsidy().equals(""))||
+                        (salaryList.get(i).getGroupLeaderSubsidy()==null||salaryList.get(i).getGroupLeaderSubsidy().equals(""))||
+                        (salaryList.get(i).getSickPay()==null||salaryList.get(i).getSickPay().equals(""))||
+                        (salaryList.get(i).getPlasticSealSubsidy()==null||salaryList.get(i).getPlasticSealSubsidy().equals("")))&&site.equals(ch)){
+                    return Result.error("第"+(i+2)+"行薪资数据不能为空！");
+                }else if(((salaryList.get(i).getComprehensiveAllowance()==null||salaryList.get(i).getComprehensiveAllowance().equals(""))||
+                        (salaryList.get(i).getProcessAllowance()==null||salaryList.get(i).getProcessAllowance().equals(""))||
+                        (salaryList.get(i).getSeriousIllnessInsurance()==null||salaryList.get(i).getSeriousIllnessInsurance().equals("")))&&site.equals(st)){
+                    return Result.error("第"+(i+2)+"行薪资数据不能为空！");
                 }
                 if(departCodeMap.get(salaryList.get(i).getWorkcode())!=null){
                     salaryList.get(i).setDepartid(departCodeMap.get(salaryList.get(i).getWorkcode()).toString());
                 }else{
+                    System.out.println("JSON:"+ JSONObject.toJSON(salaryList.get(i)));
                     //根据工号取不到部门数据就按照导入的部门来
                     if(!StringUtils.isNotBlank(salaryList.get(i).getDepartName())){
                         return Result.error("第"+(i+2)+"行匹配不到部门，请导入EXCEL时填写部门！");
                     }
-                    List<Map<String,Object>> deptInfoList = iHRService.getDeptByDepartName(salaryList.get(i).getDepartName());
+                    List<Map<String,Object>> deptInfoList = iHRService.getDeptByDepartName(salaryList.get(i).getDepartName(),belongDate,site);
                     if(deptInfoList.size()==0){
                         return Result.error("第"+(i+2)+"行部门名称不存在！");
                     }else if(deptInfoList.size()>1){
@@ -120,7 +136,6 @@ public class ExcelImportController {
                 }
                 importList.add(salaryList.get(i));
             }
-
             personnelSalaryService.saveBatch(importList);
         } catch(PersistenceException e){
             if(e.getCause()!=null && "org.apache.ibatis.executor.BatchExecutorException".equals(e.getCause().getClass().getName())){

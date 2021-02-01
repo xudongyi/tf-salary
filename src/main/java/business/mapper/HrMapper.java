@@ -12,7 +12,7 @@ public interface HrMapper {
 
     List<Map<String,Object>> getHrmResource(String lastname);
 
-    List<Map<String,Object>> getAllHrmResourceByDate(String belongDate);
+    List<Map<String,Object>> getAllHrmResourceByDate(String belongDate,String site);
 
     List<Map<String,Object>> getAllHrmResource();
 
@@ -22,7 +22,7 @@ public interface HrMapper {
 
     Map<String,Object> getSiteDepartMent(String departMentId);
 
-    List<Map<String,Object>> getDeptByDepartName(String departName);
+    List<Map<String,Object>> getDeptByDepartName(String departName,String belongDate,String site);
 
 
 }

@@ -46,6 +46,8 @@ public interface PersonnelSalaryMapper extends BaseMapper<PersonnelSalary> {
 
     List<Map<String,Object>> getTypeLaborCostByDate(String year, Float rate, String site, String tabId,String typeIds);
 
+    List<Map<String,Object>> getFuncDeptTypeLaborCostByDate(String year, Float rate, String site, String tabId,String typeIds);
+
     List<Map<String,Object>> getTypeLaborTotalCostByDate(String year, Float rate, String site, String tabId,String typeIds);
 
     List<Map<String,Object>> getMonthlyLaborCostIsTotalByType(String month, Float rate,String site,String tabId);

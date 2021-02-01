@@ -159,6 +159,7 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
         return result;
     }
 
+
     @Override
     public List<Map<String, Object>> getMonthlyLaborCost(String year, Float rate, String site) {
         List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
@@ -678,13 +679,25 @@ public class PersonnelSalaryServiceImpl extends ServiceImpl<PersonnelSalaryMappe
     public List<MonthlyLaborCostByDeptVo> getTypeLaborCostByDate(String year, Float rate, String site, String tabId,String typeIds) {
         List<MonthlyLaborCostByDeptVo> resultDataList = new ArrayList<MonthlyLaborCostByDeptVo>();
         List<SalaryReportConfig> salaryReportConfigList=salaryReportConfigMapper.getSalaryReportConfig(site,tabId);
+
+        SalaryReportConfig funcDeptConfig = new SalaryReportConfig();
+        funcDeptConfig.setId(new BigDecimal("-2"));
+        funcDeptConfig.setDepartName("职能部门");
+        salaryReportConfigList.add(funcDeptConfig);
+
         SalaryReportConfig totalConfig = new SalaryReportConfig();
         totalConfig.setId(new BigDecimal("-1"));
         totalConfig.setDepartName("合计");
         salaryReportConfigList.add(totalConfig);
+
+        //各部门合计数据
         List<Map<String,Object>> resultByDeptList = personnelSalaryMapper.getTypeLaborCostByDate(year,rate,site,tabId,typeIds);
+        //职能部门合计数据
+        List<Map<String,Object>> funcDeptResultByDeptList = personnelSalaryMapper.getFuncDeptTypeLaborCostByDate(year,rate,site,tabId,typeIds);
+        //合计
         List<Map<String,Object>> resultTotalList = personnelSalaryMapper.getTypeLaborTotalCostByDate(year,rate,site,tabId,typeIds);
         resultByDeptList.addAll(resultTotalList);
+        resultByDeptList.addAll(funcDeptResultByDeptList);
 
         for(SalaryReportConfig salaryReportConfig:salaryReportConfigList){
             MonthlyLaborCostByDeptVo monthlyLaborCostByDeptVo = new MonthlyLaborCostByDeptVo();

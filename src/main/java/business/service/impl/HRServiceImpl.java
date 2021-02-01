@@ -48,8 +48,8 @@ public class HRServiceImpl implements IHRService {
     }
 
     @Override
-    public Map<String,String> getAllHrmResourceByDate(String belongDate) {
-        List<Map<String,Object>> hrmResource = hrMapper.getAllHrmResourceByDate(belongDate);
+    public Map<String,String> getAllHrmResourceByDate(String belongDate,String site) {
+        List<Map<String,Object>> hrmResource = hrMapper.getAllHrmResourceByDate(belongDate,site);
         Map<String,String> hrmResourceMap = new HashMap<String,String>();
         for(Map<String,Object> m :hrmResource){
             hrmResourceMap.put(m.get("HR_NO").toString(),m.get("DEPARTID").toString());
@@ -68,8 +68,8 @@ public class HRServiceImpl implements IHRService {
     }
 
     @Override
-    public List<Map<String, Object>> getDeptByDepartName(String departName) {
-        return hrMapper.getDeptByDepartName(departName);
+    public List<Map<String, Object>> getDeptByDepartName(String departName,String belongDate,String site) {
+        return hrMapper.getDeptByDepartName(departName,belongDate,site);
     }
 
     @Override
