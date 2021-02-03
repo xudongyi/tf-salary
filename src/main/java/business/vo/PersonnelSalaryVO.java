@@ -8,17 +8,17 @@ import lombok.Data;
 public class PersonnelSalaryVO extends PersonnelSalary {
 
     //部门信息
-    private String dept;
+    public String dept;
     @Excel(name = "姓名",orderNum="2")
-    private String hrName;
+    public String hrName;
 
-    private String salarystamonth;
+    public String salarystamonth;
 
-    private String salaryendmonth;
+    public String salaryendmonth;
     @Excel(name = "十三薪",orderNum="47")
-    private String welfareAmountSalaries;
+    public String welfareAmountSalaries;
     @Excel(name = "年终奖",orderNum="48")
-    private String welfareAmountBonus;
+    public String welfareAmountBonus;
     @Excel(name = "福利",orderNum="49")
-    private String welfareAmountWeal;
+    public String welfareAmountWeal;
 }
