@@ -1,13 +1,10 @@
 package business.controller;
 
-import business.annotation.Log;
 import business.common.api.vo.Result;
-import business.emum.OperLogType;
 import business.jwt.LoginIgnore;
 import business.service.IOauthService;
 import business.vo.AuthUserModify;
 import business.vo.AuthUserSSO;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
