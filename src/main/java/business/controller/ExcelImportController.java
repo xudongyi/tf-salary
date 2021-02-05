@@ -134,6 +134,20 @@ public class ExcelImportController {
                         salaryList.get(i).setDepartid(deptInfoList.get(0).get("DEPARTID").toString());
                     }
                 }
+                //数据处理为0
+                if(site.equals(ch)){
+                    salaryList.get(i).setComprehensiveAllowance(0.00f);
+                    salaryList.get(i).setProcessAllowance(0.00f);
+                    salaryList.get(i).setSeriousIllnessInsurance(0.00f);
+                }else if(site.equals(ch)){
+                    salaryList.get(i).setPieceOverPay(0.00f);
+                    salaryList.get(i).setOndutyPay(0.00f);
+                    salaryList.get(i).setIncreasingDayPay(0.00f);
+                    salaryList.get(i).setCollegeSubsidy(0.00f);
+                    salaryList.get(i).setGroupLeaderSubsidy(0.00f);
+                    salaryList.get(i).setSickPay(0.00f);
+                    salaryList.get(i).setPlasticSealSubsidy(0.00f);
+                }
                 importList.add(salaryList.get(i));
             }
             personnelSalaryService.saveBatch(importList);
