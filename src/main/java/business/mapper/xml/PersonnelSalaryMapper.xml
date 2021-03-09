@@ -93,13 +93,14 @@
         NVL(SUM(UNEMPLOY_INSURANCE),0)*#{rate} + NVL(SUM(HOUSEPOVIDENT_FUND),0) GJJ,
         NVL(SUM(UNEMPLOY_INSURANCE),0)*#{rate} + NVL(SUM(HOUSEPOVIDENT_FUND),0)+NVL(SUM(GROSS_PAY),0)+NVL(SUM(WELFARE_AMOUNT_SALARIES),0)+NVL(SUM(WELFARE_AMOUNT_BONUS),0)+NVL(SUM(WELFARE_AMOUNT_WEAL),0) TOTAL
     from SALARY_REPORT_VIEW
-        where 1=1
-        <if test="site != ''">
-            and departid in (
-            select distinct(sub_depart) departid
-            from salary_subdept_config_dt
-            where mainid = #{site})
-        </if>
+        where 1=1 and
+        departid in (
+                    select SUB_DEPART
+                    from SALARY_REPORT_CONFIG_DT srcd
+                    left join SALARY_REPORT_CONFIG src
+                    on srcd.mainid = src.id
+                    where src.is_total = 1 and src.tab_id = 1
+                )
         and salary_date like concat(#{year},'-%')
     GROUP BY SALARY_DATE
     </select>
